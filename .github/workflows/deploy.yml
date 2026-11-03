@@ -1,0 +1,28 @@
+name: Deploy strony na FTP
+
+on:
+  push:
+    branches: [main]
+    paths: ['site/**', '.github/workflows/deploy.yml']
+  workflow_dispatch:
+
+concurrency:
+  group: ftp-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Wgraj site/ do katalogu docelowego
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT || 21 }}
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}   # ftp | ftps | ftps-legacy
+          local-dir: ./site/
+          server-dir: ${{ secrets.FTP_REMOTE_DIR || './' }}
