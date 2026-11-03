@@ -275,7 +275,7 @@ function setHeader({ title, crumbs, actions, width } = {}) {
     parts.push(h('span', null, title || (state.route && state.route.title) || ''));
     t.replaceChildren(...parts);
   }
-  if (a) a.replaceChildren((actions || []).filter(Boolean));
+  if (a) a.replaceChildren(...(actions || []).filter(Boolean));
   const inner = mainEl && mainEl.querySelector('.main-inner');
   if (inner && width) inner.classList.toggle('narrow', width === 'narrow');
 }
