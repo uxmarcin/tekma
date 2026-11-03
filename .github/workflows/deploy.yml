@@ -23,6 +23,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT || 21 }}
-          protocol: ${{ vars.FTP_PROTOCOL || 'ftp' }}   # ftp | ftps | ftps-legacy
+          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}   # ftp | ftps | ftps-legacy (domyślnie ftps)
           local-dir: ./site/
           server-dir: ${{ secrets.FTP_REMOTE_DIR || './' }}
