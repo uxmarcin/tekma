@@ -7,7 +7,7 @@
  * export default async function render(ctx) -> HTMLElement
  */
 
-import { miniFunnel } from './positions.js';
+import { miniFunnel, setHeader } from './positions.js';
 
 const ATTENTION_LABEL = { discrepancy: 'Rozbieżność', stale: 'Zaległość', 'no-rubric': 'Brak rubryki' };
 const ATTENTION_ICON = { discrepancy: 'alert', stale: 'clock', 'no-rubric': 'rubric' };
@@ -19,7 +19,7 @@ export default async function render(ctx) {
   await loadCss(new URL('./dashboard.css', import.meta.url));
 
   const addBtn = button({ label: 'Dodaj stanowisko', variant: 'primary', icon: 'plus', onClick: () => ctx.navigate('#/positions?new=1') });
-  ctx.setHeader({ title: 'Pulpit', actions: [addBtn], width: 'wide' });
+  setHeader(ctx, { title: 'Pulpit', actions: [addBtn], width: 'wide' });
 
   const root = h('div', { class: 'dash' });
   let showAllAttention = false;
@@ -74,9 +74,13 @@ export default async function render(ctx) {
       return;
     }
 
+    // Na mobile pasek nagłówka (z akcją główną) jest ukryty — akcja trafia pod powitanie.
+    const mobileAdd = button({ label: 'Dodaj stanowisko', variant: 'secondary', size: 'sm', icon: 'plus', onClick: () => ctx.navigate('#/positions?new=1') });
+    mobileAdd.classList.add('dash-add-mobile');
     const head = h('header', { class: 'dash-head' },
       h('h1', null, `${greeting()}${name ? `, ${name}` : ''}`),
       h('p', null, todayLine(stats, attention.length)),
+      mobileAdd,
     );
 
     const statsEl = h('div', { class: 'dash-stats', role: 'list', 'aria-label': 'Podsumowanie' },
@@ -203,7 +207,7 @@ function firstName(user) {
 }
 function greeting(d = new Date()) {
   const hr = d.getHours();
-  if (hr < 5) return 'Dobrej nocy';
+  if (hr < 5) return 'Cześć';
   if (hr < 18) return 'Dzień dobry';
   return 'Dobry wieczór';
 }

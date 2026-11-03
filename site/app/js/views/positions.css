@@ -8,6 +8,11 @@
 .pos-count{font-weight:500;opacity:.55;margin-left:2px}
 .segment button[aria-pressed="true"] .pos-count{opacity:.7}
 .pos-summary{font-size:var(--fs-sm);color:var(--muted);margin:0}
+.pos-add-mobile{display:none}
+@media (max-width:899px){
+  .pos-add-mobile{display:inline-flex;margin-left:auto}
+  .pos-summary{flex-basis:100%;order:3}
+}
 
 /* lista */
 .pos-list{display:flex;flex-direction:column;background:var(--s1);border-radius:var(--r-lg);padding:4px}

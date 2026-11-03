@@ -212,3 +212,8 @@
 @media (prefers-reduced-motion:reduce){
   .ck-mobile-sum-chev,.ck-plan,.ck-step-n,.ck-plan-radio,.ck-field input,.ck-field select{transition:none}
 }
+
+/* wygładzenie narożników (squircle) */
+@supports (corner-shape: squircle){
+  .btn,.plan,.summary,input,select,textarea,[class*="card"]{corner-shape:squircle}
+}

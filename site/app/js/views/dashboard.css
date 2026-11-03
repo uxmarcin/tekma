@@ -6,6 +6,8 @@
 .dash-head{padding:22px 0 6px}
 .dash-head h1{font-size:30px;margin-bottom:6px}
 .dash-head p{color:var(--muted);font-size:var(--fs-sm)}
+.dash-add-mobile{display:none}
+@media (max-width:899px){.dash-add-mobile{display:inline-flex;margin-top:14px}}
 
 /* liczniki */
 .dash-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}

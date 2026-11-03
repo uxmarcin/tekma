@@ -395,3 +395,8 @@ section{position:relative}
 .kan span{border:0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
 .kan span.fl{background:#fff4ea;box-shadow:none}
 .stats .stat{padding:14px 16px}
+
+/* wygładzenie narożników (squircle) */
+@supports (corner-shape: squircle){
+  .btn,.card,.tile,.plan-card,.float,.ico,.window,[class*="card"]{corner-shape:squircle}
+}
