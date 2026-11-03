@@ -22,6 +22,8 @@
  *   fmtScore(n, digits=1)            -> "3,5" (przecinek dziesiętny)
  *   skeleton({lines, block})         -> element ładowania
  *   formError(message) / formSuccess(message) -> komunikat nad formularzem
+ *   aiBadge(text='AI sugeruje')     -> etykieta sugestii AI (iskra, czerń/szarość — nigdy kolor)
+ *   heroState({title, text, action}) -> centralny ekran startowy (nagłówek + jedno główne działanie)
  *   initials(name)                   -> "ML"
  */
 
@@ -296,6 +298,17 @@ export function emptyState({ title, text, action, icon: iconName = 'inbox' } = {
     actions.length ? h('div', { class: 'actions' }, actions) : null,
   );
 }
+export function aiBadge(text = 'AI sugeruje') {
+  return h('span', { class: 'ai-note' }, icon('spark', 12), text);
+}
+export function heroState({ title, text, action, secondary } = {}) {
+  const actions = [action, secondary].filter(Boolean).map((a, i) => (a instanceof Node ? a : button({ variant: i === 0 ? 'primary' : 'secondary', ...a })));
+  return h('div', { class: 'hero-state' },
+    title ? h('h1', null, title) : null,
+    text ? h('p', null, text) : null,
+    actions.length ? h('div', { class: 'actions' }, actions) : null,
+  );
+}
 export function formError(message) {
   return h('div', { class: 'form-error', role: 'alert' }, icon('alert'), h('span', null, message));
 }
@@ -358,4 +371,4 @@ export function plural(n, one, few, many) {
   return `${n} ${many}`;
 }
 
-export default { h, icon, iconNames, button, field, avatar, initials, tag, toast, modal, confirm, emptyState, formError, formSuccess, skeleton, loadCss, formatDate, fmtScore, plural };
+export default { h, icon, iconNames, button, field, avatar, initials, tag, toast, modal, confirm, emptyState, heroState, aiBadge, formError, formSuccess, skeleton, loadCss, formatDate, fmtScore, plural };

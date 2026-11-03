@@ -7,7 +7,9 @@
  *   ROUTES                           — tabela tras (pattern → view, layout, title)
  *
  * Widok: views/<view>.js eksportuje `default async function render(ctx) -> HTMLElement`.
- *   ctx = { params, query, store, ui, ai, navigate, user, org, refreshShell, path, route }
+ *   ctx = { params, query, store, ui, ai, navigate, user, org, refreshShell, path, route, setHeader }
+ *   ctx.setHeader({ title, crumbs:[{label,href}], actions:[HTMLElement], width:'narrow'|'wide' }) — pasek górny
+ *   nad treścią (tytuł po lewej, akcja główna po prawej); bez wywołania pokazuje tytuł trasy.
  * Brakujący plik widoku → stan „Ten ekran jest w budowie” (nie błąd). Błąd w widoku → stan błędu
  * z przyciskiem „Spróbuj ponownie”. Po nawigacji: tytuł strony, scroll do góry, fokus na <main>, aria-current.
  */
@@ -138,6 +140,7 @@ async function handleRoute() {
   document.title = `${m.route.title} · Tekma`;
 
   const container = m.route.layout === 'shell' ? ensureShell() : ensureBare();
+  if (m.route.layout === 'shell') { state.route = m.route; setHeader({ width: 'wide' }); }
   container.setAttribute('aria-busy', 'true');
   container.replaceChildren(ui.skeleton({ lines: 4 }));
 
@@ -145,6 +148,7 @@ async function handleRoute() {
     params: m.params, query: m.query, store, ui, ai: deps.ai, navigate,
     user: state.user, org: state.org, path: m.path, route: m.route,
     refreshShell: async () => { state.org = await store.org.current(); if (shellEl) updateShell(); return state.org; },
+    setHeader: (opts) => setHeader(opts || {}),
   };
 
   let el;
@@ -190,8 +194,10 @@ function afterNavigate(container, layout) {
   if (layout === 'shell' && mainEl) {
     mainEl.focus({ preventScroll: true });
   } else {
-    const first = container.querySelector('h1');
-    if (first) { first.setAttribute('tabindex', '-1'); first.focus({ preventScroll: true }); }
+    // układ bare: na desktopie fokus na pierwsze pole z [autofocus], inaczej na nagłówek
+    const auto = window.innerWidth >= 900 ? container.querySelector('[autofocus]') : null;
+    const first = auto || container.querySelector('h1');
+    if (first) { if (!auto) first.setAttribute('tabindex', '-1'); first.focus({ preventScroll: true }); }
   }
 }
 
@@ -214,7 +220,6 @@ function ensureShell() {
   const { h, icon, button } = deps.ui;
   const side = h('aside', { class: 'side', 'aria-label': 'Nawigacja' },
     h('div', { class: 'side-brand' }, logo()),
-    h('div', { class: 'side-org', 'data-slot': 'org' }),
     h('nav', { class: 'side-nav', 'aria-label': 'Główna' },
       h('div', { class: 'grp' }, 'Rekrutacja'),
       NAV.main.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon), n.label)),
@@ -223,17 +228,22 @@ function ensureShell() {
       h('div', { class: 'grp' }, 'Administracja'),
       NAV.admin.map((n) => h('span', { class: 'nav-soon', 'aria-disabled': 'true', title: 'Ten moduł pojawi się wkrótce' }, icon(n.icon), n.label, h('em', null, 'Wkrótce'))),
     ),
-    h('div', { class: 'side-user', 'data-slot': 'user' }),
+    h('div', { class: 'side-foot', 'data-slot': 'user' }),
   );
   const topbar = h('header', { class: 'topbar' },
     logo('logo sm'),
     h('div', { class: 'org', 'data-slot': 'org-mobile' }),
-    button({ icon: 'logout', variant: 'ghost', size: 'sm', title: 'Wyloguj się', onClick: signOut }),
+    h('div', { 'data-slot': 'user-mobile', style: 'position:relative' }),
   );
   const tabbar = h('nav', { class: 'tabbar', 'aria-label': 'Główna (mobile)' },
     NAV.main.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon, 21), h('span', null, n.label))),
   );
+  const head = h('div', { class: 'main-head' },
+    h('div', { class: 'title', 'data-slot': 'title' }),
+    h('div', { class: 'actions', 'data-slot': 'actions' }),
+  );
   mainEl = h('main', { class: 'main', id: 'main', tabindex: '-1' },
+    head,
     deps.store.mode === 'demo' ? demoBanner() : null,
     h('div', { class: 'main-inner' }),
   );
@@ -249,29 +259,103 @@ export function demoBanner() {
     h('span', null, h('b', null, 'Tryb demo: '), 'dane zostają tylko w tej przeglądarce. Nic nie wysyłamy na serwer.'));
 }
 
+/**
+ * Nagłówek nad treścią (pasek górny): tytuł, okruszki i akcja główna po prawej.
+ * Widok wywołuje ctx.setHeader({ title, crumbs:[{label, href}], actions:[HTMLElement], width:'narrow'|'wide' }).
+ * Bez wywołania pasek pokazuje tytuł trasy.
+ */
+function setHeader({ title, crumbs, actions, width } = {}) {
+  if (!shellEl) return;
+  const { h } = deps.ui;
+  const t = shellEl.querySelector('[data-slot="title"]');
+  const a = shellEl.querySelector('[data-slot="actions"]');
+  if (t) {
+    const parts = [];
+    for (const c of crumbs || []) parts.push(h('span', { class: 'crumb' }, c.href ? h('a', { href: c.href }, c.label) : c.label, ' / '));
+    parts.push(h('span', null, title || (state.route && state.route.title) || ''));
+    t.replaceChildren(...parts);
+  }
+  if (a) a.replaceChildren((actions || []).filter(Boolean));
+  const inner = mainEl && mainEl.querySelector('.main-inner');
+  if (inner && width) inner.classList.toggle('narrow', width === 'narrow');
+}
+
 function updateShell() {
   if (!shellEl) return;
-  const { h, avatar, button, initials } = deps.ui;
+  const { h, avatar, icon, initials } = deps.ui;
   const org = state.org, user = state.user;
-  const orgSlot = shellEl.querySelector('[data-slot="org"]');
   const orgMobile = shellEl.querySelector('[data-slot="org-mobile"]');
-  if (orgSlot) orgSlot.replaceChildren(
-    h('b', { 'aria-hidden': 'true' }, org ? initials(org.name).slice(0, 1) : '?'),
-    h('div', { class: 't' }, h('strong', null, org ? org.name : '—'), h('small', null, org ? (ROLE_LABEL[org.role] || org.role) : '')),
-  );
   if (orgMobile) orgMobile.replaceChildren(h('b', { 'aria-hidden': 'true' }, org ? initials(org.name).slice(0, 1) : '?'), h('span', null, org ? org.name : ''));
   const userSlot = shellEl.querySelector('[data-slot="user"]');
-  if (userSlot) userSlot.replaceChildren(
-    avatar(user ? user.name : ''),
-    h('div', { class: 't' }, h('strong', null, user ? (user.name || user.email) : ''), h('small', null, user ? user.email : '')),
-    button({ icon: 'logout', variant: 'ghost', size: 'sm', title: 'Wyloguj się', onClick: signOut }),
-  );
+  if (userSlot) {
+    const btn = h('button', { type: 'button', class: 'user-btn', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-label': 'Menu konta' },
+      avatar(user ? user.name : ''),
+      h('div', { class: 't' }, h('strong', null, user ? (user.name || user.email) : ''), h('small', null, org ? org.name : '')),
+      icon('more'),
+    );
+    btn.addEventListener('click', () => openUserMenu(btn, userSlot));
+    userSlot.replaceChildren(btn);
+  }
+  const userMobile = shellEl.querySelector('[data-slot="user-mobile"]');
+  if (userMobile) {
+    const btn = deps.ui.button({ icon: 'user', variant: 'ghost', size: 'sm', title: 'Menu konta', attrs: { 'aria-haspopup': 'menu', 'aria-expanded': 'false' } });
+    btn.addEventListener('click', () => openUserMenu(btn, userMobile));
+    userMobile.replaceChildren(btn);
+  }
   const active = state.route && state.route.nav;
   for (const a of shellEl.querySelectorAll('[data-nav]')) {
     const on = a.dataset.nav === active;
     a.classList.toggle('on', on);
     if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   }
+}
+
+/** Wyskakujące menu konta (jak w ChatGPT): firma i rola, Ustawienia „Wkrótce”, Wyloguj się. */
+function openUserMenu(trigger, host) {
+  const { h, icon, avatar } = deps.ui;
+  if (host.querySelector('.popover')) { closeUserMenu(host, trigger); return; }
+  const org = state.org, user = state.user;
+  const item = (label, iconName, { onClick, disabled, soon } = {}) => {
+    const el = h('button', { type: 'button', role: 'menuitem', 'aria-disabled': disabled ? 'true' : null, tabindex: disabled ? '-1' : '0' },
+      icon(iconName), label, soon ? h('em', null, 'Wkrótce') : null);
+    if (onClick && !disabled) el.addEventListener('click', onClick);
+    return el;
+  };
+  const pop = h('div', { class: 'popover up', role: 'menu', 'aria-label': 'Konto' },
+    h('div', { class: 'pop-head' }, avatar(user ? user.name : ''), h('div', { class: 't' },
+      h('strong', null, user ? (user.name || user.email) : ''), h('small', null, user ? user.email : ''))),
+    h('hr'),
+    h('div', { class: 'pop-head' }, h('span', { class: 'av dark sm', 'aria-hidden': 'true' }, org ? deps.ui.initials(org.name).slice(0, 1) : '?'),
+      h('div', { class: 't' }, h('strong', null, org ? org.name : '—'), h('small', null, org ? (ROLE_LABEL[org.role] || org.role) : ''))),
+    h('hr'),
+    item('Ustawienia', 'settings', { disabled: true, soon: true }),
+    item('Wyloguj się', 'logout', { onClick: () => { closeUserMenu(host, trigger); signOut(); } }),
+  );
+  host.appendChild(pop);
+  trigger.setAttribute('aria-expanded', 'true');
+  const items = () => Array.from(pop.querySelectorAll('[role="menuitem"]:not([aria-disabled="true"])'));
+  const onKey = (e) => {
+    if (e.key === 'Escape') { e.preventDefault(); closeUserMenu(host, trigger); trigger.focus(); return; }
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      const list = items(); const i = list.indexOf(document.activeElement);
+      const next = e.key === 'ArrowDown' ? (i + 1) % list.length : (i - 1 + list.length) % list.length;
+      list[next].focus();
+    }
+    if (e.key === 'Tab') closeUserMenu(host, trigger);
+  };
+  const onDoc = (e) => { if (!host.contains(e.target)) closeUserMenu(host, trigger); };
+  pop._cleanup = () => { document.removeEventListener('keydown', onKey, true); document.removeEventListener('mousedown', onDoc, true); };
+  document.addEventListener('keydown', onKey, true);
+  setTimeout(() => document.addEventListener('mousedown', onDoc, true), 0);
+  const first = items()[0]; if (first) first.focus();
+}
+function closeUserMenu(host, trigger) {
+  const pop = host.querySelector('.popover');
+  if (!pop) return;
+  if (pop._cleanup) pop._cleanup();
+  pop.remove();
+  trigger.setAttribute('aria-expanded', 'false');
 }
 
 async function signOut() {
@@ -291,7 +375,7 @@ async function signOut() {
 function renderBuilding(route) {
   const { h, icon, button } = deps.ui;
   return h('div', { class: 'state', role: 'status' },
-    h('div', { class: 'glyph' }, icon('construction', 20)),
+    h('div', { class: 'glyph' }, icon('clock', 20)),
     h('h2', null, 'Ten ekran jest w budowie'),
     h('p', null, `Widok „${route.title}” pojawi się wkrótce. Reszta aplikacji działa normalnie.`),
     h('div', { class: 'actions' }, button({ label: 'Wróć do pulpitu', variant: 'secondary', onClick: () => navigate('#/') })),

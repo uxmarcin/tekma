@@ -33,19 +33,13 @@ function form(ctx, { onSubmit, fields, submit, error }) {
       await onSubmit();
     } catch (err) {
       const msg = (err && err.message) || 'Coś poszło nie tak. Spróbuj ponownie.';
-      // błąd dotyczący konkretnego pola pokazujemy przy polu
-      const target = fields.find((fl) => fl.input.name && msg.toLowerCase().includes(fieldKeyword(fl.input.name)));
-      if (target) { target.setError(msg); target.input.focus(); }
-      else { errorSlot.replaceChildren(ctx.ui.formError(msg)); }
+      errorSlot.replaceChildren(ctx.ui.formError(msg));
     } finally {
       submit.setBusy(false);
     }
   } } }, errorSlot, fields, submit);
   if (error) errorSlot.replaceChildren(ctx.ui.formError(error));
   return f;
-}
-function fieldKeyword(name) {
-  return { email: 'e-mail', password: 'hasło', name: 'imię' }[name] || '\u0000';
 }
 
 /* ------------------------------------------------ logowanie */
@@ -146,6 +140,6 @@ function resetCard(ctx) {
 }
 
 function queueFocus(el) {
-  // po wstawieniu do DOM router ustawia fokus na h1; dla formularzy wygodniej na pierwszym polu
-  setTimeout(() => { if (el.isConnected && window.innerWidth >= 900) el.focus({ preventScroll: true }); }, 30);
+  // router po wstawieniu widoku ustawia fokus na [autofocus] (desktop) albo na h1
+  el.setAttribute('autofocus', '');
 }

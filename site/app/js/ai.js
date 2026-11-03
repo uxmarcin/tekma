@@ -83,12 +83,13 @@ export function suggest({ candidate, rubric, stage } = {}) {
   // osoby z wysokim dopasowaniem CV częściej dostają wyższe sugestie — ale nigdy nie deterministycznie „5”
   const bias = typeof candidate.cv_score === 'number' ? Math.round((candidate.cv_score - 60) / 20) : 0; // -3..2
   for (const q of rubric.questions) {
-    const seed = hash(`${base}|${q.id}`);
-    let score = 2 + (seed % 3) + (bias > 0 ? (seed % 2) : 0); // 2..5
-    if (bias < 0 && seed % 3 === 0) score -= 1;
+    const seed = hash(`${q.id}|${base}|${q.competency || ''}`);
+    const r3 = (seed >>> 8) % 3, r2 = (seed >>> 16) % 2;
+    let score = 2 + r3 + (bias > 0 ? r2 : 0); // 2..5
+    if (bias < 0 && r3 === 0) score -= 1;
     score = Math.max(1, Math.min(5, score));
     const pool = QUOTES[q.competency] || QUOTES.default;
-    const quote = pick(pool[level(score)], seed >> 3);
+    const quote = pick(pool[level(score)], (seed >>> 3) % 1000);
     const anchor = q.anchors && (q.anchors[score] || q.anchors[String(score)]);
     const reason = anchor
       ? `Odpowiedź pasuje do kotwicy ${score}/5 („${truncate(anchor)}”). ${explain(score)}`
