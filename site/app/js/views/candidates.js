@@ -10,6 +10,7 @@
  * Filtry (szukaj, stanowisko, status, sortowanie) trzymamy w query hasha (#/candidates?q=…&position=…&status=…&sort=…)
  * przez history.replaceState — bez przeładowania widoku. Dopasowanie CV to zawsze sugestia AI (ai.cvScore) i jest tak oznaczone.
  * Karta kandydata (#/candidates/:id?stage=…) należy do innego widoku — tylko do niej linkujemy.
+ * Tytuł „Kandydaci” i akcja „Dodaj kandydata” żyją w pasku górnym routera (ctx.setHeader) — także na mobile.
  */
 
 import { SOURCES } from '../seed.js';
@@ -102,11 +103,12 @@ export default async function render(ctx) {
     SORTS.map((s) => h('option', { value: s.key, selected: s.key === state.sort }, s.label)));
   sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; update(); });
 
-  const mhead = h('div', { class: 'cd-mhead' }, h('h1', null, 'Kandydaci'), button({ label: 'Dodaj', variant: 'primary', size: 'sm', icon: 'plus', title: 'Dodaj kandydata', onClick: () => openAdd() }));
-  const bar = h('div', { class: 'cd-bar' }, search, posSelect, segment, statusSelect, sortSelect);
+  // wiersz 1: szukaj + filtry; wiersz 2: podsumowanie + sortowanie (tytuł i „Dodaj kandydata” są w pasku górnym)
+  const bar = h('div', { class: 'cd-bar' }, search, posSelect, segment, statusSelect);
   const summary = h('div', { class: 'cd-sum' });
+  const sumRow = h('div', { class: 'cd-sum-row' }, summary, sortSelect);
   const body = h('div', { class: 'cd-wrap' });
-  root.append(mhead, bar, summary, body, live);
+  root.append(bar, sumRow, body, live);
 
   function setStatus(s) {
     state.status = s;

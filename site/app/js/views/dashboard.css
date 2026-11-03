@@ -1,19 +1,18 @@
-/* views/dashboard.css — pulpit. Tylko tokeny z app.css. Karty bez obramowań (tło --s1 na --bg). */
+/* views/dashboard.css — pulpit. Tylko tokeny z app.css. Karty bez obramowań (tło --s1 na --bg).
+   Akcja „Dodaj stanowisko”: pasek górny routera (także na mobile). */
 
 .dash{display:flex;flex-direction:column;gap:20px}
 
 /* powitanie — jak ekran startowy ChatGPT: duży nagłówek, jedna linia kontekstu */
-.dash-head{padding:22px 0 6px}
+.dash-head{padding:20px 0 4px}
 .dash-head h1{font-size:30px;margin-bottom:6px}
 .dash-head p{color:var(--muted);font-size:var(--fs-sm)}
-.dash-add-mobile{display:none}
-@media (max-width:899px){.dash-add-mobile{display:inline-flex;margin-top:14px}}
 
 /* liczniki */
 .dash-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .dash-stat{
   display:flex;flex-direction:column;min-width:0;
-  background:var(--s1);border-radius:var(--r-lg);padding:18px 20px 16px;
+  background:var(--s1);border-radius:var(--r-lg);padding:20px 20px 16px;
   color:var(--ink);transition:background var(--t) var(--ease);
 }
 .dash-stat.is-link:hover{background:var(--s2)}
@@ -21,11 +20,11 @@
 .dash-stat b{font:600 30px/1.05 var(--display);letter-spacing:-.025em}
 .dash-stat b.is-null{color:var(--faint)}
 .dash-stat b.tone-warn{color:var(--warn-ink)}
-.dash-stat .sub{font-size:var(--fs-xs);color:var(--faint);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dash-stat .sub{font-size:var(--fs-xs);color:var(--muted);margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* dwie kolumny: Wymaga uwagi / Stanowiska w skrócie */
-.dash-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start}
-.dash-card{background:var(--s1);border-radius:var(--r-lg);padding:18px 18px 14px;min-width:0}
+.dash-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.dash-card{background:var(--s1);border-radius:var(--r-lg);padding:20px 20px 16px;min-width:0}
 .dash-card-h{display:flex;align-items:center;gap:10px;padding:0 4px 10px}
 .dash-card-h h2{flex:1;font-size:var(--fs-h3);min-width:0}
 .dash-card-n{font-size:var(--fs-xs);font-weight:500;color:var(--ink);background:var(--s3);padding:2px 9px;border-radius:var(--r-pill)}
@@ -33,7 +32,7 @@
 .dash-card-link:hover{color:var(--ink)}
 .dash-card-link svg{width:14px;height:14px}
 .dash-card-f{padding:8px 0 0}
-.dash-note{font-size:var(--fs-xs);color:var(--faint);padding:12px 4px 2px}
+.dash-note{font-size:var(--fs-xs);color:var(--muted);padding:12px 4px 2px}
 
 /* lista pozycji w karcie */
 .dash-list{display:flex;flex-direction:column}
@@ -42,7 +41,7 @@
 .dash-list li:hover + li .dash-item{border-top-color:transparent}
 .dash-item{
   display:flex;align-items:center;gap:12px;min-width:0;
-  padding:11px 10px;margin:0 -6px;border-radius:var(--r-md);
+  padding:12px 10px;margin:0 -6px;border-radius:var(--r-md);
   color:var(--ink);transition:background var(--t) var(--ease);
 }
 .dash-item:hover{background:var(--s2)}
@@ -50,29 +49,25 @@
 .dash-item-t{flex:1;min-width:0}
 .dash-item-t b{display:block;font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .dash-item-t small{display:block;color:var(--muted);font-size:var(--fs-xs);line-height:1.45;margin-top:1px}
-.dash-item-ico{width:32px;height:32px;flex:none;border-radius:50%;display:grid;place-items:center;background:var(--s3);color:var(--ink)}
+.dash-item-ico{width:32px;height:32px;flex:none;border-radius:var(--r-round);display:grid;place-items:center;background:var(--s3);color:var(--ink)}
 .dash-item-ico svg{width:15px;height:15px}
 .dash-item-ico.tone-warn{background:var(--warn-soft);color:var(--warn-ink)}
 .dash-item-ico.tone-info{background:var(--info-soft);color:var(--info-ink)}
 .dash-item-ico.tone-bad{background:var(--bad-soft);color:var(--bad-ink)}
-.dash-item-chev{color:var(--faint);flex:none;display:grid;place-items:center}
+.dash-item-chev{color:var(--deco);flex:none;display:grid;place-items:center}
 .dash-item-chev svg{width:16px;height:16px}
 
-/* mini-lejek (ten sam rysunek, co w widoku stanowisk) */
-.mf{display:flex;align-items:flex-end;gap:3px;height:28px;width:92px;flex:none}
-.mf i{flex:1;min-width:4px;height:calc(6px + var(--v,0) * 22px);border-radius:2px;background:var(--s4)}
-.mf i.on{background:var(--ink)}
-.mf.is-empty i{opacity:.7}
+/* mini-lejek (.mf) — wspólny styl w app.css */
 
 /* pusty stan karty: jedna akcja */
 .dash-empty{display:grid;justify-items:center;text-align:center;gap:4px;padding:26px 12px 18px}
-.dash-empty-glyph{width:40px;height:40px;border-radius:50%;background:var(--s3);display:grid;place-items:center;color:var(--ink);margin-bottom:6px}
+.dash-empty-glyph{width:40px;height:40px;border-radius:var(--r-round);background:var(--s3);display:grid;place-items:center;color:var(--ink);margin-bottom:6px}
 .dash-empty b{font-weight:500;font-size:14px}
 .dash-empty p{color:var(--muted);font-size:var(--fs-xs);max-width:300px;margin-bottom:10px}
 
 /* szkielet */
 .dash-skel{display:flex;flex-direction:column;gap:12px;padding-top:22px}
-.dash-skel i{display:block;border-radius:8px;background:linear-gradient(90deg,var(--s2) 0%,var(--s3) 50%,var(--s2) 100%);background-size:200% 100%;animation:shimmer 1.3s linear infinite}
+.dash-skel i{display:block;border-radius:var(--r-xs);background:linear-gradient(90deg,var(--s2) 0%,var(--s3) 50%,var(--s2) 100%);background-size:200% 100%;animation:shimmer 1.3s linear infinite}
 .dash-skel-title{height:30px;width:280px;max-width:70%}
 .dash-skel-sub{height:14px;width:360px;max-width:90%;margin-bottom:12px}
 .dash-skel-stat{height:102px;border-radius:var(--r-lg) !important}
@@ -88,6 +83,4 @@
   .dash-stat small,.dash-stat .sub{white-space:normal;line-height:1.35}
   .dash-cols{grid-template-columns:minmax(0,1fr)}
   .dash-card{padding:16px 14px 12px}
-  .mf{width:72px;height:24px}
-  .mf i{height:calc(5px + var(--v,0) * 19px)}
 }

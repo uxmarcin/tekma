@@ -23,21 +23,12 @@ export default async function render(ctx) {
 async function renderList(ctx) {
   const { h, button, icon, emptyState, formatDate, plural } = ctx.ui;
   const [rubrics, positions] = await Promise.all([ctx.store.rubrics.list(), ctx.store.positions.list().catch(() => [])]);
-  const newBtn = () => button({ label: 'Nowa rubryka', variant: 'primary', icon: 'plus', onClick: () => ctx.navigate('#/rubrics/new') });
-  // akcja główna: w pasku górnym (desktop) i w treści (mobile, gdzie pasek jest ukryty)
-  ctx.setHeader({ title: 'Rubryki', width: 'wide', actions: [newBtn()] });
+  // tytuł i akcja główna żyją w pasku górnym routera (desktop i mobile)
+  ctx.setHeader({ title: 'Rubryki', width: 'wide', actions: [button({ label: 'Nowa rubryka', variant: 'primary', icon: 'plus', onClick: () => ctx.navigate('#/rubrics/new') })] });
 
   const usedIn = (r) => positions.filter((p) => p.rubric_id === r.id);
   const root = h('div', { class: 'rb' });
-  root.append(
-    h('div', { class: 'page-h' },
-      h('div', { class: 't' },
-        h('h1', null, 'Rubryki'),
-        h('p', null, 'Ta sama miara dla każdego kandydata: pytania, wagi i kotwice ocen 1–5. Każda zmiana pytań tworzy nową wersję.'),
-      ),
-      h('div', { class: 'actions rb-mobile-only' }, newBtn()),
-    ),
-  );
+  root.append(h('p', { class: 'page-lead' }, 'Ta sama miara dla każdego kandydata: pytania, wagi i kotwice ocen 1–5. Każda zmiana pytań tworzy nową wersję.'));
 
   if (!rubrics.length) {
     root.append(emptyState({

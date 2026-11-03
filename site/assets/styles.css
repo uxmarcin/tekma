@@ -400,3 +400,17 @@ section{position:relative}
 @supports (corner-shape: squircle){
   .btn,.card,.tile,.plan-card,.float,.ico,.window,[class*="card"]{corner-shape:squircle}
 }
+
+/* galeria ekranów apki */
+.shots-tabs{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-bottom:20px;padding-bottom:2px}
+.shots-tabs::-webkit-scrollbar{display:none}
+.shots-tabs button{flex:none;padding:9px 16px;border-radius:999px;background:var(--surface-2);color:var(--muted);font-weight:500;font-size:14px;transition:background .2s,color .2s}
+.shots-tabs button:hover{color:var(--ink);background:var(--surface-3)}
+.shots-tabs button[aria-selected="true"]{background:var(--accent);color:#000}
+.shots-stage{margin:0;background:var(--surface);border-radius:24px;padding:clamp(10px,2vw,22px);box-shadow:0 40px 120px -40px rgba(255,255,255,.08),0 2px 0 rgba(255,255,255,.04) inset}
+.shots-stage img{width:100%;height:auto;border-radius:14px;background:#fff;transition:opacity .25s}
+.shots-stage img.swap{opacity:0}
+.shots-stage figcaption{padding:18px 6px 4px;color:var(--body);font-size:15px;max-width:720px}
+.shots-stage figcaption b{color:var(--ink);font-weight:600;margin-right:6px}
+@supports (corner-shape: squircle){.shots-stage,.shots-stage img,.shots-tabs button{corner-shape:squircle}}
+@media (prefers-reduced-motion:reduce){.shots-stage img{transition:none}}

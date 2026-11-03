@@ -4,6 +4,7 @@
  * z mini-lejkiem. Konto bez stanowisk → jeden ekran z jedną akcją główną.
  * Dane: store.stats.dashboard(), store.positions.list(), store.candidates.list().
  * Stany: skeleton, błąd z „Spróbuj ponownie”, puste listy z jedną akcją.
+ * Akcja „Dodaj stanowisko” żyje w pasku górnym routera (ctx.setHeader) — także na mobile.
  * export default async function render(ctx) -> HTMLElement
  */
 
@@ -73,13 +74,9 @@ export default async function render(ctx) {
       return;
     }
 
-    // Na mobile pasek nagłówka (z akcją główną) jest ukryty — akcja trafia pod powitanie.
-    const mobileAdd = button({ label: 'Dodaj stanowisko', variant: 'secondary', size: 'sm', icon: 'plus', onClick: () => ctx.navigate('#/positions?new=1') });
-    mobileAdd.classList.add('dash-add-mobile');
     const head = h('header', { class: 'dash-head' },
       h('h1', null, `${greeting()}${name ? `, ${name}` : ''}`),
       h('p', null, todayLine(stats, attention.length)),
-      mobileAdd,
     );
 
     const statsEl = h('div', { class: 'dash-stats', role: 'list', 'aria-label': 'Podsumowanie' },

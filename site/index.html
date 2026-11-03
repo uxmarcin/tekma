@@ -265,6 +265,24 @@
   </div>
 </section>
 
+<!-- EKRANY APKI -->
+<section class="sec" id="ekrany" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-h">
+      <span class="kicker">Zobacz produkt</span>
+      <h2>Tak wygląda Tekma w środku.</h2>
+      <p class="lede">Prawdziwe ekrany aplikacji, z danymi przykładowymi. Jasne, spokojne, bez zbędnych ozdobników.</p>
+    </div>
+    <div class="shots" id="shots" data-shots='[{"src": "assets/screens/dashboard.webp", "t": "Pulpit", "d": "Co dziś wymaga Twojej uwagi — rozbieżne oceny, braki w stanowiskach, liczniki procesu."}, {"src": "assets/screens/positions.webp", "t": "Stanowiska", "d": "Wszystkie rekrutacje w jednym miejscu, z mini-lejkiem i rubryką przypisaną do roli."}, {"src": "assets/screens/pipeline.webp", "t": "Lejek", "d": "Kandydaci w etapach. Przeciągnij kartę albo użyj klawiatury — o ruchu zawsze decydujesz Ty."}, {"src": "assets/screens/candidates.webp", "t": "Kandydaci", "d": "Wspólna baza z wyszukiwaniem, filtrami i dopasowaniem CV jako sugestią AI."}, {"src": "assets/screens/scorecard.webp", "t": "Karta oceny", "d": "Pytania z rubryki, kotwice ocen i sugestie AI z cytatem z rozmowy."}, {"src": "assets/screens/scorecard-diff.webp", "t": "Rozbieżności", "d": "Gdy oceny są rozbieżne, Tekma flaguje to, zanim zapadnie decyzja."}, {"src": "assets/screens/rubrics.webp", "t": "Rubryki", "d": "Pytania, wagi i kotwice w wersjach — ta sama miarka dla każdego kandydata."}]'>
+      <div class="shots-tabs" role="tablist" aria-label="Ekrany aplikacji"><button type="button" role="tab" id="tab-dashboard" aria-selected="true" aria-controls="shot" data-i="0" tabindex="0">Pulpit</button><button type="button" role="tab" id="tab-positions" aria-selected="false" aria-controls="shot" data-i="1" tabindex="-1">Stanowiska</button><button type="button" role="tab" id="tab-pipeline" aria-selected="false" aria-controls="shot" data-i="2" tabindex="-1">Lejek</button><button type="button" role="tab" id="tab-candidates" aria-selected="false" aria-controls="shot" data-i="3" tabindex="-1">Kandydaci</button><button type="button" role="tab" id="tab-scorecard" aria-selected="false" aria-controls="shot" data-i="4" tabindex="-1">Karta oceny</button><button type="button" role="tab" id="tab-scorecard-diff" aria-selected="false" aria-controls="shot" data-i="5" tabindex="-1">Rozbieżności</button><button type="button" role="tab" id="tab-rubrics" aria-selected="false" aria-controls="shot" data-i="6" tabindex="-1">Rubryki</button></div>
+      <figure class="shots-stage" id="shot" role="tabpanel" aria-labelledby="tab-dashboard">
+        <img id="shotImg" src="assets/screens/dashboard.webp" width="2880" height="1800" alt="Pulpit Tekma: liczniki procesu i lista spraw wymagających uwagi" loading="lazy">
+        <figcaption id="shotCap"><b>Pulpit</b> Co dziś wymaga Twojej uwagi — rozbieżne oceny, braki w stanowiskach, liczniki procesu.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <!-- PO ZATRUDNIENIU -->
 <section class="sec hire" id="po-zatrudnieniu">
   <div class="wrap split">
@@ -390,5 +408,6 @@
 </footer>
 
 <script src="assets/app.js" defer></script>
+<script src="assets/shots.js" defer></script>
 </body>
 </html>

@@ -6,6 +6,7 @@
  * Okno: tytuł (wymagany), dział, lokalizacja, rubryka z listy, etapy lejka (domyślne z seed.js)
  *   → store.positions.create → przejście do #/positions/:id.
  * Stany: skeleton podczas ładowania, błąd z „Spróbuj ponownie”, pusty z jedną akcją główną.
+ * Tytuł i akcja „Dodaj stanowisko” żyją w pasku górnym routera (ctx.setHeader) — także na mobile.
  * export default async function render(ctx) -> HTMLElement
  */
 
@@ -88,11 +89,8 @@ export default async function render(ctx) {
         action: filter === 'open' ? { label: 'Dodaj stanowisko', icon: 'plus', onClick: () => openNewPosition(ctx, { onCreated: reload }) } : null,
       });
 
-    // Na mobile pasek nagłówka jest ukryty, więc akcja główna trafia do paska narzędzi.
-    const mobileAdd = button({ label: 'Dodaj', variant: 'primary', size: 'sm', icon: 'plus', title: 'Dodaj stanowisko', attrs: { 'aria-label': 'Dodaj stanowisko' }, onClick: () => openNewPosition(ctx, { onCreated: reload }) });
-    mobileAdd.classList.add('pos-add-mobile');
     root.replaceChildren(
-      h('div', { class: 'pos-toolbar' }, seg, h('p', { class: 'pos-summary', 'aria-live': 'polite' }, summary(ctx, shown, candidates)), mobileAdd),
+      h('div', { class: 'pos-toolbar' }, seg, h('p', { class: 'pos-summary', 'aria-live': 'polite' }, summary(ctx, shown, candidates))),
       list,
     );
   }
@@ -136,7 +134,8 @@ function positionRow(ctx, p, candidates) {
         h('b', null, p.title),
         h('small', null, meta || 'Bez działu i lokalizacji', p.created_at ? h('span', { class: 'pos-date' }, ` · od ${formatDate(p.created_at)}`) : null),
       ),
-      h('div', { class: 'pos-status' }, tag(open ? 'Otwarte' : 'Zamknięte', open ? 'good' : 'neutral'), !p.rubric_id && open ? tag('Bez rubryki', 'neutral') : null),
+      // lista jest już przefiltrowana po statusie, więc tag „Otwarte” byłby szumem; „Zamknięte” zostaje jako kontekst
+      h('div', { class: 'pos-status' }, open ? null : tag('Zamknięte', 'neutral'), !p.rubric_id && open ? tag('Bez rubryki', 'neutral') : null),
       h('div', { class: 'pos-cands' }, h('b', null, String(active.length)), h('small', null, active.length === 1 ? 'kandydat' : 'kandydatów')),
       miniFunnel(ctx, p, active),
       h('span', { class: 'pos-chev', 'aria-hidden': 'true' }, icon('chevron-right')),

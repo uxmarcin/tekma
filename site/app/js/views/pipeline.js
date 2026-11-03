@@ -11,6 +11,7 @@
  * człowieka — AI tylko podpowiada dopasowanie, nigdy nie przesuwa ani nie odrzuca.
  * Kliknięcie karty → #/candidates/:id?stage=… (karta oceny, inny widok).
  * Przewijanie poziome tylko wewnątrz tablicy; na mobile (≤ 719 px) kolumny przełączane zakładkami.
+ * Tytuł, okruszek „Stanowiska” i akcja „Dodaj kandydata” żyją w pasku górnym routera (ctx.setHeader) — także na mobile.
  */
 
 import { openAddCandidateModal, discrepancyIds, candidateHref } from './candidates.js';
@@ -43,10 +44,7 @@ export default async function render(ctx) {
   const hiredBox = h('div');
   const helpId = 'pl-help';
   const help = h('p', { class: 'sr-only', id: helpId }, 'Enter otwiera kartę oceny. Shift ze strzałką w lewo lub w prawo przenosi kandydata między etapami. Przycisk „Więcej” otwiera menu z etapami i odrzuceniem.');
-  const mhead = h('div', { class: 'pl-mhead' },
-    h('div', { class: 't' }, h('a', { href: '#/positions' }, icon('arrow-left'), 'Stanowiska'), h('h1', null, position.title)),
-    button({ label: 'Dodaj', variant: 'primary', size: 'sm', icon: 'plus', title: 'Dodaj kandydata', onClick: () => addBtn.click() }));
-  root.append(mhead, sub, help, tabs, board, rejectedBox, hiredBox, live);
+  root.append(sub, help, tabs, board, rejectedBox, hiredBox, live);
 
   async function load() {
     const [cands, cards, rubric] = await Promise.all([
@@ -78,8 +76,8 @@ export default async function render(ctx) {
     if (position.status === 'closed') children.push(tag('Zamknięte', 'neutral'));
     children.push(h('span', { class: 'pl-counts', style: 'margin-left:auto' },
       h('span', { class: 'tag neutral' }, `Aktywni: ${active}`),
-      rejected().length ? h('button', { type: 'button', on: { click: () => { const d = rejectedBox.querySelector('details'); if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); d.querySelector('summary').focus(); } } } }, 'Odrzuceni: ', h('b', null, rejected().length)) : null,
-      hired().length ? h('button', { type: 'button', on: { click: () => { const d = hiredBox.querySelector('details'); if (d) { d.open = true; d.scrollIntoView({ behavior: 'smooth', block: 'start' }); d.querySelector('summary').focus(); } } } }, 'Zatrudnieni: ', h('b', null, hired().length)) : null,
+      rejected().length ? h('button', { type: 'button', on: { click: () => { const d = rejectedBox.querySelector('details'); if (d) { d.open = true; d.scrollIntoView({ behavior: scrollBehavior(), block: 'start' }); d.querySelector('summary').focus(); } } } }, 'Odrzuceni: ', h('b', null, rejected().length)) : null,
+      hired().length ? h('button', { type: 'button', on: { click: () => { const d = hiredBox.querySelector('details'); if (d) { d.open = true; d.scrollIntoView({ behavior: scrollBehavior(), block: 'start' }); d.querySelector('summary').focus(); } } } }, 'Zatrudnieni: ', h('b', null, hired().length)) : null,
     ));
     sub.replaceChildren(...children);
   }
@@ -138,7 +136,7 @@ export default async function render(ctx) {
     const flagged = state.flagged.has(c.id);
     const href = candidateHref(c);
     const more = h('button', { type: 'button', class: 'pl-more', 'aria-label': `Więcej: ${c.full_name}`, 'aria-haspopup': 'menu', 'aria-expanded': 'false' }, icon('more'));
-    const link = h('a', { class: 'pl-name', href, draggable: 'false', 'aria-describedby': helpId }, c.full_name);
+    const link = h('a', { class: 'pl-name', href, title: c.full_name, draggable: 'false', 'aria-describedby': helpId }, c.full_name);
     const card = h('article', { class: 'pl-card', draggable: 'true', dataset: { id: c.id }, 'aria-label': `${c.full_name}, etap ${c.stage}` },
       h('div', { class: 'pl-card-h' }, avatar(c.full_name), link, more),
       h('div', { class: 'pl-meta' }, h('span', null, c.source || 'Inne'), h('span', { class: 'dot', 'aria-hidden': 'true' }, '·'), h('time', { datetime: c.applied_at || '' }, formatDate(c.applied_at, { relative: true }))),
@@ -296,6 +294,8 @@ export default async function render(ctx) {
   root.appendChild(h('p', { class: 'pl-hint' }, icon('info'), 'Przeciągnij kartę między kolumnami albo użyj menu „Więcej”. Z klawiatury: ', h('span', { class: 'kbd' }, 'Shift'), ' + ', h('span', { class: 'kbd' }, '←'), ' / ', h('span', { class: 'kbd' }, '→'), '. AI tylko podpowiada dopasowanie CV. Etap i odrzucenie to zawsze Twoja decyzja.'));
   return root;
 }
+
+const scrollBehavior = () => (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth');
 
 /* ================================================================== okno odrzucenia */
 export function openRejectModal(ctx, candidate, { onDone } = {}) {

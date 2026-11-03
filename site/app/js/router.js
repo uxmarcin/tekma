@@ -161,7 +161,7 @@ async function handleRoute() {
   if (seq !== state.navSeq) return;
   container.replaceChildren(el);
   container.removeAttribute('aria-busy');
-  if (m.route.layout === 'shell') updateShell();
+  if (m.route.layout === 'shell') { updateShell(); syncTitleLevel(); }
   afterNavigate(container, m.route.layout);
 }
 
@@ -217,7 +217,7 @@ function ensureBare() {
 /* ------------------------------------------------ układ: shell */
 function ensureShell() {
   if (shellEl && shellEl.isConnected) return mainEl.querySelector('.main-inner');
-  const { h, icon, button } = deps.ui;
+  const { h, icon } = deps.ui;
   const side = h('aside', { class: 'side', 'aria-label': 'Nawigacja' },
     h('div', { class: 'side-brand' }, logo()),
     h('nav', { class: 'side-nav', 'aria-label': 'Główna' },
@@ -230,24 +230,21 @@ function ensureShell() {
     ),
     h('div', { class: 'side-foot', 'data-slot': 'user' }),
   );
-  const topbar = h('header', { class: 'topbar' },
-    logo('logo sm'),
-    h('div', { class: 'org', 'data-slot': 'org-mobile' }),
-    h('div', { 'data-slot': 'user-mobile', style: 'position:relative' }),
-  );
   const tabbar = h('nav', { class: 'tabbar', 'aria-label': 'Główna (mobile)' },
     NAV.main.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon, 21), h('span', null, n.label))),
   );
-  const head = h('div', { class: 'main-head' },
+  // Pasek górny (wspólny dla desktopu i mobile): okruszek/tytuł, akcje widoku, a na mobile także menu konta.
+  const head = h('header', { class: 'main-head' },
     h('div', { class: 'title', 'data-slot': 'title' }),
     h('div', { class: 'actions', 'data-slot': 'actions' }),
+    h('div', { class: 'head-user', 'data-slot': 'user-mobile' }),
   );
   mainEl = h('main', { class: 'main', id: 'main', tabindex: '-1' },
     head,
     deps.store.mode === 'demo' ? demoBanner() : null,
     h('div', { class: 'main-inner' }),
   );
-  shellEl = h('div', { class: 'shell' }, side, h('div', { class: 'main-col' }, topbar, mainEl, tabbar));
+  shellEl = h('div', { class: 'shell' }, side, h('div', { class: 'main-col' }, mainEl, tabbar));
   root.replaceChildren(shellEl);
   updateShell();
   return mainEl.querySelector('.main-inner');
@@ -266,26 +263,44 @@ export function demoBanner() {
  */
 function setHeader({ title, crumbs, actions, width } = {}) {
   if (!shellEl) return;
-  const { h } = deps.ui;
+  const { h, icon } = deps.ui;
   const t = shellEl.querySelector('[data-slot="title"]');
   const a = shellEl.querySelector('[data-slot="actions"]');
   if (t) {
     const parts = [];
-    for (const c of crumbs || []) parts.push(h('span', { class: 'crumb' }, c.href ? h('a', { href: c.href }, c.label) : c.label, ' / '));
-    parts.push(h('span', null, title || (state.route && state.route.title) || ''));
+    // Okruszek: na desktopie „Rodzic / Tytuł”, na mobile sam przycisk „wstecz” (strzałka) z etykietą dla czytników.
+    for (const c of crumbs || []) {
+      parts.push(c.href
+        ? h('a', { class: 'crumb', href: c.href, 'aria-label': `Wróć: ${c.label}` }, icon('arrow-left', 18), h('span', null, c.label))
+        : h('span', { class: 'crumb' }, h('span', null, c.label)));
+      parts.push(h('span', { class: 'crumb-sep', 'aria-hidden': 'true' }, '/'));
+    }
+    parts.push(h('span', { class: 't' }, title || (state.route && state.route.title) || ''));
     t.replaceChildren(...parts);
+    syncTitleLevel();
   }
   if (a) a.replaceChildren(...(actions || []).filter(Boolean));
   const inner = mainEl && mainEl.querySelector('.main-inner');
   if (inner && width) inner.classList.toggle('narrow', width === 'narrow');
 }
 
+/** Tytuł w pasku górnym jest <h1>, gdy widok nie ma własnego h1 w treści (jeden h1 na ekran). */
+function syncTitleLevel() {
+  if (!shellEl || !mainEl) return;
+  const cur = shellEl.querySelector('[data-slot="title"] .t');
+  if (!cur) return;
+  const inner = mainEl.querySelector('.main-inner');
+  const wantH1 = !(inner && inner.querySelector('h1'));
+  const tag = wantH1 ? 'h1' : 'span';
+  if (cur.tagName.toLowerCase() === tag) return;
+  const next = deps.ui.h(tag, { class: 't' }, cur.textContent);
+  cur.replaceWith(next);
+}
+
 function updateShell() {
   if (!shellEl) return;
-  const { h, avatar, icon, initials } = deps.ui;
+  const { h, avatar, icon } = deps.ui;
   const org = state.org, user = state.user;
-  const orgMobile = shellEl.querySelector('[data-slot="org-mobile"]');
-  if (orgMobile) orgMobile.replaceChildren(h('b', { 'aria-hidden': 'true' }, org ? initials(org.name).slice(0, 1) : '?'), h('span', null, org ? org.name : ''));
   const userSlot = shellEl.querySelector('[data-slot="user"]');
   if (userSlot) {
     const btn = h('button', { type: 'button', class: 'user-btn', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-label': 'Menu konta' },
@@ -298,7 +313,8 @@ function updateShell() {
   }
   const userMobile = shellEl.querySelector('[data-slot="user-mobile"]');
   if (userMobile) {
-    const btn = deps.ui.button({ icon: 'user', variant: 'ghost', size: 'sm', title: 'Menu konta', attrs: { 'aria-haspopup': 'menu', 'aria-expanded': 'false' } });
+    // mobile: awatar w pasku górnym (jak w aplikacji ChatGPT) otwiera to samo menu konta
+    const btn = h('button', { type: 'button', class: 'head-av', 'aria-label': 'Menu konta', 'aria-haspopup': 'menu', 'aria-expanded': 'false' }, avatar(user ? user.name : ''));
     btn.addEventListener('click', () => openUserMenu(btn, userMobile));
     userMobile.replaceChildren(btn);
   }
