@@ -36,6 +36,7 @@
 /* tabela */
 .cd-wrap{background:var(--bg)}
 .cd-table{width:100%;border-collapse:collapse;font-size:14px;table-layout:fixed}
+.cd-table col.w-who{width:27%}.cd-table col.w-pos{width:20%}.cd-table col.w-stage{width:17%}.cd-table col.w-src{width:11%}.cd-table col.w-score{width:14%}.cd-table col.w-date{width:11%}.cd-table col.w-go{width:28px}
 .cd-table th{text-align:left;font-weight:500;font-size:var(--fs-xs);color:var(--muted);padding:6px 10px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 .cd-table th:first-child,.cd-table td:first-child{padding-left:0}
 .cd-table th:last-child,.cd-table td:last-child{padding-right:0}
@@ -68,7 +69,6 @@
 .cd-date{color:var(--muted);font-size:var(--fs-xs);white-space:nowrap}
 .cd-go{text-align:right;width:28px}
 .cd-go svg{width:16px;height:16px;color:var(--faint);margin-left:auto}
-.cd-table th.cd-th-ai{white-space:normal}
 .cd-table th .ai-note{font-size:11px;padding:1px 7px;margin-left:4px;vertical-align:middle}
 
 /* okno „Dodaj kandydata”: sugestia AI dopasowania CV */
@@ -83,29 +83,36 @@
 .cd-note{display:flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:var(--faint);margin:-6px 0 14px;padding-left:2px}
 .cd-note svg{flex:none}
 
+/* nagłówek w treści (tylko mobile — pasek górny z akcjami jest ukryty < 900 px) */
+.cd-mhead{display:none}
+@media (max-width:899px){
+  .cd-mhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:6px 0 0}
+  .cd-mhead h1{font-size:24px}
+}
+
 /* ---------- mobile: wiersze jako karty ---------- */
 @media (max-width:719px){
   .cd-bar .segment{display:none}
   .cd-bar .cd-status-select{display:inline-block}
   .cd-search{max-width:none;flex-basis:100%}
-  .cd-bar .cd-select{flex:1 1 auto;min-width:0}
+  .cd-bar .cd-select{flex:1 1 40%;min-width:0}
   .cd-table,.cd-table tbody{display:block;width:100%}
   .cd-table thead{display:none}
   .cd-table tbody tr{
-    display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px;
-    padding:12px 0;border-bottom:1px solid var(--line);
+    display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"who score" "pos pos" "stage stage" "src date";
+    gap:5px 10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line);
   }
   .cd-table tbody tr:last-child{border-bottom:0}
   .cd-table tbody tr:hover td,.cd-table tbody tr:focus-within td{background:transparent}
   .cd-table tbody tr:hover,.cd-table tbody tr:focus-within{background:var(--s1);margin:0 -8px;padding-left:8px;padding-right:8px;border-radius:var(--r-md)}
   .cd-table td{display:block;padding:0;border:0;min-width:0}
-  .cd-table td.c-who{order:1;flex:1 1 60%}
-  .cd-table td.c-score{order:2;margin-left:auto}
-  .cd-table td.c-pos{order:3;flex-basis:100%;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center;padding-left:42px}
-  .cd-table td.c-pos .cd-pos{white-space:normal}
-  .cd-table td.c-src{order:4;padding-left:42px;font-size:var(--fs-xs);color:var(--muted)}
-  .cd-table td.c-date{order:5}
-  .cd-table td.c-date::before{content:"· ";color:var(--faint)}
+  .cd-table td.c-who{grid-area:who}
+  .cd-table td.c-score{grid-area:score;justify-self:end}
+  .cd-table td.c-pos{grid-area:pos;padding-left:42px}
+  .cd-table td.c-pos .cd-pos{white-space:normal;font-size:var(--fs-sm)}
+  .cd-table td.c-stage{grid-area:stage;padding-left:42px}
+  .cd-table td.c-src{grid-area:src;padding-left:42px;font-size:var(--fs-xs)}
+  .cd-table td.c-date{grid-area:date;justify-self:end}
   .cd-table td.c-go{display:none}
   .cd-cv .bar{display:none}
 }

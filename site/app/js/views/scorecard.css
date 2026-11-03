@@ -138,6 +138,8 @@
 .sc-choice.yes[aria-pressed="true"]{background:var(--good-ink);color:#fff}
 .sc-choice.no[aria-pressed="true"]{background:var(--bad-ink);color:#fff}
 .sc-move{margin-top:12px;display:flex;flex-direction:column;gap:6px}
+.sc-move .btn{white-space:normal;height:auto;min-height:var(--control-h);padding:10px 16px;line-height:1.3;text-align:left}
+.sc-move .btn svg{flex:none}
 .sc-moved{display:flex;align-items:center;gap:6px;margin-top:10px;line-height:1.45}
 .sc-moved svg{width:14px;height:14px;flex:none;color:var(--good-ink)}
 .sc-status{padding:0 4px;min-height:1.4em}

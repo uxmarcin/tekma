@@ -24,6 +24,7 @@ async function renderList(ctx) {
   const { h, button, icon, emptyState, formatDate, plural } = ctx.ui;
   const [rubrics, positions] = await Promise.all([ctx.store.rubrics.list(), ctx.store.positions.list().catch(() => [])]);
   const newBtn = () => button({ label: 'Nowa rubryka', variant: 'primary', icon: 'plus', onClick: () => ctx.navigate('#/rubrics/new') });
+  // akcja główna: w pasku górnym (desktop) i w treści (mobile, gdzie pasek jest ukryty)
   ctx.setHeader({ title: 'Rubryki', width: 'wide', actions: [newBtn()] });
 
   const usedIn = (r) => positions.filter((p) => p.rubric_id === r.id);
@@ -124,15 +125,9 @@ async function renderEditor(ctx, id) {
   const backBtn = button({ label: isNew ? 'Anuluj' : 'Wróć do listy', variant: 'secondary', onClick: () => leave('#/rubrics') });
   const dirtyNote = h('span', { class: 'rb-dirty small muted', role: 'status', 'aria-live': 'polite' });
 
-  ctx.setHeader({
-    title: isNew ? 'Nowa rubryka' : rubric.name,
-    crumbs: [{ label: 'Rubryki', href: '#/rubrics' }],
-    width: 'narrow',
-    actions: [saveBtnTop],
-  });
+  ctx.setHeader({ title: isNew ? 'Nowa rubryka' : rubric.name, crumbs: [{ label: 'Rubryki', href: '#/rubrics' }], width: 'narrow', actions: [saveBtnTop] });
 
   root.append(
-    errorSlot,
     h('div', { class: 'page-h' },
       h('div', { class: 't' },
         h('h1', null, isNew ? 'Nowa rubryka' : 'Edytuj rubrykę'),
@@ -145,6 +140,7 @@ async function renderEditor(ctx, id) {
     h('div', { class: 'rb-qhead' }, h('h2', null, 'Pytania'), h('span', { class: 'small muted', 'data-slot': 'count' })),
     listEl,
     h('div', { class: 'rb-add' }, addBtn),
+    errorSlot,
     h('div', { class: 'rb-actions' }, saveBtnBottom, backBtn, dirtyNote),
   );
 
@@ -200,7 +196,7 @@ async function renderEditor(ctx, id) {
       return b;
     });
     weightGroup.append(...weightBtns);
-    const weightField = h('div', { class: 'field rb-weight-field' }, h('label', { id: `w-${q._key}` }, 'Waga'), weightGroup, h('div', { class: 'hint' }, 'Kluczowe pytania liczą się 3 razy mocniej niż uzupełniające.'));
+    const weightField = h('div', { class: 'field rb-weight-field' }, h('label', { id: `w-${q._key}` }, 'Waga'), weightGroup, h('div', { class: 'hint' }, '×1 uzupełniające · ×3 kluczowe'));
     weightGroup.setAttribute('aria-labelledby', `w-${q._key}`);
 
     const anchorFields = ANCHOR_KEYS.map((k) => {
@@ -299,8 +295,8 @@ async function renderEditor(ctx, id) {
         ? 'Dodaj co najmniej jedno pytanie — rubryka bez pytań nie ma czego mierzyć.'
         : `Popraw ${plural(v.problems.length, 'pole', 'pola', 'pól')}: ${v.problems.join(', ')}.`;
       errorSlot.replaceChildren(formError(msg));
+      toast(msg, 'bad');
       if (v.first) v.first.focus(); else addBtn.focus();
-      errorSlot.scrollIntoView({ block: 'nearest' });
       return;
     }
     const payload = { name: form.name.trim(), questions: form.questions.map((q) => ({ id: q.id || undefined, text: q.text, competency: q.competency, weight: q.weight, minutes: q.minutes, anchors: q.anchors })) };

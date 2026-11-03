@@ -5,8 +5,8 @@
 
 .rb{display:flex;flex-direction:column;gap:14px}
 .rb .page-h{margin-bottom:6px}
-.rb-mobile-only{display:none}
-@media (max-width:899px){.rb-mobile-only{display:flex}}
+.rb .page-h .actions.rb-mobile-only{display:none}
+@media (max-width:899px){.rb .page-h .actions.rb-mobile-only{display:flex}}
 
 /* ---------- lista ---------- */
 .rb-card{padding:6px 22px}
@@ -47,12 +47,11 @@
 .rb-q-grid{display:grid;grid-template-columns:minmax(0,1.4fr) auto minmax(0,.6fr);gap:14px;align-items:start}
 .rb-weight-field .segment{align-self:flex-start;height:var(--field-h);align-items:center}
 .rb-weight-field .segment button{height:34px;padding:0 14px}
-.rb-weight-field .hint{max-width:22ch}
+.rb-weight-field .hint{white-space:nowrap}
 @media (max-width:599px){
   .rb-q{padding:14px 14px 10px}
   .rb-q-grid{grid-template-columns:1fr 1fr}
   .rb-q-grid .field:first-child{grid-column:1/-1}
-  .rb-weight-field .hint{max-width:none}
 }
 
 /* kotwice */

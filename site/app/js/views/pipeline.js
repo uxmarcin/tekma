@@ -43,7 +43,10 @@ export default async function render(ctx) {
   const hiredBox = h('div');
   const helpId = 'pl-help';
   const help = h('p', { class: 'sr-only', id: helpId }, 'Enter otwiera kartę oceny. Shift ze strzałką w lewo lub w prawo przenosi kandydata między etapami. Przycisk „Więcej” otwiera menu z etapami i odrzuceniem.');
-  root.append(sub, help, tabs, board, rejectedBox, hiredBox, live);
+  const mhead = h('div', { class: 'pl-mhead' },
+    h('div', { class: 't' }, h('a', { href: '#/positions' }, icon('arrow-left'), 'Stanowiska'), h('h1', null, position.title)),
+    button({ label: 'Dodaj', variant: 'primary', size: 'sm', icon: 'plus', title: 'Dodaj kandydata', onClick: () => addBtn.click() }));
+  root.append(mhead, sub, help, tabs, board, rejectedBox, hiredBox, live);
 
   async function load() {
     const [cands, cards, rubric] = await Promise.all([
@@ -290,7 +293,7 @@ export default async function render(ctx) {
 
   await load();
   draw();
-  root.appendChild(h('div', { class: 'pl-hint' }, icon('info'), 'Przeciągnij kartę między kolumnami albo użyj menu „Więcej”. Z klawiatury: ', h('span', { class: 'kbd' }, 'Shift'), '+', h('span', { class: 'kbd' }, '←/→'), '. AI tylko podpowiada dopasowanie CV — etap i odrzucenie to zawsze Twoja decyzja.'));
+  root.appendChild(h('p', { class: 'pl-hint' }, icon('info'), 'Przeciągnij kartę między kolumnami albo użyj menu „Więcej”. Z klawiatury: ', h('span', { class: 'kbd' }, 'Shift'), ' + ', h('span', { class: 'kbd' }, '←'), ' / ', h('span', { class: 'kbd' }, '→'), '. AI tylko podpowiada dopasowanie CV. Etap i odrzucenie to zawsze Twoja decyzja.'));
   return root;
 }
 

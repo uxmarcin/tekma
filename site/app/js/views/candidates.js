@@ -102,10 +102,11 @@ export default async function render(ctx) {
     SORTS.map((s) => h('option', { value: s.key, selected: s.key === state.sort }, s.label)));
   sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; update(); });
 
+  const mhead = h('div', { class: 'cd-mhead' }, h('h1', null, 'Kandydaci'), button({ label: 'Dodaj', variant: 'primary', size: 'sm', icon: 'plus', title: 'Dodaj kandydata', onClick: () => openAdd() }));
   const bar = h('div', { class: 'cd-bar' }, search, posSelect, segment, statusSelect, sortSelect);
   const summary = h('div', { class: 'cd-sum' });
   const body = h('div', { class: 'cd-wrap' });
-  root.append(bar, summary, body, live);
+  root.append(mhead, bar, summary, body, live);
 
   function setStatus(s) {
     state.status = s;
@@ -168,10 +169,10 @@ export default async function render(ctx) {
     const rows = visible();
     const total = state.rows.length;
     const filtered = Boolean(state.q.trim() || state.position || state.status !== 'active');
-    summary.replaceChildren(
+    summary.replaceChildren(...[
       h('span', null, total === 0 ? 'Brak kandydatów' : `${plural(rows.length, 'kandydat', 'kandydaci', 'kandydatów')}${state.status !== 'all' ? ` · ${STATUS_LABEL[state.status].toLowerCase()}` : ''}${rows.length !== total ? ` · z ${total} w bazie` : ''}`),
       filtered && total ? h('button', { type: 'button', class: 'link', on: { click: resetFilters } }, 'Wyczyść filtry') : null,
-    );
+    ].filter(Boolean));
     live.textContent = `${plural(rows.length, 'wynik', 'wyniki', 'wyników')}.`;
 
     if (total === 0) {
@@ -197,7 +198,8 @@ export default async function render(ctx) {
       h('th', { scope: 'col', class: 'cd-go' }, h('span', { class: 'sr-only' }, 'Otwórz')),
     ));
     const tbody = h('tbody', null, rows.map(rowEl));
-    return h('table', { class: 'cd-table' }, thead, tbody);
+    const colgroup = h('colgroup', null, ['who', 'pos', 'stage', 'src', 'score', 'date', 'go'].map((k) => h('col', { class: `w-${k}` })));
+    return h('table', { class: 'cd-table' }, colgroup, thead, tbody);
   }
 
   function rowEl(c) {
