@@ -15,7 +15,7 @@
 .ck-back:hover{color:var(--ink);background:rgba(255,255,255,.06)}
 .ck-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
 
-.ck-noscript{margin-top:28px;padding:18px 22px;border-radius:16px;background:var(--surface);box-shadow:0 0 0 1px var(--line-strong) inset;color:var(--body);font-size:15px;line-height:1.55}
+.ck-noscript{margin-top:28px;padding:18px 22px;border-radius:16px;background:linear-gradient(180deg,#171717,#0f0f0f);color:var(--body);font-size:15px;line-height:1.55}
 .ck-noscript a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
 
 /* układ */
@@ -28,11 +28,11 @@
 .ck-stepper{list-style:none;display:flex;align-items:center;gap:0;margin:32px 0 44px;padding:0;flex-wrap:wrap;row-gap:12px}
 .ck-step{display:flex;align-items:center;gap:12px;font-size:14.5px;color:var(--faint);font-weight:500;white-space:nowrap}
 .ck-step:not(:last-child)::after{content:"";width:40px;height:1px;background:var(--line-strong);margin:0 18px}
-.ck-step-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;box-shadow:0 0 0 1px var(--line-strong) inset;font-size:13.5px;color:var(--muted);transition:background .25s,color .25s,box-shadow .25s}
+.ck-step-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.08);font-size:13.5px;color:var(--muted);transition:background .25s,color .25s}
 .ck-step[aria-current=step]{color:var(--ink)}
-.ck-step[aria-current=step] .ck-step-n{box-shadow:0 0 0 1.5px var(--ink) inset;color:var(--ink)}
+.ck-step[aria-current=step] .ck-step-n{background:var(--ink);color:var(--canvas);font-weight:600}
 .ck-step.is-done{color:var(--body)}
-.ck-step.is-done .ck-step-n{background:var(--accent);box-shadow:none;color:#fff}
+.ck-step.is-done .ck-step-n{background:var(--accent);color:#fff}
 .ck-step.is-done .ck-step-n::before{content:"";width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 10.5l4 4 8-9'/%3E%3C/svg%3E") center/contain no-repeat}
 .ck-step.is-done .ck-step-n{font-size:0}
 
@@ -43,13 +43,14 @@
 
 /* krok 1 — karty pakietów */
 .ck-plans{border:0;margin:28px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:14px;min-width:0}
-.ck-plan{position:relative;display:flex;flex-direction:column;gap:18px;padding:28px 28px 30px;border-radius:22px;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset;cursor:pointer;transition:box-shadow .25s,background .25s;min-width:0}
-.ck-plan:hover{box-shadow:0 0 0 1px var(--line-strong) inset}
-.ck-plan.is-selected{background:linear-gradient(180deg,#0f1830,#0a0f1d 55%);box-shadow:0 0 0 1.5px var(--accent) inset,0 30px 90px -30px rgba(61,123,255,.5)}
+.ck-plan{position:relative;display:flex;flex-direction:column;gap:18px;padding:28px 28px 30px;border-radius:22px;background:linear-gradient(180deg,#161616,#0d0d0d);box-shadow:0 24px 60px -30px rgba(0,0,0,.9);cursor:pointer;transition:box-shadow .3s,background .3s;min-width:0}
+.ck-plan:hover{background:linear-gradient(180deg,#1c1c1c,#111)}
+.ck-plan.is-selected{background:linear-gradient(180deg,#14234a,#0a0f1d 70%);box-shadow:0 30px 90px -30px rgba(61,123,255,.6),0 0 80px -24px rgba(61,123,255,.4)}
+.ck-plan.is-selected:hover{background:linear-gradient(180deg,#172850,#0b1122 70%)}
 .ck-plan-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;top:28px;right:28px}
 .ck-plan:has(.ck-plan-input:focus-visible){outline:2px solid var(--accent);outline-offset:4px}
-.ck-plan-radio{position:absolute;top:26px;right:26px;width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 1.5px var(--line-strong) inset;transition:box-shadow .2s,background .2s}
-.ck-plan.is-selected .ck-plan-radio{background:var(--accent);box-shadow:none}
+.ck-plan-radio{position:absolute;top:26px;right:26px;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.12);transition:background .2s}
+.ck-plan.is-selected .ck-plan-radio{background:var(--accent);box-shadow:0 0 18px rgba(61,123,255,.6)}
 .ck-plan.is-selected .ck-plan-radio::after{content:"";position:absolute;inset:7px;border-radius:50%;background:#fff}
 .ck-plan-head{display:flex;flex-direction:column;gap:6px;padding-right:40px}
 .ck-plan-name{display:flex;align-items:center;gap:10px;font:600 22px/1.2 var(--display);letter-spacing:-.025em;color:var(--ink)}
@@ -62,6 +63,12 @@
 .ck-plan-list li{display:flex;gap:10px}
 .ck-plan-list svg{flex:none;width:18px;height:18px;margin-top:3px;stroke:var(--ink);fill:none;stroke-width:1.9}
 
+/* przyciski — bez ramek w checkoucie */
+.ck-body .btn-ghost{box-shadow:none;background:rgba(255,255,255,.09)}
+.ck-body .btn-ghost:hover{background:rgba(255,255,255,.14)}
+.ck-body .btn-primary{box-shadow:0 8px 30px -8px rgba(61,123,255,.6)}
+.ck-body .btn-primary:hover{box-shadow:0 12px 36px -8px rgba(61,123,255,.8)}
+
 /* przyciski kroku */
 .ck-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
 .ck-actions .btn-primary{order:2}
@@ -73,12 +80,11 @@
 .ck-span{grid-column:1/-1}
 .ck-field label{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;display:flex;align-items:baseline;gap:8px}
 .ck-opt{font-weight:400;color:var(--faint);font-size:13px}
-.ck-field input,.ck-field select{width:100%;height:48px;border-radius:12px;border:0;background:rgba(255,255,255,.05);box-shadow:0 0 0 1px var(--line-strong) inset;color:var(--ink);font:400 16px var(--font);padding:0 16px;transition:box-shadow .2s,background .2s;-webkit-appearance:none;appearance:none}
-.ck-field input:hover,.ck-field select:hover{background:rgba(255,255,255,.07)}
-.ck-field input:focus,.ck-field select:focus{outline:0;box-shadow:0 0 0 2px var(--accent) inset;background:rgba(255,255,255,.08)}
-.ck-field input:focus-visible,.ck-field select:focus-visible{outline:0}
-.ck-field input[aria-invalid=true],.ck-field select[aria-invalid=true]{box-shadow:0 0 0 1.5px var(--bad) inset}
-.ck-field input[aria-invalid=true]:focus{box-shadow:0 0 0 2px var(--bad) inset}
+.ck-field input,.ck-field select{width:100%;height:48px;border-radius:12px;border:0;background:rgba(255,255,255,.08);color:var(--ink);font:400 16px var(--font);padding:0 16px;transition:background .2s;-webkit-appearance:none;appearance:none}
+.ck-field input:hover,.ck-field select:hover{background:rgba(255,255,255,.11)}
+.ck-field input:focus,.ck-field select:focus{outline:2px solid var(--accent);outline-offset:2px;background:rgba(255,255,255,.12)}
+.ck-field input[aria-invalid=true],.ck-field select[aria-invalid=true]{background:rgba(251,113,133,.14)}
+.ck-field input[aria-invalid=true]:focus{outline-color:var(--bad);background:rgba(251,113,133,.18)}
 .ck-select{position:relative}
 .ck-select svg{position:absolute;right:14px;top:50%;width:16px;height:16px;margin-top:-8px;stroke:var(--muted);fill:none;stroke-width:1.8;pointer-events:none}
 .ck-select select{padding-right:40px;cursor:pointer}
@@ -87,7 +93,7 @@
 .ck-err{margin-top:7px;font-size:13.5px;color:var(--bad);line-height:1.45;display:none}
 .ck-err:not(:empty){display:block}
 
-.ck-errsum{margin-top:24px;padding:16px 20px;border-radius:14px;background:rgba(251,113,133,.07);box-shadow:0 0 0 1px rgba(251,113,133,.45) inset;color:var(--body);font-size:14.5px}
+.ck-errsum{margin-top:24px;padding:16px 20px;border-radius:14px;background:linear-gradient(180deg,rgba(251,113,133,.14),rgba(251,113,133,.08));color:var(--body);font-size:14.5px}
 .ck-errsum[hidden]{display:none}
 .ck-errsum-t{color:var(--ink);font-weight:500;margin-bottom:6px}
 .ck-errsum ul{list-style:none;display:grid;gap:4px}
@@ -105,14 +111,14 @@
 .ck-rev-change{text-align:right}
 .ck-link{color:var(--accent);font-size:14.5px;font-weight:500;padding:0;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;transition:text-decoration-color .2s,color .2s}
 .ck-link:hover{text-decoration-color:currentColor}
-.ck-send{margin-top:32px;padding:22px 24px 24px;border-radius:18px;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset}
+.ck-send{margin-top:32px;padding:22px 24px 24px;border-radius:18px;background:linear-gradient(180deg,#161616,#0d0d0d);box-shadow:0 24px 60px -30px rgba(0,0,0,.9)}
 .ck-send-note{color:var(--body);font-size:15px;line-height:1.55;max-width:60ch}
 .ck-send .ck-actions{margin-top:20px}
 
 /* potwierdzenie */
 .ck-done[hidden]{display:none}
 .ck-done:focus{outline:0}
-.ck-done-mark{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(52,211,153,.14);box-shadow:0 0 0 1px rgba(52,211,153,.5) inset;margin-bottom:20px}
+.ck-done-mark{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(52,211,153,.16);box-shadow:0 0 32px -6px rgba(52,211,153,.45);margin-bottom:20px}
 .ck-done-mark svg{width:22px;height:22px;stroke:var(--good);fill:none;stroke-width:2.2}
 .ck-done-num{margin-top:12px;color:var(--muted);font-size:15px}
 .ck-done-num b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.02em}
@@ -121,7 +127,7 @@
 
 /* panel podsumowania */
 .ck-summary{position:sticky;top:28px}
-.ck-summary-in{padding:26px 28px 24px;border-radius:22px;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset}
+.ck-summary-in{padding:26px 28px 24px;border-radius:22px;background:linear-gradient(180deg,#161616,#0d0d0d);box-shadow:0 24px 60px -30px rgba(0,0,0,.9)}
 .ck-sum-h{font:500 14px/1.4 var(--font);letter-spacing:0;color:var(--muted)}
 .ck-sum-plan{margin-top:14px;display:flex;flex-direction:column;gap:4px}
 .ck-sum-name{font:600 22px/1.2 var(--display);letter-spacing:-.025em;color:var(--ink)}
@@ -184,5 +190,5 @@
   .ck-plan-price b{font-size:34px}
 }
 @media (prefers-reduced-motion:reduce){
-  .ck-mobile-sum-chev,.ck-plan,.ck-step-n,.ck-plan-radio{transition:none}
+  .ck-mobile-sum-chev,.ck-plan,.ck-step-n,.ck-plan-radio,.ck-field input,.ck-field select{transition:none}
 }
