@@ -25,6 +25,14 @@ jobs:
       - name: Zainstaluj lftp
         run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
 
+      - name: Diagnostyka logowania (tymczasowa, bez ujawniania danych)
+        continue-on-error: true
+        run: |
+          echo "dlugosc loginu: ${#SFTP_USER}, dlugosc hasla: ${#SFTP_PASS}, port: $SFTP_PORT"
+          case "$SFTP_USER$SFTP_PASS$SFTP_HOST" in *[[:space:]]*) echo "UWAGA: w sekretach jest biały znak";; *) echo "brak białych znaków w sekretach";; esac
+          case "$SFTP_HOST" in *://*|*/*) echo "UWAGA: FTP_SERVER zawiera protokol lub sciezke";; *) echo "format hosta OK";; esac
+          ssh -p "$SFTP_PORT" -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=none -o ConnectTimeout=15 "$SFTP_USER@$SFTP_HOST" true 2>&1 | sed "s/$SFTP_HOST/HOST/g; s/$SFTP_USER/USER/g" | tail -5
+
       - name: Wgraj site/ przez SFTP (bez usuwania plików na serwerze)
         run: |
           lftp -u "$SFTP_USER,$SFTP_PASS" -p "$SFTP_PORT" "sftp://$SFTP_HOST" <<LFTP
