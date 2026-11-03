@@ -1,4 +1,4 @@
-name: Deploy strony na FTP
+name: Deploy strony (SFTP)
 
 on:
   push:
@@ -7,22 +7,30 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ftp-deploy
+  group: sftp-deploy
   cancel-in-progress: false
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      SFTP_HOST: ${{ secrets.FTP_SERVER }}
+      SFTP_USER: ${{ secrets.FTP_USERNAME }}
+      SFTP_PASS: ${{ secrets.FTP_PASSWORD }}
+      SFTP_PORT: ${{ secrets.FTP_PORT || 22 }}
+      REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '.' }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Wgraj site/ do katalogu docelowego
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          port: ${{ secrets.FTP_PORT || 21 }}
-          protocol: ${{ vars.FTP_PROTOCOL || 'ftps' }}   # ftp | ftps | ftps-legacy (domyślnie ftps)
-          local-dir: ./site/
-          server-dir: ${{ secrets.FTP_REMOTE_DIR || './' }}
+      - name: Zainstaluj lftp
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq lftp
+
+      - name: Wgraj site/ przez SFTP (bez usuwania plików na serwerze)
+        run: |
+          lftp -u "$SFTP_USER,$SFTP_PASS" -p "$SFTP_PORT" "sftp://$SFTP_HOST" <<LFTP
+          set sftp:auto-confirm yes
+          set net:max-retries 2
+          set net:timeout 20
+          mirror -R --verbose --parallel=3 ./site/ "$REMOTE_DIR"
+          bye
+          LFTP
