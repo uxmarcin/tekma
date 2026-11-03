@@ -134,7 +134,7 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
   const renderReview = () => {
     const d = formData();
     $('#r-email').textContent = d.email;
-    $('#r-person').innerHTML = `${esc(d.name)}<small>${esc(d.company)}${d.nip ? ' · NIP ' + esc(d.nip) : ''}</small>`;
+    $('#r-person').innerHTML = `${esc(d.name)}<small>${esc(d.company)}${d.nip ? ' · <span class="ck-nowrap">NIP ' + esc(d.nip) + '</span>' : ''}</small>`;
     $('#r-address').innerHTML = `${esc(d.street)}<small>${esc(d.postal)} ${esc(d.city)}, ${esc(d.country)}</small>`;
     const link = CONFIG.stripeLinks[plan];
     $('#ck-submit').textContent = link ? 'Przejdź do płatności' : 'Wyślij zamówienie';
@@ -144,7 +144,7 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
   /* ---------- kroki ---------- */
   const canEnter = n => n === 1 || (n === 2) || (n === 3 && FIELDS.every(f => !validators[f](field(f).value.trim())));
 
-  const showStep = (n, { push = true, focus = true } = {}) => {
+  const showStep = (n, { push = true, focus = true, history: useHistory = true } = {}) => {
     if (!canEnter(n)) n = 2;
     step = n;
     panels.forEach(p => { p.hidden = +p.dataset.panel !== n; });
@@ -156,8 +156,8 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
     if (n === 3) renderReview();
     live.textContent = `Krok ${n} z 3: ${STEP_NAMES[n]}`;
     const hash = '#krok-' + n;
-    if (push && location.hash !== hash) history.pushState({ step: n }, '', hash);
-    else if (!push) history.replaceState({ step: n }, '', hash);
+    if (useHistory && push && location.hash !== hash) history.pushState({ step: n }, '', hash);
+    else if (useHistory && !push) history.replaceState({ step: n }, '', hash);
     if (focus) { const h = $('#ck-h-' + n); if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); } }
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
     closeMobileSummary();
@@ -233,7 +233,7 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
     $('#ck-done-rev').innerHTML =
       row('Pakiet', `<b>${P.name}</b><span class="ck-rev-price">${P.price} € / mies.</span>`) +
       row('E-mail', esc(d.email)) +
-      row('Zamawia', `${esc(d.name)}<small>${esc(d.company)}${d.nip ? ' · NIP ' + esc(d.nip) : ''}</small>`) +
+      row('Zamawia', `${esc(d.name)}<small>${esc(d.company)}${d.nip ? ' · <span class="ck-nowrap">NIP ' + esc(d.nip) + '</span>' : ''}</small>`) +
       row('Adres', `${esc(d.street)}<small>${esc(d.postal)} ${esc(d.city)}, ${esc(d.country)}</small>`);
     $('#ck-order-no').textContent = no;
   };
@@ -284,5 +284,7 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
   shownPrice = PLANS[initial].price;
   setPlan(initial, { animate: false });
   const m = /^#krok-(\d)$/.exec(location.hash);
-  showStep(m ? +m[1] : 1, { push: false, focus: false });
+  // Bez zapisu hasha przy starcie: zmiana adresu przed zdarzeniem load przewinęłaby stronę do sekcji kroku.
+  showStep(m ? +m[1] : 1, { push: false, focus: false, history: !!m });
+  if (m) addEventListener('load', () => scrollTo(0, 0), { once: true });
 })();

@@ -92,8 +92,9 @@
 .ck-hint{margin-top:7px;font-size:13px;color:var(--faint);line-height:1.45}
 .ck-err{margin-top:7px;font-size:13.5px;color:var(--bad);line-height:1.45;display:none}
 .ck-err:not(:empty){display:block}
+.ck-field:has(.ck-err:not(:empty)) .ck-hint{display:none}
 
-.ck-errsum{margin-top:24px;padding:16px 20px;border-radius:14px;background:linear-gradient(180deg,rgba(251,113,133,.14),rgba(251,113,133,.08));color:var(--body);font-size:14.5px}
+.ck-errsum{margin-top:24px;padding:16px 20px;border-radius:14px;background:linear-gradient(180deg,rgba(251,113,133,.11),rgba(251,113,133,.06));color:var(--body);font-size:14.5px}
 .ck-errsum[hidden]{display:none}
 .ck-errsum-t{color:var(--ink);font-weight:500;margin-bottom:6px}
 .ck-errsum ul{list-style:none;display:grid;gap:4px}
@@ -107,6 +108,7 @@
 .ck-rev dd{color:var(--ink);line-height:1.5;min-width:0;overflow-wrap:anywhere}
 .ck-rev dd b{font-weight:500}
 .ck-rev dd small{display:block;color:var(--muted);font-size:14px}
+.ck-nowrap{white-space:nowrap}
 .ck-rev-price{display:block;color:var(--muted);font-size:14px}
 .ck-rev-change{text-align:right}
 .ck-link{color:var(--accent);font-size:14.5px;font-weight:500;padding:0;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;transition:text-decoration-color .2s,color .2s}
@@ -123,6 +125,7 @@
 .ck-done-num{margin-top:12px;color:var(--muted);font-size:15px}
 .ck-done-num b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 .ck-rev-done .ck-rev-row{grid-template-columns:120px minmax(0,1fr)}
+.ck-done .ck-actions .btn{order:0}
 .ck-copy-msg{margin-top:12px;font-size:14px;color:var(--good);min-height:22px}
 
 /* panel podsumowania */
@@ -164,8 +167,9 @@
   .ck-mobile-sum-btn[aria-expanded=true] .ck-mobile-sum-chev{transform:rotate(180deg)}
   .ck-summary{display:none;position:static;order:-1;margin:0 calc(var(--gutter)*-1);padding:0 var(--gutter) 16px;background:rgba(0,0,0,.82);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--line)}
   .ck-summary.is-open{display:block}
-  .ck-summary-in{padding:18px 20px}
-  .ck-sum-amount b{font-size:28px}
+  .ck-summary-in{padding:4px 20px 18px}
+  .ck-sum-h,.ck-sum-plan,.ck-sum-foot{display:none}
+  .ck-sum-list{margin-top:0;padding-top:14px;border-top:0}
   .ck-stepper{margin:24px 0 36px}
 }
 @media (max-width:700px){
@@ -174,10 +178,12 @@
   .ck-plan-radio{top:22px;right:22px}
   .ck-plan-price b{font-size:38px}
   .ck-fields{grid-template-columns:1fr;gap:18px}
+  .ck-field input,.ck-field select,.ck-errsum{scroll-margin-top:72px}
   .ck-step:not(:last-child)::after{width:16px;margin:0 10px}
   .ck-step-t{display:none}
   .ck-step[aria-current=step] .ck-step-t{display:inline}
-  .ck-actions .btn{flex:1 1 auto;justify-content:center}
+  .ck-actions .btn{flex:1 1 100%;justify-content:center}
+  .ck-actions .btn-primary{order:0}.ck-actions .btn-ghost{order:1}
   .ck-rev-row{grid-template-columns:1fr auto;gap:4px 16px}
   .ck-rev dt{grid-column:1;font-size:13.5px}
   .ck-rev dd:not(.ck-rev-change){grid-column:1}
