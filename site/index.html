@@ -25,6 +25,16 @@
   <symbol id="mark" viewBox="0 0 32 32"><path d="M3 6H17.5V22.5L12.5 28V12H3Z"/><path d="M20 6H29L20 12.5Z"/></symbol>
   <symbol id="tick" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
   <symbol id="flag" viewBox="0 0 12 12"><path d="M2 1h1.2v10H2zM3.6 1.4h6.4L8.4 4l1.6 2.6H3.6z"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v3"/></symbol>
+  <symbol id="i-rubric" viewBox="0 0 24 24"><path d="M10 6h10M10 12h10M10 18h10M3.5 6l1.3 1.3L7 5M3.5 12l1.3 1.3L7 11M3.5 18l1.3 1.3L7 17"/></symbol>
+  <symbol id="i-funnel" viewBox="0 0 24 24"><path d="M3 4.5h18L14 12.5V19l-4 2v-8.5z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V11M10 20V4M16 20v-6M21 20H3"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 5-5"/></symbol>
+  <symbol id="i-stages" viewBox="0 0 24 24"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="12" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M8 6h3a5 5 0 015 5"/></symbol>
+  <symbol id="i-coach" viewBox="0 0 24 24"><path d="M4 5h16v11h-9l-5 4v-4H4z"/><path d="M12 8.5v4M10 10.5h4"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 4v16M7 20h10M5 7h14M5 7l-3 7a3.5 3.5 0 006 0zM19 7l-3 7a3.5 3.5 0 006 0z"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2.5"/><path d="M4 10h16M9 3v4M15 3v4"/></symbol>
+  <symbol id="i-team" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.6-3.8 3-5.8 6.5-5.8s5.9 2 6.5 5.8M16.5 4.8a3.2 3.2 0 010 6.4M18 14.4c2 .6 3.4 2.4 3.8 5.6"/></symbol>
   <symbol id="spark" viewBox="0 0 12 12"><path d="M6 0l1.4 4.1L12 6 7.4 7.9 6 12 4.6 7.9 0 6l4.6-1.9z"/></symbol>
 </svg>
 
@@ -71,6 +81,22 @@
     </div>
 
     <div class="stage" id="stage">
+    <div class="floats" aria-hidden="true">
+      <div class="float f1" style="--dy:70px">
+        <div class="f-h"><span class="rec"></span>Notetaker nagrywa<span class="f-t">12:04</span></div>
+        <div class="wave sm"><i style="--h:40%;--d:.1"></i><i style="--h:85%;--d:.5"></i><i style="--h:55%;--d:.9"></i><i style="--h:100%;--d:.3"></i><i style="--h:35%;--d:.7"></i><i style="--h:75%;--d:.2"></i><i style="--h:90%;--d:.8"></i><i style="--h:45%;--d:.4"></i><i style="--h:70%;--d:1"></i><i style="--h:30%;--d:.6"></i><i style="--h:80%;--d:.15"></i><i style="--h:50%;--d:.55"></i></div>
+        <div class="f-s">Marta Lewandowska · rozmowa techniczna</div>
+      </div>
+      <div class="float f2" style="--dy:110px">
+        <div class="f-h"><svg width="12" height="12" style="fill:var(--a-accent)"><use href="#spark"/></svg>AI sugeruje 4 z 5</div>
+        <div class="f-q">„Przenieśliśmy kolejkę na partycjonowane tabele — p95 spadło z 4 s do 0,4 s.”</div>
+        <div class="f-s">Decyzję podejmujesz Ty</div>
+      </div>
+      <div class="float f3" style="--dy:50px">
+        <div class="f-h warn"><svg width="12" height="12" style="fill:currentColor"><use href="#flag"/></svg>Rozbieżność 3 pkt</div>
+        <div class="f-s">Anna 2 · Tomasz 5 — omówcie przed decyzją</div>
+      </div>
+    </div>
       <div class="stage-tilt" id="tilt">
         <div class="win" role="img" aria-label="Pulpit Tekmy: otwarte stanowiska, najbliższe rozmowy i lejek rekrutacji">
           <div class="win-bar"><i></i><i></i><i></i><span>app.tekma.app / pulpit</span></div>
@@ -183,7 +209,7 @@
     </div>
     <div class="bento">
       <article class="tile t-a">
-        <div class="txt"><h3>Notetaker AI</h3><p>Sam dołącza do rozmowy z kalendarza, nagrywa ją i zapisuje, kto co powiedział.</p></div>
+        <div class="txt"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-mic"/></svg></span><h3>Notetaker AI</h3><p>Sam dołącza do rozmowy z kalendarza, nagrywa ją i zapisuje, kto co powiedział.</p></div>
         <div class="mini" aria-hidden="true">
           <div class="wave"><i style="--h:40%;--d:.1"></i><i style="--h:80%;--d:.5"></i><i style="--h:55%;--d:.9"></i><i style="--h:100%;--d:.3"></i><i style="--h:35%;--d:.7"></i><i style="--h:70%;--d:.2"></i><i style="--h:90%;--d:.8"></i><i style="--h:45%;--d:.4"></i><i style="--h:75%;--d:1"></i><i style="--h:30%;--d:.6"></i><i style="--h:85%;--d:.15"></i><i style="--h:50%;--d:.55"></i><i style="--h:95%;--d:.85"></i><i style="--h:40%;--d:.25"></i><i style="--h:65%;--d:.75"></i><i style="--h:35%;--d:.35"></i><i style="--h:80%;--d:.95"></i><i style="--h:55%;--d:.05"></i></div>
           <div class="line"><small>12:04</small><b>Tomasz</b> Co pękło jako pierwsze, gdy ruch się podwoił?</div>
@@ -194,7 +220,7 @@
       </article>
 
       <article class="tile t-b">
-        <div><h3>Rubryki z kotwicami</h3><p>Każda ocena 1–5 ma opis. Koniec z „dobrze mi się rozmawiało”.</p></div>
+        <div><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-rubric"/></svg></span><h3>Rubryki z kotwicami</h3><p>Każda ocena 1–5 ma opis. Koniec z „dobrze mi się rozmawiało”.</p></div>
         <div class="mini" aria-hidden="true"><div class="anch">
           <div><b>2</b>Opisuje system, ale nie wyjaśnia, co pękło i dlaczego.</div>
           <div><b>3</b>Wskazuje wąskie gardło, bez liczb przed i po.</div>
@@ -203,7 +229,7 @@
       </article>
 
       <article class="tile t-c">
-        <div><h3>Lejek z zasadami</h3><p>Kandydat przechodzi dalej po min. dwóch ocenach, nie po jednej miłej rozmowie.</p></div>
+        <div><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-funnel"/></svg></span><h3>Lejek z zasadami</h3><p>Kandydat przechodzi dalej po min. dwóch ocenach, nie po jednej miłej rozmowie.</p></div>
         <div class="mini" aria-hidden="true"><div class="kan">
           <div><h6>Rozmowa wstępna <span>3</span></h6><span>Karolina Wróbel<small>AI sugeruje 4,1</small></span><span>Michał Grabowski<small>AI sugeruje 3,8</small></span></div>
           <div><h6>Techniczna <span>2</span></h6><span>Marta Lewandowska<small>AI sugeruje 4,4</small></span><span class="fl">Jakub Szymański<small>Rozbieżność 3 pkt</small></span></div>
@@ -212,7 +238,7 @@
       </article>
 
       <article class="tile t-d">
-        <div><h3>Raport lejka</h3><p>Widzisz, gdzie odpadają kandydaci i kto czeka za długo.</p></div>
+        <div><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-chart"/></svg></span><h3>Raport lejka</h3><p>Widzisz, gdzie odpadają kandydaci i kto czeka za długo.</p></div>
         <div class="mini" aria-hidden="true">
           <div class="fun" style="grid-template-columns:130px 1fr"><b>Backend<small>24 → 1</small></b><div class="bars"><i style="--v:100;--k:0"></i><i class="hot" style="--v:46;--k:1"></i><i style="--v:25;--k:2"></i><i style="--v:13;--k:3"></i><i style="--v:4;--k:4"></i></div></div>
           <div class="fun" style="grid-template-columns:130px 1fr"><b>Product Designer<small>18 → 0</small></b><div class="bars"><i style="--v:75;--k:0"></i><i class="hot" style="--v:38;--k:1"></i><i style="--v:17;--k:2"></i><i style="--v:8;--k:3"></i><i style="--v:0;--k:4"></i></div></div>
@@ -222,7 +248,7 @@
       </article>
 
       <article class="tile t-e" id="zgodnosc">
-        <div class="txt"><h3>RODO i AI Act</h3><p>Dane w UE, zgody kandydatów i rejestr decyzji AI w jednym miejscu.</p></div>
+        <div class="txt"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-shield"/></svg></span><h3>RODO i AI Act</h3><p>Dane w UE, zgody kandydatów i rejestr decyzji AI w jednym miejscu.</p></div>
         <div class="mini" aria-hidden="true"><div class="checks">
           <div><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Dane w UE</div>
           <div><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Zbieranie zgód włączone</div>
@@ -271,12 +297,12 @@
   <div class="wrap">
     <div class="sec-h"><span class="kicker">Jak to działa</span><h2>Rekrutacja, którą da się powtórzyć.</h2></div>
     <div class="steps">
-      <div class="step"><h3>Zbuduj rubrykę</h3><p>Zacznij od szablonu albo od zera. Każde pytanie ma wagę i opis ocen 1–5.</p></div>
-      <div class="step"><h3>Ustaw etapy</h3><p>AI wylicza dopasowanie CV, a Ty ustalasz kolejne etapy i rozmówców.</p></div>
-      <div class="step"><h3>Rozmawiaj z coachem</h3><p>Coach AI podsuwa pytania i pokazuje, czego z rubryki jeszcze nie sprawdzono.</p></div>
-      <div class="step"><h3>Zdecyduj na dowodach</h3><p>Karty ocen, porównanie kandydatów i flaga, gdy oceny się rozjeżdżają.</p></div>
-      <div class="step"><h3>Zaplanuj 90 dni</h3><p>Przeglądy po 30, 60 i 90 dniach planują się same.</p></div>
-      <div class="step"><h3>Rozwijaj zespół</h3><p>Cele, szkolenia i sygnały ostrzegawcze, zanim drobiazg urośnie w problem.</p></div>
+      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-rubric"/></svg></span><h3>Zbuduj rubrykę</h3><p>Zacznij od szablonu albo od zera. Każde pytanie ma wagę i opis ocen 1–5.</p></div>
+      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-stages"/></svg></span><h3>Ustaw etapy</h3><p>AI wylicza dopasowanie CV, a Ty ustalasz kolejne etapy i rozmówców.</p></div>
+      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-coach"/></svg></span><h3>Rozmawiaj z coachem</h3><p>Coach AI podsuwa pytania i pokazuje, czego z rubryki jeszcze nie sprawdzono.</p></div>
+      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-scale"/></svg></span><h3>Zdecyduj na dowodach</h3><p>Karty ocen, porównanie kandydatów i flaga, gdy oceny się rozjeżdżają.</p></div>
+      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg></span><h3>Zaplanuj 90 dni</h3><p>Przeglądy po 30, 60 i 90 dniach planują się same.</p></div>
+      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-team"/></svg></span><h3>Rozwijaj zespół</h3><p>Cele, szkolenia i sygnały ostrzegawcze, zanim drobiazg urośnie w problem.</p></div>
     </div>
   </div>
 </section>

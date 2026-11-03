@@ -1,0 +1,188 @@
+/* Tekma — strona zamówienia. Korzysta z tokenów i komponentów z styles.css. */
+
+.ck-body{min-height:100vh;display:flex;flex-direction:column}
+.ck-main{flex:1;padding:40px 0 clamp(72px,10vw,120px)}
+
+/* dostępność */
+.ck-skip{position:absolute;left:var(--gutter);top:-60px;z-index:100;padding:10px 16px;border-radius:999px;background:var(--ink);color:var(--canvas);font-weight:500;font-size:14px}
+.ck-skip:focus-visible{top:14px;outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* nagłówek strony */
+.ck-nav{border-bottom:1px solid var(--line)}
+.ck-nav-in{display:flex;align-items:center;justify-content:space-between;height:68px;gap:24px}
+.ck-back{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 14px 0 10px;border-radius:999px;font-size:14.5px;color:var(--muted);transition:color .2s,background .2s}
+.ck-back:hover{color:var(--ink);background:rgba(255,255,255,.06)}
+.ck-back svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+.ck-noscript{margin-top:28px;padding:18px 22px;border-radius:16px;background:var(--surface);box-shadow:0 0 0 1px var(--line-strong) inset;color:var(--body);font-size:15px;line-height:1.55}
+.ck-noscript a{color:var(--ink);text-decoration:underline;text-underline-offset:3px}
+
+/* układ */
+.ck-grid{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:clamp(32px,5vw,72px);align-items:start}
+.ck-flow{min-width:0}
+.ck-h1{font-size:clamp(32px,4.6vw,48px);letter-spacing:-.04em;line-height:1.06}
+.ck-h1 span{display:inline-block;min-width:0}
+
+/* stepper */
+.ck-stepper{list-style:none;display:flex;align-items:center;gap:0;margin:32px 0 44px;padding:0;flex-wrap:wrap;row-gap:12px}
+.ck-step{display:flex;align-items:center;gap:12px;font-size:14.5px;color:var(--faint);font-weight:500;white-space:nowrap}
+.ck-step:not(:last-child)::after{content:"";width:40px;height:1px;background:var(--line-strong);margin:0 18px}
+.ck-step-n{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;box-shadow:0 0 0 1px var(--line-strong) inset;font-size:13.5px;color:var(--muted);transition:background .25s,color .25s,box-shadow .25s}
+.ck-step[aria-current=step]{color:var(--ink)}
+.ck-step[aria-current=step] .ck-step-n{box-shadow:0 0 0 1.5px var(--ink) inset;color:var(--ink)}
+.ck-step.is-done{color:var(--body)}
+.ck-step.is-done .ck-step-n{background:var(--accent);box-shadow:none;color:#fff}
+.ck-step.is-done .ck-step-n::before{content:"";width:14px;height:14px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 10.5l4 4 8-9'/%3E%3C/svg%3E") center/contain no-repeat}
+.ck-step.is-done .ck-step-n{font-size:0}
+
+/* panele kroków */
+.ck-panel[hidden]{display:none}
+.ck-h2{font-size:clamp(24px,2.6vw,30px);letter-spacing:-.03em;line-height:1.15}
+.ck-sub{margin-top:10px;color:var(--muted);font-size:16px;max-width:52ch;line-height:1.55}
+
+/* krok 1 — karty pakietów */
+.ck-plans{border:0;margin:28px 0 0;padding:0;display:grid;grid-template-columns:1fr 1fr;gap:14px;min-width:0}
+.ck-plan{position:relative;display:flex;flex-direction:column;gap:18px;padding:28px 28px 30px;border-radius:22px;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset;cursor:pointer;transition:box-shadow .25s,background .25s;min-width:0}
+.ck-plan:hover{box-shadow:0 0 0 1px var(--line-strong) inset}
+.ck-plan.is-selected{background:linear-gradient(180deg,#0f1830,#0a0f1d 55%);box-shadow:0 0 0 1.5px var(--accent) inset,0 30px 90px -30px rgba(61,123,255,.5)}
+.ck-plan-input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;top:28px;right:28px}
+.ck-plan:has(.ck-plan-input:focus-visible){outline:2px solid var(--accent);outline-offset:4px}
+.ck-plan-radio{position:absolute;top:26px;right:26px;width:22px;height:22px;border-radius:50%;box-shadow:0 0 0 1.5px var(--line-strong) inset;transition:box-shadow .2s,background .2s}
+.ck-plan.is-selected .ck-plan-radio{background:var(--accent);box-shadow:none}
+.ck-plan.is-selected .ck-plan-radio::after{content:"";position:absolute;inset:7px;border-radius:50%;background:#fff}
+.ck-plan-head{display:flex;flex-direction:column;gap:6px;padding-right:40px}
+.ck-plan-name{display:flex;align-items:center;gap:10px;font:600 22px/1.2 var(--display);letter-spacing:-.025em;color:var(--ink)}
+.ck-plan-name em{font-style:normal;font-size:12px;font-weight:600;background:var(--accent);color:#fff;padding:3px 10px;border-radius:999px;font-family:var(--font);letter-spacing:0;line-height:1.4}
+.ck-plan-for{color:var(--muted);font-size:14.5px}
+.ck-plan-price{display:flex;align-items:baseline;gap:8px;color:var(--ink)}
+.ck-plan-price b{font:600 44px/1 var(--display);letter-spacing:-.05em}
+.ck-plan-price span{color:var(--muted);font-size:14.5px}
+.ck-plan-list{list-style:none;display:grid;gap:11px;font-size:15px;color:var(--body);padding-top:18px;border-top:1px solid var(--line);margin:0}
+.ck-plan-list li{display:flex;gap:10px}
+.ck-plan-list svg{flex:none;width:18px;height:18px;margin-top:3px;stroke:var(--ink);fill:none;stroke-width:1.9}
+
+/* przyciski kroku */
+.ck-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.ck-actions .btn-primary{order:2}
+.ck-actions .btn-ghost{order:1}
+
+/* krok 2 — formularz */
+.ck-fields{display:grid;grid-template-columns:1fr 1fr;gap:20px 16px;margin-top:28px}
+.ck-field{display:flex;flex-direction:column;min-width:0}
+.ck-span{grid-column:1/-1}
+.ck-field label{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:8px;display:flex;align-items:baseline;gap:8px}
+.ck-opt{font-weight:400;color:var(--faint);font-size:13px}
+.ck-field input,.ck-field select{width:100%;height:48px;border-radius:12px;border:0;background:rgba(255,255,255,.05);box-shadow:0 0 0 1px var(--line-strong) inset;color:var(--ink);font:400 16px var(--font);padding:0 16px;transition:box-shadow .2s,background .2s;-webkit-appearance:none;appearance:none}
+.ck-field input:hover,.ck-field select:hover{background:rgba(255,255,255,.07)}
+.ck-field input:focus,.ck-field select:focus{outline:0;box-shadow:0 0 0 2px var(--accent) inset;background:rgba(255,255,255,.08)}
+.ck-field input:focus-visible,.ck-field select:focus-visible{outline:0}
+.ck-field input[aria-invalid=true],.ck-field select[aria-invalid=true]{box-shadow:0 0 0 1.5px var(--bad) inset}
+.ck-field input[aria-invalid=true]:focus{box-shadow:0 0 0 2px var(--bad) inset}
+.ck-select{position:relative}
+.ck-select svg{position:absolute;right:14px;top:50%;width:16px;height:16px;margin-top:-8px;stroke:var(--muted);fill:none;stroke-width:1.8;pointer-events:none}
+.ck-select select{padding-right:40px;cursor:pointer}
+.ck-select option{background:var(--surface-2);color:var(--ink)}
+.ck-hint{margin-top:7px;font-size:13px;color:var(--faint);line-height:1.45}
+.ck-err{margin-top:7px;font-size:13.5px;color:var(--bad);line-height:1.45;display:none}
+.ck-err:not(:empty){display:block}
+
+.ck-errsum{margin-top:24px;padding:16px 20px;border-radius:14px;background:rgba(251,113,133,.07);box-shadow:0 0 0 1px rgba(251,113,133,.45) inset;color:var(--body);font-size:14.5px}
+.ck-errsum[hidden]{display:none}
+.ck-errsum-t{color:var(--ink);font-weight:500;margin-bottom:6px}
+.ck-errsum ul{list-style:none;display:grid;gap:4px}
+.ck-errsum button{color:var(--bad);text-decoration:underline;text-underline-offset:3px;text-align:left;padding:2px 0;font-size:14.5px}
+.ck-errsum button:hover{color:var(--ink)}
+
+/* krok 3 — przegląd */
+.ck-rev{margin:28px 0 0;border-top:1px solid var(--line)}
+.ck-rev-row{display:grid;grid-template-columns:120px minmax(0,1fr) auto;gap:8px 20px;padding:16px 0;border-bottom:1px solid var(--line);align-items:start;font-size:15px}
+.ck-rev dt{color:var(--muted)}
+.ck-rev dd{color:var(--ink);line-height:1.5;min-width:0;overflow-wrap:anywhere}
+.ck-rev dd b{font-weight:500}
+.ck-rev dd small{display:block;color:var(--muted);font-size:14px}
+.ck-rev-price{display:block;color:var(--muted);font-size:14px}
+.ck-rev-change{text-align:right}
+.ck-link{color:var(--accent);font-size:14.5px;font-weight:500;padding:0;text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;transition:text-decoration-color .2s,color .2s}
+.ck-link:hover{text-decoration-color:currentColor}
+.ck-send{margin-top:32px;padding:22px 24px 24px;border-radius:18px;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset}
+.ck-send-note{color:var(--body);font-size:15px;line-height:1.55;max-width:60ch}
+.ck-send .ck-actions{margin-top:20px}
+
+/* potwierdzenie */
+.ck-done[hidden]{display:none}
+.ck-done:focus{outline:0}
+.ck-done-mark{display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:rgba(52,211,153,.14);box-shadow:0 0 0 1px rgba(52,211,153,.5) inset;margin-bottom:20px}
+.ck-done-mark svg{width:22px;height:22px;stroke:var(--good);fill:none;stroke-width:2.2}
+.ck-done-num{margin-top:12px;color:var(--muted);font-size:15px}
+.ck-done-num b{color:var(--ink);font-weight:500;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+.ck-rev-done .ck-rev-row{grid-template-columns:120px minmax(0,1fr)}
+.ck-copy-msg{margin-top:12px;font-size:14px;color:var(--good);min-height:22px}
+
+/* panel podsumowania */
+.ck-summary{position:sticky;top:28px}
+.ck-summary-in{padding:26px 28px 24px;border-radius:22px;background:var(--surface);box-shadow:0 0 0 1px var(--line) inset}
+.ck-sum-h{font:500 14px/1.4 var(--font);letter-spacing:0;color:var(--muted)}
+.ck-sum-plan{margin-top:14px;display:flex;flex-direction:column;gap:4px}
+.ck-sum-name{font:600 22px/1.2 var(--display);letter-spacing:-.025em;color:var(--ink)}
+.ck-sum-amount{display:flex;align-items:baseline;gap:6px;color:var(--ink)}
+.ck-sum-amount b{font:600 36px/1.1 var(--display);letter-spacing:-.04em}
+.ck-sum-amount span{color:var(--muted);font-size:14.5px}
+.ck-amount{font-variant-numeric:tabular-nums;display:inline-block;min-width:2ch;text-align:left}
+.ck-sum-list{list-style:none;margin:20px 0 0;padding:18px 0 0;border-top:1px solid var(--line);display:grid;gap:9px;font-size:14.5px;color:var(--body)}
+.ck-sum-list li{display:flex;gap:10px}
+.ck-sum-list li::before{content:"";flex:none;width:14px;height:14px;margin-top:4px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 10.5l4 4 8-9'/%3E%3C/svg%3E") center/contain no-repeat}
+.ck-summary .ck-link{margin-top:18px}
+.ck-sum-foot{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);font-size:13px;color:var(--faint)}
+
+/* pasek podsumowania na mobile */
+.ck-mobile-sum{display:none}
+
+/* stopka */
+.ck-foot{border-top:1px solid var(--line);padding:24px 0;font-size:13.5px;color:var(--faint)}
+.ck-foot-in{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px}
+.ck-foot a:hover{color:var(--ink)}
+
+/* responsywność */
+@media (max-width:900px){
+  .ck-main{padding-top:0}
+  .ck-grid{grid-template-columns:1fr;gap:0}
+  .ck-flow{padding-top:28px}
+  .ck-mobile-sum{display:block;position:sticky;top:0;z-index:20;margin:0 calc(var(--gutter)*-1);background:rgba(0,0,0,.82);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--line)}
+  .ck-mobile-sum-btn{display:flex;align-items:center;gap:12px;width:100%;height:56px;padding:0 var(--gutter);text-align:left;font-size:14.5px;color:var(--muted)}
+  .ck-mobile-sum-btn:focus-visible{outline-offset:-3px}
+  .ck-mobile-sum-plan b{color:var(--ink);font-weight:500}
+  .ck-mobile-sum-amount{margin-left:auto;color:var(--muted);font-size:14px;white-space:nowrap}
+  .ck-mobile-sum-amount b{font:600 20px/1 var(--display);letter-spacing:-.03em;color:var(--ink)}
+  .ck-mobile-sum-chev{width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:1.8;transition:transform .25s}
+  .ck-mobile-sum-btn[aria-expanded=true] .ck-mobile-sum-chev{transform:rotate(180deg)}
+  .ck-summary{display:none;position:static;order:-1;margin:0 calc(var(--gutter)*-1);padding:0 var(--gutter) 16px;background:rgba(0,0,0,.82);backdrop-filter:saturate(1.6) blur(18px);-webkit-backdrop-filter:saturate(1.6) blur(18px);border-bottom:1px solid var(--line)}
+  .ck-summary.is-open{display:block}
+  .ck-summary-in{padding:18px 20px}
+  .ck-sum-amount b{font-size:28px}
+  .ck-stepper{margin:24px 0 36px}
+}
+@media (max-width:700px){
+  .ck-plans{grid-template-columns:1fr}
+  .ck-plan{padding:22px 22px 24px}
+  .ck-plan-radio{top:22px;right:22px}
+  .ck-plan-price b{font-size:38px}
+  .ck-fields{grid-template-columns:1fr;gap:18px}
+  .ck-step:not(:last-child)::after{width:16px;margin:0 10px}
+  .ck-step-t{display:none}
+  .ck-step[aria-current=step] .ck-step-t{display:inline}
+  .ck-actions .btn{flex:1 1 auto;justify-content:center}
+  .ck-rev-row{grid-template-columns:1fr auto;gap:4px 16px}
+  .ck-rev dt{grid-column:1;font-size:13.5px}
+  .ck-rev dd:not(.ck-rev-change){grid-column:1}
+  .ck-rev-change{grid-column:2;grid-row:1/span 2;align-self:start}
+  .ck-rev-done .ck-rev-row{grid-template-columns:1fr}
+  .ck-send{padding:18px 18px 20px}
+}
+@media (max-width:420px){
+  .ck-h1{font-size:30px}
+  .ck-plan-price b{font-size:34px}
+}
+@media (prefers-reduced-motion:reduce){
+  .ck-mobile-sum-chev,.ck-plan,.ck-step-n,.ck-plan-radio{transition:none}
+}

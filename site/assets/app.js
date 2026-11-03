@@ -32,6 +32,7 @@
     const p = reduce ? 1 : clamp((innerHeight * .95 - r.top) / (innerHeight * .75));
     tilt.style.setProperty('--rx', (16 * (1 - p)).toFixed(2) + 'deg');
     tilt.style.setProperty('--sc', (.93 + .07 * p).toFixed(3));
+    stage.style.setProperty('--p', p.toFixed(3));
   };
   paintTilt();
 

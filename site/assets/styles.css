@@ -351,3 +351,47 @@ section{position:relative}
 .person .ms.on::before{box-shadow:0 0 0 2px var(--a-accent) inset;background:radial-gradient(circle,var(--a-accent) 38%,#fff 42%)}
 .person .plan-fill{box-shadow:none;background:var(--a-accent)}
 .plan{--fill:0%}
+
+/* ikony w szkle (kafelki, kroki) */
+.ico{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;margin-bottom:20px;color:var(--ink);background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.03));box-shadow:0 0 0 1px var(--line-strong) inset,0 1px 0 rgba(255,255,255,.14) inset,0 10px 24px -10px rgba(0,0,0,.9);transition:color .3s,box-shadow .3s,transform .3s}
+.ico svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.tile:hover .ico,.step:hover .ico{color:#a9c2ff;box-shadow:0 0 0 1px rgba(120,160,255,.55) inset,0 1px 0 rgba(255,255,255,.18) inset,0 0 28px -4px rgba(61,123,255,.65)}
+.step .ico{position:absolute;top:32px;right:32px}
+.step:nth-child(3n) .ico{right:0}
+.step::before{margin-bottom:56px}
+
+/* pływające karty w hero */
+.floats{position:absolute;inset:0;z-index:4;pointer-events:none}
+.float{position:absolute;width:max-content;max-width:270px;background:#fff;color:var(--a-ink);border-radius:14px;padding:12px 14px;font-size:12.5px;line-height:1.4;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 24px 60px -12px rgba(0,0,0,.85),0 10px 40px -10px rgba(61,123,255,.45);opacity:0;animation:floatin 1s 1.8s cubic-bezier(.2,.7,.2,1) forwards;transform:translate3d(0,calc((1 - var(--p,0))*var(--dy,60px)),0)}
+@keyframes floatin{from{opacity:0}to{opacity:1}}
+.float *{letter-spacing:0}
+.f-h{display:flex;align-items:center;gap:7px;font-weight:600;font-size:12.5px}
+.f-h .f-t{margin-left:auto;color:var(--a-faint);font-weight:500}
+.f-h.warn{color:#c2410c}
+.f-s{margin-top:5px;color:var(--a-muted);font-size:11.5px}
+.f-q{margin-top:6px;color:var(--a-body);font-size:12px}
+.rec{width:8px;height:8px;border-radius:50%;background:#e11d48;box-shadow:0 0 0 0 rgba(225,29,72,.6);animation:ping2 1.8s infinite}
+@keyframes ping2{70%{box-shadow:0 0 0 8px rgba(225,29,72,0)}100%{box-shadow:0 0 0 0 rgba(225,29,72,0)}}
+.wave.sm{height:22px;margin:8px 0 0}
+.f1{left:-2.5%;top:16%}.f2{right:-2.5%;top:9%;max-width:250px}.f3{left:-3%;top:58%;max-width:215px}
+@media (max-width:1100px){.floats{display:none}}
+@media (max-width:1020px){.step .ico{top:28px;right:24px}.step:nth-child(even) .ico{right:0}.step:nth-child(3n) .ico{right:24px}.step:nth-child(even) .ico{right:0}}
+@media (max-width:700px){.step .ico{right:0!important}}
+
+/* ===== bez obramowań kart i pakietów — rozróżnienie tłem, cieniem i światłem ===== */
+.tile{box-shadow:none;background:linear-gradient(180deg,#151515,#0d0d0d)}
+.tile::after{display:none}
+.plan-card{box-shadow:none;background:linear-gradient(180deg,#151515,#0d0d0d)}
+.plan-card.pro{background:linear-gradient(180deg,#16275a,#0b1226 62%);box-shadow:0 30px 90px -30px rgba(61,123,255,.6)}
+.cta-box{box-shadow:none;background:linear-gradient(180deg,#161616,#0c0c0c)}
+.stage-tilt .win{box-shadow:0 40px 120px -20px rgba(61,123,255,.35),0 30px 80px rgba(0,0,0,.8)}
+.float{box-shadow:0 24px 60px -12px rgba(0,0,0,.85),0 10px 40px -10px rgba(61,123,255,.45)}
+.ico{box-shadow:0 1px 0 rgba(255,255,255,.16) inset,0 10px 24px -10px rgba(0,0,0,.9)}
+.tile:hover .ico,.step:hover .ico{box-shadow:0 1px 0 rgba(255,255,255,.2) inset,0 0 28px -4px rgba(61,123,255,.7)}
+/* karty w oknach aplikacji */
+.stat,.card,.q{border:0;background:var(--a-s2)}
+.q.flag{background:#fff3e8}
+.row,.alert,.fun,.line{border-top-color:rgba(0,0,0,.07)}
+.kan span{border:0;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.kan span.fl{background:#fff4ea;box-shadow:none}
+.stats .stat{padding:14px 16px}

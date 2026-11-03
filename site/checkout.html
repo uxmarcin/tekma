@@ -1,0 +1,281 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zamówienie pakietu — Tekma</title>
+<meta name="description" content="Wybierz pakiet Tekmy, podaj dane do faktury i wyślij zamówienie.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preload" href="assets/fonts/InterDisplay-SemiBold.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/fonts/Inter-Regular.woff" as="font" type="font/woff" crossorigin>
+<script>document.documentElement.classList.add('js')</script>
+<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/checkout.css">
+</head>
+<body class="ck-body">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="mark" viewBox="0 0 32 32"><path d="M3 6H17.5V22.5L12.5 28V12H3Z"/><path d="M20 6H29L20 12.5Z"/></symbol>
+  <symbol id="tick" viewBox="0 0 20 20"><path d="M4 10.5l4 4 8-9" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="arrow-l" viewBox="0 0 20 20"><path d="M12.5 4.5L7 10l5.5 5.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="chev" viewBox="0 0 20 20"><path d="M5 7.5l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+
+<a class="ck-skip" href="#ck-main">Przejdź do treści</a>
+
+<header class="ck-nav">
+  <div class="wrap ck-nav-in">
+    <a class="logo" href="index.html" aria-label="Tekma — strona główna"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a>
+    <a class="ck-back" href="index.html#cennik"><svg aria-hidden="true"><use href="#arrow-l"/></svg>Wróć do strony</a>
+  </div>
+</header>
+
+<noscript>
+  <div class="wrap"><div class="ck-noscript">
+    <p>Ta strona do działania potrzebuje JavaScriptu. Zamówienie możesz złożyć też e-mailem: napisz na <a href="mailto:hello@tekma.app">hello@tekma.app</a>, podaj pakiet (Starter 49 € / mies. lub Pro 129 € / mies.) i dane do faktury.</p>
+  </div></div>
+</noscript>
+
+<main id="ck-main" class="ck-main">
+  <div class="wrap">
+
+    <!-- Pasek podsumowania na mobile -->
+    <div class="ck-mobile-sum" id="ck-mobile-sum">
+      <button type="button" class="ck-mobile-sum-btn" id="ck-mobile-toggle" aria-expanded="false" aria-controls="ck-summary">
+        <span class="ck-mobile-sum-plan">Pakiet <b data-plan-name>Pro</b></span>
+        <span class="ck-mobile-sum-amount"><b class="ck-amount" data-amount>129</b> € / mies.</span>
+        <svg class="ck-mobile-sum-chev" aria-hidden="true"><use href="#chev"/></svg>
+      </button>
+    </div>
+
+    <div class="ck-grid">
+      <div class="ck-flow">
+        <h1 class="ck-h1" id="ck-h1">Zamów pakiet <span data-plan-name>Pro</span></h1>
+
+        <ol class="ck-stepper" id="ck-stepper" aria-label="Kroki zamówienia">
+          <li class="ck-step" data-step="1" aria-current="step"><span class="ck-step-n">1</span><span class="ck-step-t">Pakiet</span></li>
+          <li class="ck-step" data-step="2"><span class="ck-step-n">2</span><span class="ck-step-t">Dane do faktury</span></li>
+          <li class="ck-step" data-step="3"><span class="ck-step-n">3</span><span class="ck-step-t">Wysyłka zamówienia</span></li>
+        </ol>
+
+        <p class="sr" id="ck-step-live" aria-live="polite"></p>
+
+        <form id="ck-form" class="ck-form" novalidate>
+
+          <!-- KROK 1 -->
+          <section class="ck-panel" id="krok-1" data-panel="1" aria-labelledby="ck-h-1">
+            <h2 class="ck-h2" id="ck-h-1">Wybierz pakiet</h2>
+            <p class="ck-sub">Rozliczenie miesięczne. Pakiet możesz zmienić w każdym kroku.</p>
+
+            <fieldset class="ck-plans">
+              <legend class="sr">Pakiet</legend>
+
+              <label class="ck-plan" for="plan-starter">
+                <input type="radio" name="plan" id="plan-starter" value="starter" class="ck-plan-input">
+                <span class="ck-plan-radio" aria-hidden="true"></span>
+                <span class="ck-plan-head">
+                  <span class="ck-plan-name">Starter</span>
+                  <span class="ck-plan-for">Dla zespołu, który zaczyna rosnąć</span>
+                </span>
+                <span class="ck-plan-price"><b>49 €</b><span>/ mies.</span></span>
+                <ul class="ck-plan-list">
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>5 aktywnych stanowisk</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>25 rozmów z analizą AI / mies.</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Notetaker dołącza sam</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Raporty lejka</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Strona kariery i portal kandydata</li>
+                </ul>
+              </label>
+
+              <label class="ck-plan ck-plan-pro" for="plan-pro">
+                <input type="radio" name="plan" id="plan-pro" value="pro" class="ck-plan-input" checked>
+                <span class="ck-plan-radio" aria-hidden="true"></span>
+                <span class="ck-plan-head">
+                  <span class="ck-plan-name">Pro <em>Polecany</em></span>
+                  <span class="ck-plan-for">Dla zespołów, które rekrutują stale</span>
+                </span>
+                <span class="ck-plan-price"><b>129 €</b><span>/ mies.</span></span>
+                <ul class="ck-plan-list">
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Bez limitu stanowisk</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>60 rozmów z analizą AI / mies., kolejne po 2 €</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Coach AI na żywo</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Kalibracja rozmówców</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Gmail, Outlook, Slack i kalendarze</li>
+                  <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Eksport rejestru decyzji AI</li>
+                </ul>
+              </label>
+            </fieldset>
+
+            <div class="ck-actions">
+              <button type="button" class="btn btn-primary btn-lg" data-next="2">Dalej</button>
+            </div>
+          </section>
+
+          <!-- KROK 2 -->
+          <section class="ck-panel" id="krok-2" data-panel="2" aria-labelledby="ck-h-2" hidden>
+            <h2 class="ck-h2" id="ck-h-2">Dane do faktury</h2>
+            <p class="ck-sub">Na ten e-mail założymy konto i wyślemy fakturę.</p>
+
+            <div class="ck-errsum" id="ck-errsum" role="alert" tabindex="-1" hidden>
+              <p class="ck-errsum-t" id="ck-errsum-t"></p>
+              <ul id="ck-errsum-list"></ul>
+            </div>
+
+            <div class="ck-fields">
+              <div class="ck-field ck-span">
+                <label for="f-email">E-mail do logowania i faktury</label>
+                <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" spellcheck="false" required aria-describedby="e-email">
+                <p class="ck-err" id="e-email"></p>
+              </div>
+
+              <div class="ck-field">
+                <label for="f-name">Imię i nazwisko</label>
+                <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="e-name">
+                <p class="ck-err" id="e-name"></p>
+              </div>
+
+              <div class="ck-field">
+                <label for="f-company">Nazwa firmy</label>
+                <input id="f-company" name="company" type="text" autocomplete="organization" required aria-describedby="e-company">
+                <p class="ck-err" id="e-company"></p>
+              </div>
+
+              <div class="ck-field">
+                <label for="f-nip">NIP <span class="ck-opt">opcjonalnie</span></label>
+                <input id="f-nip" name="nip" type="text" autocomplete="off" inputmode="numeric" aria-describedby="e-nip h-nip">
+                <p class="ck-hint" id="h-nip">10 cyfr, może być z myślnikami.</p>
+                <p class="ck-err" id="e-nip"></p>
+              </div>
+
+              <div class="ck-field">
+                <label for="f-country">Kraj</label>
+                <div class="ck-select">
+                  <select id="f-country" name="country" autocomplete="country-name" required aria-describedby="e-country">
+                    <option value="Polska" selected>Polska</option>
+                    <option value="Niemcy">Niemcy</option>
+                    <option value="Czechy">Czechy</option>
+                    <option value="Słowacja">Słowacja</option>
+                    <option value="Litwa">Litwa</option>
+                    <option value="Austria">Austria</option>
+                    <option value="Niderlandy">Niderlandy</option>
+                    <option value="Francja">Francja</option>
+                    <option value="Hiszpania">Hiszpania</option>
+                    <option value="Irlandia">Irlandia</option>
+                  </select>
+                  <svg aria-hidden="true"><use href="#chev"/></svg>
+                </div>
+                <p class="ck-err" id="e-country"></p>
+              </div>
+
+              <div class="ck-field ck-span">
+                <label for="f-street">Ulica i numer</label>
+                <input id="f-street" name="street" type="text" autocomplete="street-address" required aria-describedby="e-street">
+                <p class="ck-err" id="e-street"></p>
+              </div>
+
+              <div class="ck-field ck-narrow">
+                <label for="f-postal">Kod pocztowy</label>
+                <input id="f-postal" name="postal" type="text" autocomplete="postal-code" inputmode="numeric" required aria-describedby="e-postal">
+                <p class="ck-err" id="e-postal"></p>
+              </div>
+
+              <div class="ck-field">
+                <label for="f-city">Miasto</label>
+                <input id="f-city" name="city" type="text" autocomplete="address-level2" required aria-describedby="e-city">
+                <p class="ck-err" id="e-city"></p>
+              </div>
+            </div>
+
+            <div class="ck-actions">
+              <button type="button" class="btn btn-ghost btn-lg" data-prev="1">Wstecz</button>
+              <button type="button" class="btn btn-primary btn-lg" data-next="3">Dalej</button>
+            </div>
+          </section>
+
+          <!-- KROK 3 -->
+          <section class="ck-panel" id="krok-3" data-panel="3" aria-labelledby="ck-h-3" hidden>
+            <div class="ck-review" id="ck-review">
+              <h2 class="ck-h2" id="ck-h-3">Sprawdź zamówienie</h2>
+              <p class="ck-sub">Jeśli coś się nie zgadza, wróć i popraw.</p>
+
+              <dl class="ck-rev">
+                <div class="ck-rev-row">
+                  <dt>Pakiet</dt>
+                  <dd><b data-plan-name>Pro</b><span class="ck-rev-price"><span data-amount>129</span> € / mies.</span></dd>
+                  <dd class="ck-rev-change"><button type="button" class="ck-link" data-goto="1">Zmień</button></dd>
+                </div>
+                <div class="ck-rev-row">
+                  <dt>E-mail</dt>
+                  <dd id="r-email"></dd>
+                  <dd class="ck-rev-change"><button type="button" class="ck-link" data-goto="2" data-focus="f-email">Zmień</button></dd>
+                </div>
+                <div class="ck-rev-row">
+                  <dt>Zamawia</dt>
+                  <dd id="r-person"></dd>
+                  <dd class="ck-rev-change"><button type="button" class="ck-link" data-goto="2" data-focus="f-name">Zmień</button></dd>
+                </div>
+                <div class="ck-rev-row">
+                  <dt>Adres</dt>
+                  <dd id="r-address"></dd>
+                  <dd class="ck-rev-change"><button type="button" class="ck-link" data-goto="2" data-focus="f-street">Zmień</button></dd>
+                </div>
+              </dl>
+
+              <div class="ck-send">
+                <p class="ck-send-note" id="ck-send-note">Płatności online uruchamiamy ze startem aplikacji. Wyślij zamówienie, a w odpowiedzi dostaniesz fakturę proforma i link do płatności.</p>
+                <div class="ck-actions">
+                  <button type="button" class="btn btn-ghost btn-lg" data-prev="2">Wstecz</button>
+                  <button type="button" class="btn btn-primary btn-lg" id="ck-submit">Wyślij zamówienie</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Potwierdzenie -->
+            <div class="ck-done" id="ck-done" hidden tabindex="-1">
+              <span class="ck-done-mark" aria-hidden="true"><svg viewBox="0 0 20 20"><use href="#tick"/></svg></span>
+              <h2 class="ck-h2">Zamówienie gotowe do wysłania</h2>
+              <p class="ck-done-num">Numer zamówienia: <b id="ck-order-no"></b></p>
+              <p class="ck-sub">Otworzyliśmy Twój program pocztowy z gotową wiadomością do hello@tekma.app. Wyślij ją, a odpowiemy fakturą proforma i linkiem do płatności. Jeśli program się nie otworzył, skopiuj treść zamówienia i wyślij ją sam.</p>
+
+              <dl class="ck-rev ck-rev-done" id="ck-done-rev"></dl>
+
+              <div class="ck-actions">
+                <button type="button" class="btn btn-primary btn-lg" id="ck-copy">Skopiuj treść zamówienia</button>
+                <a class="btn btn-ghost btn-lg" href="index.html">Wróć na stronę główną</a>
+              </div>
+              <p class="ck-copy-msg" id="ck-copy-msg" aria-live="polite"></p>
+            </div>
+          </section>
+
+        </form>
+      </div>
+
+      <!-- Panel podsumowania -->
+      <aside class="ck-summary" id="ck-summary" aria-labelledby="ck-sum-h">
+        <div class="ck-summary-in">
+          <h2 class="ck-sum-h" id="ck-sum-h">Zamówienie</h2>
+          <div class="ck-sum-plan">
+            <span class="ck-sum-name" data-plan-name>Pro</span>
+            <span class="ck-sum-amount" aria-live="polite" aria-atomic="true"><b class="ck-amount" data-amount>129</b> <span>€ / mies.</span></span>
+          </div>
+          <ul class="ck-sum-list" id="ck-sum-list"></ul>
+          <button type="button" class="ck-link" data-goto="1" id="ck-change-plan">Zmień pakiet</button>
+          <p class="ck-sum-foot">Rozliczenie miesięczne.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<footer class="ck-foot">
+  <div class="wrap ck-foot-in">
+    <span>© 2026 Tekma</span>
+    <a href="mailto:hello@tekma.app">hello@tekma.app</a>
+  </div>
+</footer>
+
+<script src="assets/checkout.js" defer></script>
+</body>
+</html>
