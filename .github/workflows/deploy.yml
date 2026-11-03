@@ -37,3 +37,4 @@ jobs:
           mirror -R --verbose --parallel=3 ./site/ "$REMOTE_DIR"
           bye
           LFTP
+# ponowna próba po poprawie loginu
