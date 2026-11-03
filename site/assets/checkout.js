@@ -62,7 +62,7 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
     const input = $('#plan-' + p); if (input && !input.checked) input.checked = true;
     $$('[data-plan-name]').forEach(e => e.textContent = P.name);
     document.title = `Zamówienie pakietu ${P.name} — Tekma`;
-    $('#ck-sum-list').innerHTML = P.features.slice(0, 4).map(f => `<li>${f}</li>`).join('');
+    $('#ck-sum-list').innerHTML = P.features.map(f => `<li>${f}</li>`).join('');
     animateAmount(animate ? shownPrice : P.price, P.price);
     shownPrice = P.price;
     store.set('plan', p);
@@ -143,9 +143,18 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
 
   /* ---------- kroki ---------- */
   const canEnter = n => n === 1 || (n === 2) || (n === 3 && FIELDS.every(f => !validators[f](field(f).value.trim())));
+  const hashStep = h => { const m = /^#(?:krok-([123])|gotowe)$/.exec(h); return m ? (m[1] ? +m[1] : 3) : null; };
+
+  /* potwierdzenie zastępuje przegląd w kroku 3; cofnięcie (przeglądarką lub „Zmień pakiet”) przywraca przegląd */
+  const setDone = on => {
+    $('#ck-review').hidden = on;
+    $('#ck-done').hidden = !on;
+    document.body.classList.toggle('is-done', on);
+  };
 
   const showStep = (n, { push = true, focus = true, history: useHistory = true } = {}) => {
     if (!canEnter(n)) n = 2;
+    if (!$('#ck-done').hidden) setDone(false);
     step = n;
     panels.forEach(p => { p.hidden = +p.dataset.panel !== n; });
     $$('.ck-step', stepper).forEach(s => {
@@ -162,6 +171,7 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
     closeMobileSummary();
   };
+  const focusField = n => { const el = field(n); el.focus(); el.scrollIntoView({ block: 'center', behavior: reduce ? 'auto' : 'smooth' }); };
 
   form.addEventListener('click', e => {
     const next = e.target.closest('[data-next]');
@@ -176,7 +186,7 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
       saveForm(); showStep(+prev.dataset.prev);
     } else if (goto) {
       showStep(+goto.dataset.goto, { focus: !goto.dataset.focus });
-      if (goto.dataset.focus) field(goto.dataset.focus.replace('f-', '')).focus();
+      if (goto.dataset.focus) focusField(goto.dataset.focus.replace('f-', ''));
     }
   });
   $('#ck-change-plan').addEventListener('click', () => showStep(1));
@@ -186,10 +196,9 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
   });
 
   window.addEventListener('popstate', () => {
-    const m = /^#krok-(\d)$/.exec(location.hash);
-    const n = m ? +m[1] : 1;
-    if (!$('#ck-done').hidden) return; // po potwierdzeniu zostajemy na potwierdzeniu
-    showStep(n, { push: false });
+    const n = hashStep(location.hash) || 1;
+    // Cofnięcie z potwierdzenia wraca do formularza z tym samym numerem zamówienia.
+    showStep(n, { push: false, history: false });
   });
 
   /* ---------- panel na mobile ---------- */
@@ -198,6 +207,12 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
   toggle.addEventListener('click', () => {
     const open = summary.classList.toggle('is-open');
     toggle.setAttribute('aria-expanded', String(open));
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && summary.classList.contains('is-open')) { closeMobileSummary(); toggle.focus(); }
+  });
+  document.addEventListener('click', e => {
+    if (summary.classList.contains('is-open') && !e.target.closest('#ck-mobile-sum')) closeMobileSummary();
   });
 
   /* ---------- wysyłka ---------- */
@@ -250,15 +265,18 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
     const no = orderNo();
     const text = orderText(no);
     const subject = `Zamówienie Tekma ${P.name} ${no}`;
+    const mailto = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
     renderDone(no);
-    $('#ck-review').hidden = true;
-    const done = $('#ck-done'); done.hidden = false;
+    $('#ck-mail-again').href = mailto;
+    setDone(true);
     $$('.ck-step', stepper).forEach(s => { s.classList.add('is-done'); s.removeAttribute('aria-current'); });
     live.textContent = `Zamówienie ${no} gotowe do wysłania`;
+    copyMsg.textContent = '';
     history.replaceState({ step: 3, done: true }, '', '#gotowe');
-    done.focus();
+    closeMobileSummary();
+    $('#ck-done').focus();
     window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-    location.href = `mailto:${CONFIG.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}`;
+    location.href = mailto;
   });
 
   /* kopiowanie treści */
@@ -283,8 +301,8 @@ const CONFIG = { email: 'hello@tekma.app', stripeLinks: { starter: '', pro: '' }
   const initial = planFromUrl() || store.get('plan') || 'pro';
   shownPrice = PLANS[initial].price;
   setPlan(initial, { animate: false });
-  const m = /^#krok-(\d)$/.exec(location.hash);
-  // Bez zapisu hasha przy starcie: zmiana adresu przed zdarzeniem load przewinęłaby stronę do sekcji kroku.
-  showStep(m ? +m[1] : 1, { push: false, focus: false, history: !!m });
-  if (m) addEventListener('load', () => scrollTo(0, 0), { once: true });
+  // Hash kroku nie odpowiada żadnemu id w dokumencie, więc przeglądarka nie przewija ani nie przenosi fokusu.
+  const startStep = hashStep(location.hash);
+  if (location.hash && !startStep) history.replaceState(null, '', location.pathname + location.search);
+  showStep(startStep || 1, { push: false, focus: false, history: !!startStep });
 })();

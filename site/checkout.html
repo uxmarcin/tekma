@@ -44,15 +44,6 @@
 <main id="ck-main" class="ck-main">
   <div class="wrap">
 
-    <!-- Pasek podsumowania na mobile -->
-    <div class="ck-mobile-sum" id="ck-mobile-sum">
-      <button type="button" class="ck-mobile-sum-btn" id="ck-mobile-toggle" aria-expanded="false" aria-controls="ck-summary">
-        <span class="ck-mobile-sum-plan">Pakiet <b data-plan-name>Pro</b></span>
-        <span class="ck-mobile-sum-amount"><b class="ck-amount" data-amount>129</b> € / mies.</span>
-        <svg class="ck-mobile-sum-chev" aria-hidden="true"><use href="#chev"/></svg>
-      </button>
-    </div>
-
     <div class="ck-grid">
       <div class="ck-flow">
         <h1 class="ck-h1" id="ck-h1">Zamów pakiet <span data-plan-name>Pro</span></h1>
@@ -68,7 +59,7 @@
         <form id="ck-form" class="ck-form" novalidate>
 
           <!-- KROK 1 -->
-          <section class="ck-panel" id="krok-1" data-panel="1" aria-labelledby="ck-h-1">
+          <section class="ck-panel" id="ck-panel-1" data-panel="1" aria-labelledby="ck-h-1">
             <h2 class="ck-h2" id="ck-h-1">Wybierz pakiet</h2>
             <p class="ck-sub">Rozliczenie miesięczne. Pakiet możesz zmienić w każdym kroku.</p>
 
@@ -76,14 +67,14 @@
               <legend class="sr">Pakiet</legend>
 
               <label class="ck-plan" for="plan-starter">
-                <input type="radio" name="plan" id="plan-starter" value="starter" class="ck-plan-input">
+                <input type="radio" name="plan" id="plan-starter" value="starter" class="ck-plan-input" aria-labelledby="pl-starter-name pl-starter-price" aria-describedby="pl-starter-for pl-starter-list">
                 <span class="ck-plan-radio" aria-hidden="true"></span>
                 <span class="ck-plan-head">
-                  <span class="ck-plan-name">Starter</span>
-                  <span class="ck-plan-for">Dla zespołu, który zaczyna rosnąć</span>
+                  <span class="ck-plan-name" id="pl-starter-name">Starter</span>
+                  <span class="ck-plan-for" id="pl-starter-for">Dla zespołu, który zaczyna rosnąć</span>
                 </span>
-                <span class="ck-plan-price"><b>49 €</b><span>/ mies.</span></span>
-                <ul class="ck-plan-list">
+                <span class="ck-plan-price" id="pl-starter-price"><b>49 €</b><span>/ mies.</span></span>
+                <ul class="ck-plan-list" id="pl-starter-list">
                   <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>5 aktywnych stanowisk</li>
                   <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>25 rozmów z analizą AI / mies.</li>
                   <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Notetaker dołącza sam</li>
@@ -93,14 +84,14 @@
               </label>
 
               <label class="ck-plan ck-plan-pro" for="plan-pro">
-                <input type="radio" name="plan" id="plan-pro" value="pro" class="ck-plan-input" checked>
+                <input type="radio" name="plan" id="plan-pro" value="pro" class="ck-plan-input" checked aria-labelledby="pl-pro-name pl-pro-price" aria-describedby="pl-pro-for pl-pro-list">
                 <span class="ck-plan-radio" aria-hidden="true"></span>
                 <span class="ck-plan-head">
-                  <span class="ck-plan-name">Pro <em>Polecany</em></span>
-                  <span class="ck-plan-for">Dla zespołów, które rekrutują stale</span>
+                  <span class="ck-plan-name" id="pl-pro-name">Pro <em>Polecany</em></span>
+                  <span class="ck-plan-for" id="pl-pro-for">Dla zespołów, które rekrutują stale</span>
                 </span>
-                <span class="ck-plan-price"><b>129 €</b><span>/ mies.</span></span>
-                <ul class="ck-plan-list">
+                <span class="ck-plan-price" id="pl-pro-price"><b>129 €</b><span>/ mies.</span></span>
+                <ul class="ck-plan-list" id="pl-pro-list">
                   <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Bez limitu stanowisk</li>
                   <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>60 rozmów z analizą AI / mies., kolejne po 2 €</li>
                   <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Coach AI na żywo</li>
@@ -117,9 +108,9 @@
           </section>
 
           <!-- KROK 2 -->
-          <section class="ck-panel" id="krok-2" data-panel="2" aria-labelledby="ck-h-2" hidden>
+          <section class="ck-panel" id="ck-panel-2" data-panel="2" aria-labelledby="ck-h-2" hidden>
             <h2 class="ck-h2" id="ck-h-2">Dane do faktury</h2>
-            <p class="ck-sub">Na ten e-mail założymy konto i wyślemy fakturę.</p>
+            <p class="ck-sub">Na ten e-mail odpowiemy fakturą proforma i linkiem do płatności.</p>
 
             <div class="ck-errsum" id="ck-errsum" role="alert" tabindex="-1" hidden>
               <p class="ck-errsum-t" id="ck-errsum-t"></p>
@@ -128,7 +119,7 @@
 
             <div class="ck-fields">
               <div class="ck-field ck-span">
-                <label for="f-email">E-mail do logowania i faktury</label>
+                <label for="f-email">E-mail do kontaktu i faktury</label>
                 <input id="f-email" name="email" type="email" autocomplete="email" inputmode="email" spellcheck="false" required aria-describedby="e-email">
                 <p class="ck-err" id="e-email"></p>
               </div>
@@ -198,7 +189,7 @@
           </section>
 
           <!-- KROK 3 -->
-          <section class="ck-panel" id="krok-3" data-panel="3" aria-labelledby="ck-h-3" hidden>
+          <section class="ck-panel" id="ck-panel-3" data-panel="3" aria-labelledby="ck-h-3" hidden>
             <div class="ck-review" id="ck-review">
               <h2 class="ck-h2" id="ck-h-3">Sprawdź zamówienie</h2>
               <p class="ck-sub">Jeśli coś się nie zgadza, wróć i popraw.</p>
@@ -240,12 +231,13 @@
               <span class="ck-done-mark" aria-hidden="true"><svg viewBox="0 0 20 20"><use href="#tick"/></svg></span>
               <h2 class="ck-h2">Zamówienie gotowe do wysłania</h2>
               <p class="ck-done-num">Numer zamówienia: <b id="ck-order-no"></b></p>
-              <p class="ck-sub">Otworzyliśmy Twój program pocztowy z gotową wiadomością do hello@tekma.app. Wyślij ją, a odpowiemy fakturą proforma i linkiem do płatności. Jeśli program się nie otworzył, skopiuj treść zamówienia i wyślij ją sam.</p>
+              <p class="ck-sub">Twój program pocztowy powinien otworzyć gotową wiadomość do hello@tekma.app. Wyślij ją, a odpowiemy fakturą proforma i linkiem do płatności. Jeśli wiadomość się nie otworzyła, skopiuj treść zamówienia i wyślij ją z dowolnej skrzynki.</p>
 
               <dl class="ck-rev ck-rev-done" id="ck-done-rev"></dl>
 
               <div class="ck-actions">
                 <button type="button" class="btn btn-primary btn-lg" id="ck-copy">Skopiuj treść zamówienia</button>
+                <a class="btn btn-ghost btn-lg" id="ck-mail-again" href="mailto:hello@tekma.app">Otwórz wiadomość ponownie</a>
                 <a class="btn btn-ghost btn-lg" href="index.html">Wróć na stronę główną</a>
               </div>
               <p class="ck-copy-msg" id="ck-copy-msg" aria-live="polite"></p>
@@ -255,19 +247,26 @@
         </form>
       </div>
 
-      <!-- Panel podsumowania -->
-      <aside class="ck-summary" id="ck-summary" aria-labelledby="ck-sum-h">
-        <div class="ck-summary-in">
-          <h2 class="ck-sum-h" id="ck-sum-h">Zamówienie</h2>
-          <div class="ck-sum-plan">
-            <span class="ck-sum-name" data-plan-name>Pro</span>
-            <span class="ck-sum-amount" aria-live="polite" aria-atomic="true"><b class="ck-amount" data-amount>129</b> <span>€ / mies.</span></span>
+      <!-- Panel podsumowania: na desktopie przyklejona kolumna, na mobile pasek z rozwijaną listą -->
+      <div class="ck-mobile-sum" id="ck-mobile-sum">
+        <button type="button" class="ck-mobile-sum-btn" id="ck-mobile-toggle" aria-expanded="false" aria-controls="ck-summary">
+          <span class="ck-mobile-sum-plan">Pakiet <b data-plan-name>Pro</b></span>
+          <span class="ck-mobile-sum-amount"><b class="ck-amount" data-amount>129</b> € / mies.</span>
+          <svg class="ck-mobile-sum-chev" aria-hidden="true"><use href="#chev"/></svg>
+        </button>
+        <aside class="ck-summary" id="ck-summary" aria-labelledby="ck-sum-h">
+          <div class="ck-summary-in">
+            <h2 class="ck-sum-h" id="ck-sum-h">Zamówienie</h2>
+            <div class="ck-sum-plan">
+              <span class="ck-sum-name" data-plan-name>Pro</span>
+              <span class="ck-sum-amount" aria-live="polite" aria-atomic="true"><b class="ck-amount" data-amount>129</b> <span>€ / mies.</span></span>
+            </div>
+            <ul class="ck-sum-list" id="ck-sum-list" aria-label="Co zawiera pakiet"></ul>
+            <button type="button" class="ck-link" data-goto="1" id="ck-change-plan">Zmień pakiet</button>
+            <p class="ck-sum-foot">Rozliczenie miesięczne.</p>
           </div>
-          <ul class="ck-sum-list" id="ck-sum-list"></ul>
-          <button type="button" class="ck-link" data-goto="1" id="ck-change-plan">Zmień pakiet</button>
-          <p class="ck-sum-foot">Rozliczenie miesięczne.</p>
-        </div>
-      </aside>
+        </aside>
+      </div>
     </div>
   </div>
 </main>
