@@ -69,7 +69,6 @@ export default async function render(ctx) {
         title: `${greeting()}${name ? `, ${name}` : ''}`,
         text: 'Zacznij od pierwszego stanowiska. Dodasz do niego kandydatów i rubrykę, a Tekma pokaże lejek i podpowie, gdzie oceny się rozjeżdżają.',
         action: { label: 'Dodaj stanowisko', icon: 'plus', onClick: () => ctx.navigate('#/positions?new=1') },
-        secondary: { label: 'Zobacz rubryki', onClick: () => ctx.navigate('#/rubrics') },
       }));
       return;
     }

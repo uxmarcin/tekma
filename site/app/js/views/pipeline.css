@@ -13,7 +13,7 @@
 .pl-counts{display:flex;flex-wrap:wrap;gap:6px}
 .pl-counts button{height:28px;padding:0 11px;border-radius:var(--r-pill);background:var(--s2);color:var(--muted);font-size:var(--fs-xs);font-weight:500;transition:background var(--t),color var(--t)}
 .pl-counts button:hover{background:var(--s3);color:var(--ink)}
-.pl-counts button b{color:var(--ink);margin-right:4px}
+.pl-counts button b{color:var(--ink);margin-left:3px}
 .pl-hint{display:flex;align-items:center;gap:6px;font-size:var(--fs-xs);color:var(--faint)}
 .pl-hint svg{width:13px;height:13px;flex:none}
 .pl-hint .kbd{margin:0 2px}

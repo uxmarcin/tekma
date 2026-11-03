@@ -89,7 +89,7 @@ export default async function render(ctx) {
       });
 
     // Na mobile pasek nagłówka jest ukryty, więc akcja główna trafia do paska narzędzi.
-    const mobileAdd = button({ label: 'Dodaj stanowisko', variant: 'primary', size: 'sm', icon: 'plus', onClick: () => openNewPosition(ctx, { onCreated: reload }) });
+    const mobileAdd = button({ label: 'Dodaj', variant: 'primary', size: 'sm', icon: 'plus', title: 'Dodaj stanowisko', attrs: { 'aria-label': 'Dodaj stanowisko' }, onClick: () => openNewPosition(ctx, { onCreated: reload }) });
     mobileAdd.classList.add('pos-add-mobile');
     root.replaceChildren(
       h('div', { class: 'pos-toolbar' }, seg, h('p', { class: 'pos-summary', 'aria-live': 'polite' }, summary(ctx, shown, candidates)), mobileAdd),
@@ -134,7 +134,7 @@ function positionRow(ctx, p, candidates) {
     h('a', { class: 'pos-row', href: `#/positions/${encodeURIComponent(p.id)}`, 'aria-label': `${p.title}${meta ? ', ' + meta : ''}, ${open ? 'otwarte' : 'zamknięte'}, ${plural(active.length, 'kandydat w procesie', 'kandydatów w procesie', 'kandydatów w procesie')}` },
       h('div', { class: 'pos-main' },
         h('b', null, p.title),
-        h('small', null, meta || 'Bez działu i lokalizacji', p.created_at ? ` · od ${formatDate(p.created_at)}` : ''),
+        h('small', null, meta || 'Bez działu i lokalizacji', p.created_at ? h('span', { class: 'pos-date' }, ` · od ${formatDate(p.created_at)}`) : null),
       ),
       h('div', { class: 'pos-status' }, tag(open ? 'Otwarte' : 'Zamknięte', open ? 'good' : 'neutral'), !p.rubric_id && open ? tag('Bez rubryki', 'neutral') : null),
       h('div', { class: 'pos-cands' }, h('b', null, String(active.length)), h('small', null, active.length === 1 ? 'kandydat' : 'kandydatów')),

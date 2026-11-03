@@ -68,4 +68,5 @@
   .pos-chev{grid-area:chev}
   .pos-skel-row{grid-template-columns:minmax(0,1fr) 84px}
   .pos-skel-row i.c{display:none}
+  .pos-date{display:none}
 }
