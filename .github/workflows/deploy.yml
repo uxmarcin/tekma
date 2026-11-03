@@ -31,7 +31,8 @@ jobs:
           echo "dlugosc loginu: ${#SFTP_USER}, dlugosc hasla: ${#SFTP_PASS}, port: $SFTP_PORT"
           case "$SFTP_USER$SFTP_PASS$SFTP_HOST" in *[[:space:]]*) echo "UWAGA: w sekretach jest biały znak";; *) echo "brak białych znaków w sekretach";; esac
           case "$SFTP_HOST" in *://*|*/*) echo "UWAGA: FTP_SERVER zawiera protokol lub sciezke";; *) echo "format hosta OK";; esac
-          ssh -p "$SFTP_PORT" -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=none -o ConnectTimeout=15 "$SFTP_USER@$SFTP_HOST" true 2>&1 | sed "s/$SFTP_HOST/HOST/g; s/$SFTP_USER/USER/g" | tail -5
+          sudo apt-get install -y -qq sshpass >/dev/null
+          SSHPASS="$SFTP_PASS" sshpass -e ssh -p "$SFTP_PORT" -o StrictHostKeyChecking=accept-new -o PreferredAuthentications=password -o PubkeyAuthentication=no -o ConnectTimeout=15 "$SFTP_USER@$SFTP_HOST" 'echo LOGOWANIE_OK; pwd; ls -d public_html 2>&1' 2>&1 | sed "s/$SFTP_HOST/HOST/g; s/$SFTP_USER/USER/g" | tail -6
 
       - name: Wgraj site/ przez SFTP (bez usuwania plików na serwerze)
         run: |
