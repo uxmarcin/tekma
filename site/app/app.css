@@ -588,3 +588,8 @@ body.has-modal{overflow:hidden}
   /* nawigacja */
   .side a,.side .nav-soon,.user-btn,.popover [role="menuitem"],.tabbar a,.logo{corner-shape:squircle}
 }
+
+/* większe logo w pasku bocznym i na ekranach logowania */
+.side-brand{padding:6px 10px 20px}
+.side-brand .logo{font-size:27px;gap:8px}.side-brand .logo svg{width:30px;height:30px}
+.bare-logo .logo{font-size:30px;gap:9px}.bare-logo .logo svg{width:34px;height:34px}
