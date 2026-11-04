@@ -10,5 +10,5 @@
  * Bezpieczeństwo danych zapewnia RLS (Row Level Security) zdefiniowane w db/schema.sql,
  * a nie tajność tego klucza. Nigdy nie wklejaj tu klucza "service_role".
  */
-export const SUPABASE_URL = '';
-export const SUPABASE_ANON_KEY = '';
+export const SUPABASE_URL = 'https://rhblifzuoqdypewwwgcz.supabase.co';
+export const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJoYmxpZnp1b3FkeXBld3d3Z2N6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTM3NzQ5MTcsImV4cCI6MjEwOTM1MDkxN30.IgQh-22mR0RIJ0lyYkcQ5FWocPyMVgwB6QyfF161rmE';
