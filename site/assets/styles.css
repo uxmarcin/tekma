@@ -527,3 +527,6 @@ section{position:relative}
 .cta-box::before{background:radial-gradient(closest-side,rgba(129,140,248,.35),rgba(94,234,212,.12) 55%,transparent 72%)}
 .cta-box::after{opacity:.5}
 .plan-card h3 em{background:var(--grad);color:#05060a}
+
+/* większe odstępy między pakietami */
+.prices{gap:clamp(20px,2.6vw,36px)}
