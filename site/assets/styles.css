@@ -755,3 +755,8 @@ section{position:relative}
 .kan span small{color:var(--ai)}
 .kan span.fl small{color:#fb923c}
 .cv .ring{background:conic-gradient(var(--ai) calc(var(--p)*1%),#2b2b2b 0)}
+
+/* ikony Lucide przez <use>: obrys zamiast domyślnego czarnego wypełnienia */
+svg:has(>use[href^="#si-"]),svg:has(>use[href^="#i-"]),svg:has(>use[href="#tick"]){fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ed-menu b{background:#2b2b2b;color:#fff}
+.ed-menu svg,.ed-search svg{color:#9a9a9a}
