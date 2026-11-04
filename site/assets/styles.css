@@ -321,7 +321,9 @@ section{position:relative}
 @media (max-width:700px){
   .burger{display:flex}.nav-cta{display:none}
   .mobile-menu{position:fixed;inset:68px 0 0;background:rgba(0,0,0,.96);backdrop-filter:blur(20px);padding:24px var(--gutter);flex-direction:column;gap:6px;z-index:49}
-  .menu-open .mobile-menu{display:flex}
+  /* backdrop-filter na .nav robił z niego blok zawierający dla position:fixed — menu miało zerową wysokość */
+  .nav.menu-open,.nav.stuck.menu-open{backdrop-filter:none;-webkit-backdrop-filter:none;background:#000}
+  .menu-open .mobile-menu{display:flex;background:#000;overflow-y:auto}
   .mobile-menu a{padding:16px 4px;font:500 26px var(--display);letter-spacing:-.03em;color:var(--ink);border-bottom:1px solid var(--line)}
   .hero{padding-top:118px}
   .stats{grid-template-columns:1fr 1fr}.cols{grid-template-columns:1fr}.main-h .pill{display:none}.main{padding:18px 16px}
