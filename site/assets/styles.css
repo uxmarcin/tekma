@@ -475,3 +475,27 @@ section{position:relative}
 
 /* karty pływające: kontur + warstwowy cień, żeby nie zlewały się z oknem ani tłem */
 .float{box-shadow:0 0 0 1px rgba(0,0,0,.12),0 2px 6px rgba(0,0,0,.12),0 14px 32px -6px rgba(0,0,0,.4),0 34px 70px -16px rgba(0,0,0,.6),0 10px 44px -10px rgba(255,255,255,.22)}
+
+/* ===== formularz wcześniejszego dostępu ===== */
+.access{border:0;padding:0;margin:auto;width:min(480px,calc(100vw - 32px));border-radius:24px;background:linear-gradient(180deg,#171717,#0d0d0d);color:var(--body);box-shadow:0 0 0 1px rgba(255,255,255,.16),0 0 0 9px rgba(255,255,255,.04),0 0 0 10px rgba(255,255,255,.1),0 40px 120px -20px rgba(0,0,0,.9);overflow:visible}
+.access::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(6px)}
+.access-body{padding:36px 32px 32px}
+.access-x{position:absolute;top:14px;right:14px}
+.access-x button{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.07);color:var(--ink);font-size:20px;line-height:1}
+.access-x button:hover{background:rgba(255,255,255,.14)}
+.access h2{font-size:26px;letter-spacing:-.03em;margin-bottom:10px}
+.access-lede{color:var(--muted);font-size:15px;margin-bottom:22px}
+.access label:not(.check){display:block;font-size:13px;font-weight:500;color:var(--ink);margin-bottom:6px}
+.access input[type=email]{width:100%;height:46px;padding:0 14px;border-radius:12px;border:1px solid var(--line-strong);background:#0a0a0a;color:var(--ink);font:inherit;font-size:15px}
+.access input[type=email]:focus{outline:2px solid #fff;outline-offset:2px}
+.access .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.access .check{display:flex;gap:10px;align-items:flex-start;margin:16px 0 4px;font-size:12.5px;line-height:1.5;color:var(--muted);cursor:pointer}
+.access .check input{flex:none;width:18px;height:18px;margin-top:2px;accent-color:#fff}
+.access-err{margin:10px 0 0;color:var(--bad);font-size:13px}
+.access .btn-primary{width:100%;justify-content:center;margin-top:18px}
+.access .btn[disabled]{opacity:.6;cursor:wait}
+.access-ok{text-align:center}
+.access-ok .btn{margin-top:6px}
+.access-tick{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 18px;border-radius:50%;background:rgba(52,211,153,.14);color:var(--good)}
+.access-tick svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:480px){.access-body{padding:30px 22px 24px}}
