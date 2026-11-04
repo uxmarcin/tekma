@@ -18,7 +18,7 @@ jobs:
       FTP_USER: ${{ secrets.FTP_USERNAME }}
       FTP_PASS: ${{ secrets.FTP_PASSWORD }}
       FTP_PORT: ${{ secrets.FTP_PORT || 21 }}
-      REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || '.' }}
+      REMOTE_DIR: ${{ secrets.FTP_REMOTE_DIR || 'public_html' }}
     steps:
       - uses: actions/checkout@v4
 
