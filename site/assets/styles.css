@@ -716,3 +716,12 @@ section{position:relative}
 .mod .ms-l div.hit:hover{background:rgba(255,255,255,.05);border-radius:8px}
 .mod .checks div.off{opacity:.45}.mod .checks div.off svg{stroke:#777}
 .mod .checks div.hit:hover{background:rgba(255,255,255,.06)}
+
+/* cienka ramka jak we Framerze: bez grubego „pierścienia” wokół okien */
+.stage-tilt .win,.win.sc,.win.ed,.win.person{box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.win.ed{box-shadow:0 0 0 1px rgba(255,255,255,.12)}
+.shots-stage{box-shadow:none}
+.shot-frame{padding:0;background:none;border-radius:clamp(16px,2vw,24px);box-shadow:0 0 0 1px rgba(255,255,255,.12);overflow:hidden}
+.shot-frame img{border-radius:0;box-shadow:none}
+.shot-frame::after{border-radius:0}
+.float{box-shadow:0 0 0 1px rgba(255,255,255,.14),0 24px 60px -12px rgba(0,0,0,.9)}
