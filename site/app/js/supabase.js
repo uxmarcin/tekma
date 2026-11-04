@@ -138,7 +138,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       name = String(name || '').trim();
       if (!name) throw new Error('Podaj imię i nazwisko.');
       if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
-      if (!password || password.length < 8) throw new Error('Hasło musi mieć co najmniej 8 znaków.');
+      if (!password || password.length < 10) throw new Error('Hasło musi mieć co najmniej 10 znaków.');
       const r = await http('/auth/v1/signup', { method: 'POST', auth: false, body: { email, password, data: { name, full_name: name } } });
       if (!r.ok) throw authErrorFrom(r.status, r.data, 'signup');
       const d = r.data || {};
@@ -338,7 +338,7 @@ export function mapAuthError(status, data, op = '') {
     return 'Ten adres e-mail ma już konto. Zaloguj się albo zresetuj hasło.';
   }
   if (c === 'weak_password' || m.includes('password should be at least') || m.includes('password is too short')) {
-    return 'Hasło musi mieć co najmniej 8 znaków.';
+    return 'Hasło musi mieć co najmniej 10 znaków.';
   }
   if (c === 'otp_expired' || m.includes('token has expired or is invalid') || (op === 'verify' && (m.includes('invalid') || m.includes('expired') || m.includes('otp')))) {
     return 'Kod jest nieprawidłowy lub wygasł. Poproś o nowy.';

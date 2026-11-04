@@ -128,7 +128,7 @@ export function createLocalAdapter() {
       name = String(name || '').trim();
       if (!name) throw new Error('Podaj imię i nazwisko.');
       if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
-      if (!password || password.length < 8) throw new Error('Hasło musi mieć co najmniej 8 znaków.');
+      if (!password || password.length < 10) throw new Error('Hasło musi mieć co najmniej 10 znaków.');
       if (db.users.some((u) => u.email === email)) throw new Error('Ten adres e-mail ma już konto. Zaloguj się albo zresetuj hasło.');
       const user = { id: uuid(), email, name, password_hash: await sha256(password), created_at: now() };
       db.users.push(user);

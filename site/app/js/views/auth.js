@@ -101,7 +101,7 @@ function signupCard({ ctx, swap }, { prefill = {} } = {}) {
   const { h, field, button } = ctx.ui;
   const name = field({ label: 'Imię i nazwisko', name: 'name', type: 'text', autocomplete: 'name', required: true, placeholder: 'Anna Nowak', value: prefill.name || '' });
   const email = field({ label: 'Służbowy e-mail', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl', value: prefill.email || '' });
-  const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'new-password', required: true, hint: 'Co najmniej 8 znaków. Najlepiej zdanie, które łatwo zapamiętać.' });
+  const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'new-password', required: true, hint: 'Co najmniej 10 znaków. Najlepiej zdanie, które łatwo zapamiętać.' });
   const submit = button({ label: 'Załóż konto', variant: 'primary', type: 'submit', block: true });
   const card = h('div', { class: 'bare-card' });
 
@@ -111,7 +111,7 @@ function signupCard({ ctx, swap }, { prefill = {} } = {}) {
       let bad = false;
       if (!name.value.trim()) { name.setError('Podaj imię i nazwisko.'); bad = true; }
       if (!email.value.trim()) { email.setError('Podaj adres e-mail.'); bad = true; }
-      if (password.value.length < 8) { password.setError('Hasło musi mieć co najmniej 8 znaków.'); bad = true; }
+      if (password.value.length < 10) { password.setError('Hasło musi mieć co najmniej 10 znaków.'); bad = true; }
       if (bad) { [name, email, password].find((x) => x.classList.contains('has-error')).input.focus(); return; }
       const res = await ctx.store.auth.signUp({ name: name.value, email: email.value, password: password.value });
       if (res.needsConfirmation) {
