@@ -10,7 +10,7 @@ Legenda: ✅ zrobione · 🟡 gotowe, czeka na zgodę/decyzję · ⬜ do zrobien
   - retencja: organizations.retention_months, candidates.closed_at, purge_expired_candidates()
   - delete_org(org, nazwa) — usunięcie firmy wraz z danymi przez właściciela
 - ✅ Skrypt kontrolny db/checks/rls-check.sql (oczekiwane 0 wierszy)
-- 🟡 Zastosować 1.2 na Supabase (SQL Editor) — wymaga zgody; potem uruchomić rls-check
+- ✅ Migracja 1.2 zastosowana na Supabase 2026-11-04 (kontrola: 0 problemów RLS, wszystkie elementy obecne)
 - 🟡 Plan Pro (backupy), MFA na Supabase i GitHub — decyzja/działanie właściciela
 - ⬜ Harmonogram retencji (pg_cron) — po zgodzie i po ustaleniu domyślnych okresów z klientami
 
