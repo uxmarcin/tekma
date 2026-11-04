@@ -550,3 +550,18 @@ section{position:relative}
 #tilt.fitted{overflow:visible}
 #tilt.fitted .win{max-width:none}
 .stage{margin-bottom:8px}
+
+/* ===== ikony jak na Creative Vision: czyste linie bez kwadratów, bez kolorowania po najechaniu ===== */
+.ico,.tile:hover .ico,.step:hover .ico{width:auto;height:auto;border-radius:0;background:none;box-shadow:none;color:var(--ink);display:block;margin-bottom:28px;place-items:unset}
+.ico svg{width:28px;height:28px;stroke-width:1.4}
+.step .ico{top:36px}
+
+/* kafelki: bez kolorowej poświaty po najechaniu — tylko neutralne tło i gradientowa kreska u góry (jak CV) */
+.tile::before,.plan-card::before{display:none}
+.tile,.plan-card{background:#000}
+.tile:hover,.plan-card:hover{background:#0a0a0a}
+.plan-card.pro,.plan-card.pro:hover{background:#0a0a0a}
+.plan-card.pro:hover{background:#0d0d0d}
+
+/* przycisk drugorzędny: bez obramowania */
+.btn-ghost{box-shadow:none}
