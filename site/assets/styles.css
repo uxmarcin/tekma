@@ -565,3 +565,45 @@ section{position:relative}
 
 /* przycisk drugorzędny: bez obramowania */
 .btn-ghost{box-shadow:none}
+
+/* ===== dark mode ekranów (paleta Framer: #111 / #181818 / #222, linie biel .09) ===== */
+.win,.float,.person{--a-bg:#111;--a-s2:#181818;--a-s3:#262626;--a-line:rgba(255,255,255,.09);--a-line2:rgba(255,255,255,.16);--a-ink:#fff;--a-body:#d4d4d4;--a-muted:rgba(255,255,255,.6);--a-faint:#8a8a8a;--a-accent:#fff}
+.win{background:#111}
+.win-bar{background:#181818;border-bottom-color:rgba(255,255,255,.09)}
+.win-bar i{background:rgba(255,255,255,.18)}
+.app .side{background:#111}
+.side .srch,.side .kb{background:#1d1d1d}
+.side a.on{background:#1d1d1d}
+.side .ws b{background:#262626;color:#fff}
+.main .stat,.main .card{background:#161616;border-color:rgba(255,255,255,.09)}
+.pill{background:#1d1d1d;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.12) inset}
+.pill.pri{background:#fff;color:#000}
+.tag.warn{background:rgba(251,146,60,.15);color:#fb923c}
+.tag.good{background:rgba(52,211,153,.15);color:#34d399}
+.tag.info{background:rgba(167,139,250,.16);color:#a78bfa}
+.tag.bad{background:rgba(251,113,133,.16);color:#fb7185}
+.tag.blue{background:#262626;color:#fff}
+.bars i{background:#fff}
+.scale button[aria-pressed=true]{background:#fff;color:#000}
+.float{background:#1a1a1a;color:#fff;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 2px 6px rgba(0,0,0,.4),0 24px 60px -12px rgba(0,0,0,.9),0 10px 44px -14px rgba(255,255,255,.12)}
+.f-h.warn{color:#fb923c}
+.person .ms::before{background:#111}
+.person .ms.on::before{background:radial-gradient(circle,#fff 38%,#111 42%)}
+.stage-tilt .win,.win.sc{box-shadow:0 0 0 1px rgba(255,255,255,.16),0 0 0 9px rgba(255,255,255,.04),0 0 0 10px rgba(255,255,255,.1),0 40px 120px -20px rgba(255,255,255,.1),0 30px 80px rgba(0,0,0,.8)}
+.stages span.on{background:#fff;color:#000}
+.q.flag{border-color:rgba(251,146,60,.5);background:rgba(251,146,60,.1)}
+.q.flag .q-flag{color:#fb923c}
+.stat,.card,.q{background:#181818}
+.row,.alert,.fun,.line{border-top-color:rgba(255,255,255,.08)}
+.line.ai{background:#222;color:#e5e5e5}
+.kan span{background:#1d1d1d;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;color:#fff}
+.kan span.fl{background:rgba(251,146,60,.12);border-color:rgba(251,146,60,.5)}
+.anch div b{background:#262626;color:#fff}
+.anch div:hover{background:#fff;color:#000}
+.scale button{color:#d4d4d4}
+.scale button[aria-pressed=true]{background:#fff;color:#000}
+.shots-stage img{background:#111}
+.rec{background:#fb7185}
+.checks svg{stroke:#34d399}
+.fun .fc.hot i{background:#fb923c}.fun .fc.hot span{color:#fb923c}
+.sc .good,.sc .yes,.sc [class*=rec] b{color:#34d399}

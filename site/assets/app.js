@@ -93,7 +93,7 @@
     $('#total').innerHTML = `${fmt(total)} <span>/ 5</span>`;
     const reco = $('#reco');
     reco.textContent = total >= 3.8 ? 'Tak' : total >= 3 ? 'Do omówienia' : 'Nie';
-    reco.style.color = total >= 3.8 ? '#15803d' : total >= 3 ? '#c2410c' : '#be123c';
+    reco.style.color = total >= 3.8 ? '#34d399' : total >= 3 ? '#fb923c' : '#fb7185';
   };
   qs.addEventListener('click', e => {
     const b = e.target.closest('button[data-v]'); if (!b) return;
