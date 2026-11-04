@@ -675,3 +675,44 @@ section{position:relative}
 .shot-frame{position:relative}
 .shot-frame::after{content:"";position:absolute;inset:auto 0 0;height:42%;border-radius:0 0 inherit inherit;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.6) 45%,#000 92%);pointer-events:none}
 .shots-stage figcaption{position:relative;z-index:2;margin-top:-72px}
+
+/* ===== moduły: siatka 3×2 jak Framer — fragment UI zanikający w czerń + podpis „Nazwa. opis” ===== */
+.mods{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:24px;overflow:hidden}
+.mod{background:#000;display:flex;flex-direction:column;min-width:0;transition:background .3s;position:relative}
+.mod:hover{background:#070707}
+.mod::after{content:"";position:absolute;inset:0 0 auto 0;height:2px;background:var(--grad);opacity:0;transition:opacity .3s}
+.mod:hover::after{opacity:1}
+.mod-ui{position:relative;height:360px;overflow:hidden;padding:48px 44px 0;display:flex;justify-content:center}
+.mod-ui::after{content:"";position:absolute;inset:auto 0 0;height:60%;background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.75) 55%,#000);pointer-events:none}
+.mod-p{width:100%;max-width:400px;background:#111;border-radius:20px 20px 0 0;box-shadow:0 0 0 1px rgba(255,255,255,.12);padding:16px 16px 0;color:#fff}
+.mod-h{display:flex;justify-content:space-between;align-items:center;font-size:14px;padding:2px 4px 14px;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:14px}
+.mod-h b{font-weight:600}.mod-h span{color:#9a9a9a;font-size:20px;line-height:1}
+.mod-t{padding:6px 36px 38px;margin:0;font-size:clamp(19px,1.9vw,24px);line-height:1.3;letter-spacing:-.02em;color:#8f8f8f;position:relative;z-index:2;margin-top:-30px}
+.mod-t b{color:#fff;font-weight:500}
+.mod .mini{--a-bg:#111;--a-ink:#fff;--a-muted:rgba(255,255,255,.6);--a-faint:#8a8a8a;--a-body:#d4d4d4;--a-line:rgba(255,255,255,.09);--a-s2:#1b1b1b;--a-s3:#262626}
+.mod .mini .fun{grid-template-columns:110px 1fr!important;gap:8px}
+.mod .wave{margin-bottom:8px}
+.ms-l{display:flex;flex-direction:column;gap:2px}
+.ms-l div{display:flex;align-items:center;gap:10px;padding:9px 6px;border-top:1px solid rgba(255,255,255,.08);font-size:12.5px}
+.ms-l div:first-child{border-top:0}
+.ms-l i{width:14px;height:14px;border-radius:50%;box-shadow:0 0 0 2px rgba(255,255,255,.25) inset;flex:none}
+.ms-l .on i{background:#34d399;box-shadow:none}
+.ms-l b{font-weight:500;flex:1}.ms-l small{color:#8a8a8a;font-size:11.5px}
+@media (max-width:1000px){.mods{grid-template-columns:1fr 1fr}}
+@media (max-width:640px){.mods{grid-template-columns:1fr;border-radius:20px}.mod-ui{height:320px;padding:36px 20px 0}.mod-t{padding:6px 24px 30px}}
+
+/* interaktywność modułów */
+.mod .hit{cursor:pointer;transition:background .2s,box-shadow .2s,opacity .2s}
+.mod .hit:focus-visible{outline:2px solid #fff;outline-offset:2px;border-radius:8px}
+.mod-ui{height:400px}.mod-ui::after{height:34%}
+.mod .line.hit:hover{background:rgba(255,255,255,.06);border-radius:8px}
+.mod .line.pin{background:#262626;border-radius:8px;box-shadow:0 0 0 1px rgba(255,255,255,.3) inset}
+.mod .line.pin::before{content:"📌 ";font-size:10px}
+.mod .anch div.hit:hover{background:#262626;color:#fff}
+.mod .anch div.sel{background:#fff;color:#000}
+.mod .anch div.sel b{background:#000;color:#fff}
+.mod .kan span.hit:hover{box-shadow:0 0 0 1px rgba(255,255,255,.4) inset;transform:translateY(-1px)}
+.mod .bars i.hit:hover{background:#fff;filter:brightness(1.2)}
+.mod .ms-l div.hit:hover{background:rgba(255,255,255,.05);border-radius:8px}
+.mod .checks div.off{opacity:.45}.mod .checks div.off svg{stroke:#777}
+.mod .checks div.hit:hover{background:rgba(255,255,255,.06)}
