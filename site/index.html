@@ -72,7 +72,7 @@
       <h1 aria-label="Zatrudniaj na dowodach, nie na przeczuciu.">
         <span class="w" style="--i:0" aria-hidden="true">Zatrudniaj</span>
         <span class="w" style="--i:1" aria-hidden="true">na</span>
-        <span class="w" style="--i:2" aria-hidden="true">dowodach,</span>
+        <span class="w gr" style="--i:2" aria-hidden="true">dowodach,</span>
         <span class="w" style="--i:3" aria-hidden="true">nie</span>
         <span class="w" style="--i:4" aria-hidden="true">na</span>
         <span class="w" style="--i:5" aria-hidden="true">przeczuciu.</span>
@@ -177,7 +177,7 @@
   <div class="wrap split">
     <div>
       <span class="kicker">Rekrutacja</span>
-      <h2>Każdy kandydat, ta sama miara.</h2>
+      <h2>Każdy kandydat, <span class="gr">ta sama miara.</span></h2>
       <p class="lede" style="margin-top:22px">Notetaker nagrywa rozmowę i dopasowuje odpowiedzi do rubryki. AI proponuje ocenę z cytatem, decyzja należy do rozmówcy. Gdy oceny są rozbieżne, Tekma to oznaczy.</p>
       <ul class="ticks">
         <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Rubryki z wagami dla każdego stanowiska</li>
@@ -214,7 +214,7 @@
   <div class="wrap">
     <div class="sec-h">
       <span class="kicker">Cały proces</span>
-      <h2>Od CV do pierwszego przeglądu.</h2>
+      <h2>Od CV do <span class="gr">pierwszego przeglądu.</span></h2>
       <p class="lede">AI czyta CV, słucha rozmów, podsuwa pytania i szkicuje kolejne kroki. Wszędzie widać, co zaproponowało AI, a co zdecydował człowiek.</p>
     </div>
     <div class="bento">
@@ -275,13 +275,13 @@
   <div class="wrap">
     <div class="sec-h">
       <span class="kicker">Zobacz produkt</span>
-      <h2>Tak wygląda Tekma w środku.</h2>
+      <h2>Tak wygląda Tekma <span class="gr">w środku.</span></h2>
       <p class="lede">Prawdziwe ekrany aplikacji, z danymi przykładowymi. Jasne, spokojne, bez zbędnych ozdobników.</p>
     </div>
     <div class="shots" id="shots" data-shots='[{"src": "assets/screens/dashboard.webp", "t": "Pulpit", "d": "Co dziś wymaga Twojej uwagi — rozbieżne oceny, braki w stanowiskach, liczniki procesu."}, {"src": "assets/screens/positions.webp", "t": "Stanowiska", "d": "Wszystkie rekrutacje w jednym miejscu, z mini-lejkiem i rubryką przypisaną do roli."}, {"src": "assets/screens/pipeline.webp", "t": "Lejek", "d": "Kandydaci w etapach. Przeciągnij kartę albo użyj klawiatury — o ruchu zawsze decydujesz Ty."}, {"src": "assets/screens/candidates.webp", "t": "Kandydaci", "d": "Wspólna baza z wyszukiwaniem, filtrami i dopasowaniem CV jako sugestią AI."}, {"src": "assets/screens/scorecard.webp", "t": "Karta oceny", "d": "Pytania z rubryki, kotwice ocen i sugestie AI z cytatem z rozmowy."}, {"src": "assets/screens/scorecard-diff.webp", "t": "Rozbieżności", "d": "Gdy oceny są rozbieżne, Tekma flaguje to, zanim zapadnie decyzja."}, {"src": "assets/screens/rubrics.webp", "t": "Rubryki", "d": "Pytania, wagi i kotwice w wersjach — ta sama miarka dla każdego kandydata."}]'>
       <div class="shots-tabs" role="tablist" aria-label="Ekrany aplikacji"><button type="button" role="tab" id="tab-dashboard" aria-selected="true" aria-controls="shot" data-i="0" tabindex="0">Pulpit</button><button type="button" role="tab" id="tab-positions" aria-selected="false" aria-controls="shot" data-i="1" tabindex="-1">Stanowiska</button><button type="button" role="tab" id="tab-pipeline" aria-selected="false" aria-controls="shot" data-i="2" tabindex="-1">Lejek</button><button type="button" role="tab" id="tab-candidates" aria-selected="false" aria-controls="shot" data-i="3" tabindex="-1">Kandydaci</button><button type="button" role="tab" id="tab-scorecard" aria-selected="false" aria-controls="shot" data-i="4" tabindex="-1">Karta oceny</button><button type="button" role="tab" id="tab-scorecard-diff" aria-selected="false" aria-controls="shot" data-i="5" tabindex="-1">Rozbieżności</button><button type="button" role="tab" id="tab-rubrics" aria-selected="false" aria-controls="shot" data-i="6" tabindex="-1">Rubryki</button></div>
       <figure class="shots-stage" id="shot" role="tabpanel" aria-labelledby="tab-dashboard">
-        <img id="shotImg" src="assets/screens/dashboard.webp" width="2880" height="1800" alt="Pulpit Tekma: liczniki procesu i lista spraw wymagających uwagi" loading="lazy">
+        <div class="shot-frame"><img id="shotImg" src="assets/screens/dashboard.webp" width="1440" height="900" alt="Pulpit Tekma: liczniki procesu i lista spraw wymagających uwagi" loading="lazy"></div>
         <figcaption id="shotCap"><b>Pulpit</b> Co dziś wymaga Twojej uwagi — rozbieżne oceny, braki w stanowiskach, liczniki procesu.</figcaption>
       </figure>
     </div>
@@ -293,7 +293,7 @@
   <div class="wrap split">
     <div>
       <span class="kicker">Po zatrudnieniu</span>
-      <h2>Rozwijaj z planem, nie z doskoku.</h2>
+      <h2>Rozwijaj <span class="gr">z planem,</span> nie z doskoku.</h2>
       <p class="lede" style="margin-top:22px">Wnioski z rekrutacji trafiają do profilu nowej osoby. Plan 90 dni, 1:1, check-iny i cele powiązane z celami firmy pokazują, jak idzie — zanim zrobi to przegląd roczny.</p>
       <ul class="ticks">
         <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>1:1 ze wspólną agendą</li>
@@ -323,7 +323,7 @@
 <!-- JAK TO DZIAŁA -->
 <section class="sec" id="jak">
   <div class="wrap">
-    <div class="sec-h"><span class="kicker">Jak to działa</span><h2>Rekrutacja, którą da się powtórzyć.</h2></div>
+    <div class="sec-h"><span class="kicker">Jak to działa</span><h2>Rekrutacja, którą <span class="gr">da się powtórzyć.</span></h2></div>
     <div class="steps">
       <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-rubric"/></svg></span><h3>Zbuduj rubrykę</h3><p>Zacznij od szablonu albo od zera. Każde pytanie ma wagę i opis ocen 1–5.</p></div>
       <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-stages"/></svg></span><h3>Ustaw etapy</h3><p>AI wylicza dopasowanie CV, a Ty ustalasz kolejne etapy i rozmówców.</p></div>
@@ -340,7 +340,7 @@
   <div class="wrap">
     <div class="sec-h">
       <span class="kicker">Cennik</span>
-      <h2>Zacznij za darmo. Płać, gdy zacznie się zwracać.</h2>
+      <h2>Zacznij za darmo. Płać, gdy zacznie się <span class="gr">zwracać.</span></h2>
       <p class="lede">Według często cytowanych szacunków nietrafione zatrudnienie kosztuje ok. 30% pensji z pierwszego roku. Zespół dodajesz bez limitu i bez dopłat.</p>
     </div>
     <div class="prices">
@@ -389,7 +389,7 @@
 <section class="cta" id="dolacz">
   <div class="wrap">
     <div class="cta-box">
-      <h2>Następne zatrudnienie oprzyj na dowodach.</h2>
+      <h2>Następne zatrudnienie oprzyj <span class="gr">na dowodach.</span></h2>
       <p class="lede">Pierwsze stanowisko skonfigurujesz w 5 minut. Plan 90 dni będzie gotowy, zanim nowa osoba zacznie pracę.</p>
       <div class="hero-actions" style="opacity:1;animation:none;margin-top:36px">
         <a data-access class="btn btn-primary btn-lg" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20">Poproś o wcześniejszy dostęp</a>

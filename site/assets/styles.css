@@ -499,3 +499,31 @@ section{position:relative}
 .access-tick{display:grid;place-items:center;width:56px;height:56px;margin:0 auto 18px;border-radius:50%;background:rgba(52,211,153,.14);color:var(--good)}
 .access-tick svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 @media (max-width:480px){.access-body{padding:30px 22px 24px}}
+
+/* ===== ekrany: ramka w stylu Framer — równy „bezel” wokół ekranu, opis i zakładki z oddechem ===== */
+#ekrany .sec-h{margin-bottom:56px}
+.shots-tabs{margin-bottom:32px;padding-bottom:4px}
+.shots-stage{background:none;padding:0;box-shadow:none;border-radius:0}
+.shot-frame{padding:clamp(8px,1.1vw,14px);border-radius:clamp(20px,2.4vw,30px);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.025));box-shadow:0 0 0 1px rgba(255,255,255,.14),0 0 0 9px rgba(255,255,255,.035),0 0 0 10px rgba(255,255,255,.09),0 50px 120px -40px rgba(255,255,255,.12)}
+.shot-frame img{border-radius:clamp(12px,1.5vw,18px);box-shadow:0 0 0 1px rgba(0,0,0,.4),0 24px 60px -24px rgba(0,0,0,.8)}
+.shots-stage figcaption{padding:32px clamp(4px,1vw,14px) 0;font-size:16px;line-height:1.6}
+@supports (corner-shape: squircle){.shot-frame{corner-shape:squircle}}
+
+/* ===== styl Creative Vision: płaskie kafelki z cienką linią, sygnaturowy gradient na słowach-kluczach ===== */
+:root{--grad:linear-gradient(90deg,#5eead4 0%,#38bdf8 24%,#818cf8 50%,#c084fc 76%,#f472b6 100%);--hair:rgba(255,255,255,.12)}
+.gr{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+/* gradientowa kreska przy etykiecie sekcji */
+.kicker::before{content:"";display:inline-block;width:28px;height:3px;border-radius:2px;background:var(--grad);margin-right:12px;vertical-align:middle;transform:translateY(-1px)}
+.hero .badge-new{position:relative}
+
+/* kafelki: płaskie, ciemne, z cienką linią; po najechaniu gradientowa ramka + poświata */
+.tile,.plan-card,.cta-box{background:#0d0d0d;box-shadow:inset 0 0 0 1px var(--hair);border-radius:24px}
+.tile::before,.plan-card::before{background:radial-gradient(520px circle at var(--mx,50%) var(--my,0%),rgba(129,140,248,.14),rgba(94,234,212,.05) 45%,transparent 70%)}
+.tile::after,.plan-card::after,.cta-box::after{content:"";display:block;position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .35s;pointer-events:none}
+.tile:hover::after,.plan-card:hover::after{opacity:.85}
+.plan-card.pro{background:linear-gradient(180deg,#14141c,#0d0d0d 60%);box-shadow:inset 0 0 0 1px var(--hair),0 30px 90px -34px rgba(129,140,248,.45)}
+.plan-card.pro::after{opacity:1}
+.cta-box{background:#0d0d0d}
+.cta-box::before{background:radial-gradient(closest-side,rgba(129,140,248,.35),rgba(94,234,212,.12) 55%,transparent 72%)}
+.cta-box::after{opacity:.5}
+.plan-card h3 em{background:var(--grad);color:#05060a}
