@@ -416,3 +416,39 @@ section{position:relative}
 .shots-stage figcaption b{color:var(--ink);font-weight:600;margin-right:6px}
 @supports (corner-shape: squircle){.shots-stage,.shots-stage img,.shots-tabs button{corner-shape:squircle}}
 @media (prefers-reduced-motion:reduce){.shots-stage img{transition:none}}
+
+/* okno hero zgodne z ekranem z Figmy */
+.win .si{fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.side a::before{display:none}
+.side a{color:var(--a-body)}.side a .si{color:var(--a-muted)}.side a.on .si{color:var(--a-ink)}
+.side .ws{padding:4px 6px 10px}
+.side .ws-r{margin-left:auto;display:flex;gap:8px;color:var(--a-muted)}
+.side .srch{display:flex;align-items:center;gap:8px;height:30px;padding:0 10px;margin-bottom:6px;border-radius:8px;background:var(--a-bg);color:var(--a-faint);font-size:12.5px}
+.side .side-foot{margin-top:auto;padding:12px 6px 2px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--a-body)}
+.side .side-foot span:first-child{display:flex;align-items:center;gap:8px}
+.side .kb{padding:5px 10px;border-radius:8px;background:var(--a-bg);font-weight:500;color:var(--a-ink)}
+.row .who{font-size:11.5px;color:var(--a-muted);white-space:nowrap}
+.row time{padding:3px 9px;border-radius:7px;background:var(--a-s3);color:var(--a-ink);font-weight:500}
+.fun{grid-template-columns:170px 1fr}
+.fun .bars{height:auto;align-items:stretch;gap:16px}
+.fun .fc{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;gap:6px;padding-bottom:4px;font-size:12px;color:var(--a-ink)}
+.fun .fc::before{content:"";position:absolute;left:0;right:0;bottom:0;height:4px;border-radius:99px;background:rgba(0,0,0,.08)}
+.fun .fc i{flex:none;position:relative;height:4px;width:calc(var(--v)*1%);min-width:4px;border-radius:99px;background:var(--a-ink);transform-origin:left;transition:transform 1s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--k)*70ms);margin-top:-10px;order:2}
+.fun .fc span{order:1;margin-bottom:10px}
+.fun .fc.hot i{background:#c2410c}.fun .fc.hot span{color:#c2410c}
+.js .fun .fc i{transform:scaleX(0)}
+.js .in-view .fun .fc i,.js .fun .bars.in-view .fc i{transform:scaleX(1)}
+@media (prefers-reduced-motion:reduce){.js .fun .fc i{transform:none}}
+
+/* h1 w hero mniejszy; przyciski na mobile pełnej szerokości, jeden pod drugim */
+.hero h1{font-size:clamp(36px,6vw,76px)}
+@media (max-width:700px){
+  .hero h1{font-size:clamp(34px,10.5vw,44px)}
+  .hero-actions{flex-direction:column;align-items:stretch;gap:10px}
+  .hero-actions .btn{width:100%;justify-content:center;text-align:center}
+}
+.app{grid-template-columns:232px 1fr}
+.side .ws{white-space:nowrap}
+.side .side-foot{white-space:nowrap;gap:8px}
+.side .side-foot span:first-child{gap:7px}
+.side .kb{flex:none}
