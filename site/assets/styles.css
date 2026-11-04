@@ -452,3 +452,11 @@ section{position:relative}
 .side .side-foot{white-space:nowrap;gap:8px}
 .side .side-foot span:first-child{gap:7px}
 .side .kb{flex:none}
+
+/* hero wyśrodkowane jak w Figmie (od tabletu w górę) */
+@media (min-width:701px){
+  .hero-copy{max-width:none;text-align:center;display:flex;flex-direction:column;align-items:center}
+  .hero h1{max-width:12.5em;text-wrap:balance;font-size:clamp(40px,5.6vw,80px)}
+  .hero .lede{margin-inline:auto;max-width:58ch}
+  .hero-actions{justify-content:center}
+}
