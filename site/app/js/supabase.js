@@ -3,12 +3,16 @@
  *
  * Ten sam interfejs adaptera, co local.js (store.js dokleja warstwę wspólną):
  *   mode: 'supabase'
- *   auth:       session(), signUp, signIn, signOut, resetPassword, onChange
+ *   auth:       session(), signUp, signIn, signOut, resetPassword, verifyEmailCode, resendEmailCode, onChange
  *   org:        current(), create({name})       — create przez RPC /rest/v1/rpc/create_org
  *   positions / candidates / rubrics / scorecards: list, get, create, update (+ scorecards.find)
  *
  * Auth:  POST /auth/v1/signup, /auth/v1/token?grant_type=password, /auth/v1/logout, /auth/v1/recover,
+ *        potwierdzenie rejestracji KODEM z e-maila: /auth/v1/verify {type:'signup', email, token},
+ *        ponowna wysyłka kodu: /auth/v1/resend {type:'signup', email},
  *        odświeżanie: /auth/v1/token?grant_type=refresh_token. Sesja w localStorage (`tekma.sb.session`).
+ * Błędy auth to Error z polskim komunikatem i polem `code` (np. 'email_not_confirmed', 'otp_expired',
+ * 'rate_limit', 'network'), żeby widok mógł zareagować bez parsowania tekstu.
  * Dane:  /rest/v1/<tabela>?select=…&org_id=eq.<id>&order=… z nagłówkami apikey + Authorization: Bearer.
  * Błędy Supabase są mapowane na polskie, konkretne komunikaty (mapAuthError / mapRestError).
  *
@@ -78,7 +82,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
     try {
       res = await doFetch(u, { method, headers: h, body: body !== undefined ? JSON.stringify(body) : undefined });
     } catch {
-      throw new Error('Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.');
+      throw authError('Brak połączenia z serwerem. Sprawdź internet i spróbuj ponownie.', 'network');
     }
     const text = await res.text();
     let data = null;
@@ -136,7 +140,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
       if (!password || password.length < 8) throw new Error('Hasło musi mieć co najmniej 8 znaków.');
       const r = await http('/auth/v1/signup', { method: 'POST', auth: false, body: { email, password, data: { name, full_name: name } } });
-      if (!r.ok) throw new Error(mapAuthError(r.status, r.data));
+      if (!r.ok) throw authErrorFrom(r.status, r.data, 'signup');
       const d = r.data || {};
       if (d.access_token) {
         writeSession(fromTokenResponse(d)); orgCache = null; emit();
@@ -156,9 +160,37 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
       if (!password) throw new Error('Podaj hasło.');
       const r = await http('/auth/v1/token?grant_type=password', { method: 'POST', auth: false, body: { email, password } });
-      if (!r.ok) throw new Error(mapAuthError(r.status, r.data));
+      if (!r.ok) throw authErrorFrom(r.status, r.data, 'signin');
       writeSession(fromTokenResponse(r.data)); orgCache = null; emit();
       return sessionObj();
+    },
+
+    /**
+     * Potwierdzenie rejestracji kodem z e-maila (szablon „Confirm signup” z {{ .Token }}).
+     * POST /auth/v1/verify {type:'signup', email, token} → sesja (access_token/refresh_token/user).
+     */
+    async verifyEmailCode({ email, code }) {
+      email = String(email || '').trim().toLowerCase();
+      code = String(code || '').replace(/\D/g, '');
+      if (!EMAIL_RE.test(email)) throw authError('Podaj poprawny adres e-mail.', 'validation');
+      if (code.length !== 6) throw authError('Wpisz 6-cyfrowy kod z e-maila.', 'validation');
+      const r = await http('/auth/v1/verify', { method: 'POST', auth: false, body: { type: 'signup', email, token: code } });
+      if (!r.ok) throw authErrorFrom(r.status, r.data, 'verify');
+      const d = r.data || {};
+      if (!d.access_token) {
+        throw authError('Kod przyjęty, ale serwer nie zwrócił sesji. Zaloguj się e-mailem i hasłem.', 'no_session');
+      }
+      writeSession(fromTokenResponse(d)); orgCache = null; emit();
+      return sessionObj();
+    },
+
+    /** Ponowna wysyłka kodu potwierdzającego: POST /auth/v1/resend {type:'signup', email}. */
+    async resendEmailCode({ email }) {
+      email = String(email || '').trim().toLowerCase();
+      if (!EMAIL_RE.test(email)) throw authError('Podaj poprawny adres e-mail.', 'validation');
+      const r = await http('/auth/v1/resend', { method: 'POST', auth: false, body: { type: 'signup', email } });
+      if (!r.ok) throw authErrorFrom(r.status, r.data, 'resend');
+      return true;
     },
 
     async signOut() {
@@ -174,7 +206,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
       const redirect = typeof location !== 'undefined' ? `${location.origin}${location.pathname}#/login` : undefined;
       const r = await http('/auth/v1/recover', { method: 'POST', auth: false, body: { email, ...(redirect ? { redirect_to: redirect } : {}) } });
-      if (!r.ok) throw new Error(mapAuthError(r.status, r.data));
+      if (!r.ok) throw authErrorFrom(r.status, r.data, 'recover');
       return true;
     },
 
@@ -271,7 +303,35 @@ function codeOf(data) {
   return data.error_code || data.code || '';
 }
 
-export function mapAuthError(status, data) {
+/** Error z polskim komunikatem i stabilnym `code` (widok reaguje po kodzie, nie po tekście). */
+export function authError(message, code = 'auth') {
+  const e = new Error(message);
+  e.code = code;
+  return e;
+}
+function authErrorFrom(status, data, op) {
+  return authError(mapAuthError(status, data, op), authErrorCode(status, data));
+}
+
+/** Stabilny kod błędu auth: 'email_not_confirmed' | 'otp_expired' | 'rate_limit' | 'invalid_credentials' | … */
+export function authErrorCode(status, data) {
+  const m = msgOf(data).toLowerCase();
+  const c = String(codeOf(data)).toLowerCase();
+  if (c === 'email_not_confirmed' || m.includes('email not confirmed')) return 'email_not_confirmed';
+  if (c === 'otp_expired' || c === 'otp_disabled' || m.includes('token has expired or is invalid')) return 'otp_expired';
+  if (c === 'over_email_send_rate_limit' || c === 'over_request_rate_limit' || c === 'over_sms_send_rate_limit' || m.includes('rate limit') || m.includes('for security purposes') || status === 429) return 'rate_limit';
+  if (c === 'user_already_exists' || c === 'email_exists' || m.includes('already registered') || m.includes('already been registered')) return 'user_exists';
+  if (c === 'invalid_credentials' || m.includes('invalid login credentials')) return 'invalid_credentials';
+  if (c === 'weak_password') return 'weak_password';
+  if (c === 'validation_failed') return 'validation';
+  return c || `http_${status}`;
+}
+
+/**
+ * mapAuthError(status, data, op?) → polski komunikat. `op` ('signup'|'signin'|'verify'|'resend'|'recover')
+ * doprecyzowuje tekst dla kodu z e-maila i ponownej wysyłki.
+ */
+export function mapAuthError(status, data, op = '') {
   const m = msgOf(data).toLowerCase();
   const c = String(codeOf(data)).toLowerCase();
   if (c === 'user_already_exists' || c === 'email_exists' || m.includes('already registered') || m.includes('already been registered')) {
@@ -280,14 +340,28 @@ export function mapAuthError(status, data) {
   if (c === 'weak_password' || m.includes('password should be at least') || m.includes('password is too short')) {
     return 'Hasło musi mieć co najmniej 8 znaków.';
   }
+  if (c === 'otp_expired' || m.includes('token has expired or is invalid') || (op === 'verify' && (m.includes('invalid') || m.includes('expired') || m.includes('otp')))) {
+    return 'Kod jest nieprawidłowy lub wygasł. Poproś o nowy.';
+  }
+  if (c === 'otp_disabled' || (op === 'verify' && m.includes('disabled'))) {
+    return 'Logowanie kodem jest wyłączone w projekcie Supabase. Włącz „Confirm email” w Authentication → Providers → Email.';
+  }
   if (c === 'invalid_credentials' || m.includes('invalid login credentials') || (c === 'invalid_grant' && !m.includes('refresh'))) {
     return 'Nieprawidłowy e-mail lub hasło. Sprawdź dane i spróbuj ponownie.';
   }
   if (c === 'email_not_confirmed' || m.includes('email not confirmed')) {
-    return 'Potwierdź adres e-mail: sprawdź skrzynkę i kliknij link, który wysłaliśmy po rejestracji.';
+    return 'Potwierdź adres e-mail: wpisz kod, który wysłaliśmy po rejestracji.';
   }
-  if (c === 'over_email_send_rate_limit' || c === 'over_request_rate_limit' || m.includes('rate limit') || status === 429) {
-    return 'Za dużo prób w krótkim czasie. Odczekaj minutę i spróbuj ponownie.';
+  if (c === 'over_email_send_rate_limit' || c === 'over_request_rate_limit' || m.includes('rate limit') || m.includes('for security purposes') || status === 429) {
+    const base = 'Za dużo prób. Odczekaj chwilę i spróbuj ponownie.';
+    if (op === 'resend' || c === 'over_email_send_rate_limit') {
+      const sec = /after (\d+) seconds?/.exec(m);
+      return `${base} Kolejny e-mail możemy wysłać najwcześniej po ok. ${sec ? sec[1] : 60} s.`;
+    }
+    return base;
+  }
+  if (c === 'validation_failed' && op === 'verify') {
+    return 'Wpisz 6-cyfrowy kod z e-maila.';
   }
   if (c === 'validation_failed' || m.includes('invalid format') || m.includes('unable to validate email')) {
     return 'Podaj poprawny adres e-mail.';

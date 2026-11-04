@@ -8,6 +8,10 @@
  *   store.auth.signUp({email,password,name}) -> {session|null, needsConfirmation}
  *   store.auth.signIn({email,password}) -> session
  *   store.auth.signOut() / .resetPassword(email) / .onChange(cb) -> unsubscribe
+ *   store.auth.verifyEmailCode({email,code}) -> session   // potwierdzenie rejestracji 6-cyfrowym kodem z e-maila
+ *   store.auth.resendEmailCode({email})      -> true      // ponowna wysyłka kodu (Supabase: najwcześniej po ok. 60 s)
+ *   Błędy auth mają pole `code` ('email_not_confirmed', 'otp_expired', 'rate_limit', 'network', …).
+ *   Tryb demo: signUp loguje od razu (needsConfirmation=false); verifyEmailCode przyjmuje tylko kod demo '123456'.
  *   store.org.current()               -> {id,name,role} | null
  *   store.org.create({name})          -> org (twórca = owner)
  *   store.org.loadDemoData()          -> wstawia seed.js do bieżącej firmy (pomija, gdy firma ma już dane)
@@ -274,7 +278,14 @@ export function createStore(adapter) {
     },
   };
 
-  return { mode: adapter.mode, auth: adapter.auth, org, positions, candidates, rubrics, scorecards, stats, adapter };
+  // auth przechodzi 1:1 z adaptera; brakujące metody kodu e-mail (np. obcy adapter) dają czytelny błąd zamiast TypeError
+  const auth = {
+    ...adapter.auth,
+    verifyEmailCode: (args) => (adapter.auth.verifyEmailCode ? adapter.auth.verifyEmailCode(args) : Promise.reject(new Error('Ten tryb nie obsługuje potwierdzania kodem.'))),
+    resendEmailCode: (args) => (adapter.auth.resendEmailCode ? adapter.auth.resendEmailCode(args) : Promise.reject(new Error('Ten tryb nie obsługuje ponownej wysyłki kodu.'))),
+  };
+
+  return { mode: adapter.mode, auth, org, positions, candidates, rubrics, scorecards, stats, adapter };
 }
 
 const adapter = SUPABASE_URL

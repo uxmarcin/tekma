@@ -41,7 +41,8 @@ Do zrobienia w UI: ukryć decyzję i przyciski „Nowe stanowisko / Dodaj kandyd
   `https://tekma.app/app/` (bez `*`, bez `http://`, bez localhost w produkcji). Link resetu hasła
   z aplikacji używa `location.origin + location.pathname`, czyli `https://tekma.app/app/`.
 - **Authentication → Providers → Email**: „Confirm email” **włączone** przed produkcją (na czas testów
-  może być wyłączone — patrz nagłówek `schema.sql`). Wyłącz providerów, których nie używasz
+  może być wyłączone — patrz nagłówek `schema.sql`). Potwierdzenie odbywa się **kodem** z e-maila,
+  nie linkiem — patrz sekcja „Kod e-mail” niżej. Wyłącz providerów, których nie używasz
   (Phone, Google, GitHub itd.). „Secure email change” włączone.
 - **Authentication → Settings (Auth / Password)**: minimalna długość hasła **≥ 10**, wymagania
   „Letters, digits and symbols”; włącz „Leaked password protection” (HaveIBeenPwned). Uwaga: aplikacja
@@ -73,6 +74,41 @@ Do zrobienia w UI: ukryć decyzję i przyciski „Nowe stanowisko / Dodaj kandyd
   potem zaktualizuj `config.js`). Rotuj po każdym podejrzeniu wycieku i przy odejściu osoby z dostępem.
 - **Logs → API / Auth**: po wdrożeniu przejrzyj logi pod kątem błędów 401/403/42501 — to próby
   dostępu poza uprawnieniami albo błąd w aplikacji.
+
+## Kod e-mail (potwierdzenie rejestracji 6-cyfrowym kodem)
+
+Aplikacja potwierdza rejestrację **kodem** wpisywanym na ekranie „Sprawdź skrzynkę” (`views/auth.js`),
+a nie linkiem. Technicznie: `POST /auth/v1/verify {type:'signup', email, token}` zwraca sesję,
+`POST /auth/v1/resend {type:'signup', email}` wysyła kod ponownie (`js/supabase.js`). Logowanie
+niepotwierdzonym adresem (`email_not_confirmed`) przenosi na ten sam ekran i automatycznie wysyła nowy kod.
+Żeby to działało, w panelu Supabase ustaw:
+
+1. **Szablon maila** — Authentication → Emails (Email Templates) → **Confirm signup**:
+   - Subject: `Twój kod do Tekma: {{ .Token }}`
+   - Body: wklej całą zawartość `docs/email-template-confirm-signup.html` (zakładka „Source”/HTML).
+     Szablon zawiera tylko `{{ .Token }}` i `{{ .Email }}`; celowo **nie ma** `{{ .ConfirmationURL }}` —
+     link nie jest potrzebny, a jego brak ogranicza phishing „kliknij tutaj”. `{{ .Token }}` jest dostępny
+     tylko wtedy, gdy „Confirm email” jest włączone.
+2. **Długość kodu = 6** — Authentication → Providers → Email → „Email OTP Length”: `6` (Supabase nie
+   pozwala na 5; aplikacja wymaga dokładnie 6 cyfr — `maxlength=6`, auto-wysyłka po 6 cyfrach).
+3. **Ważność kodu** — tamże „Email OTP Expiration”: domyślnie `3600` s (godzina). Zalecane **`600`** s
+   (10 minut): kod jest krótki i łatwy do podejrzenia, godzina to zbędne okno. Jeśli ustawisz inną wartość,
+   popraw zdanie „Kod wygasa po 10 minutach” w szablonie. Wygasły/zły kod aplikacja pokazuje jako
+   „Kod jest nieprawidłowy lub wygasł. Poproś o nowy.” (`otp_expired`).
+4. **Limity wysyłki** — Authentication → Rate Limits: „Rate limit for sending emails” to limit na projekt
+   (domyślnie tylko **2–4 e-maile na godzinę** na wbudowanym SMTP — wystarcza na jedną osobę testującą,
+   nie na użytkowników); „Rate limit for token verifications” (domyślnie 30/5 min z jednego IP) — zostaw
+   albo zaostrz. Między kolejnymi e-mailami do tego samego adresu Supabase wymusza odstęp **ok. 60 s**
+   (`over_email_send_rate_limit`) — aplikacja pokazuje „Za dużo prób… kolejny e-mail najwcześniej po ok. N s”
+   i blokuje „Wyślij ponownie” na czas odliczania.
+5. **Własny SMTP przed produkcją** — Authentication → SMTP Settings → „Enable Custom SMTP”: Postmark,
+   Resend, SES lub podobny, nadawca z domeny `tekma.app` (SPF/DKIM/DMARC ustawione u dostawcy DNS).
+   Wbudowany SMTP Supabase jest tylko do testów: niski limit, brak gwarancji dostarczalności, nadawca
+   `noreply@mail.app.supabase.io` — część kandydatów-rekruterów nigdy nie dostanie kodu. Po włączeniu
+   własnego SMTP podnieś „Rate limit for sending emails” do realnego poziomu (np. 100/h).
+
+Test po konfiguracji: załóż konto na `#/signup` → ekran „Sprawdź skrzynkę” → kod z maila → `#/onboarding`.
+Potem spróbuj zalogować się nowym, niepotwierdzonym kontem: powinien pojawić się ten sam ekran z nowym kodem.
 
 ## C. Zgodność (RODO)
 

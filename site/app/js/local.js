@@ -3,7 +3,10 @@
  *
  * Implementuje ten sam interfejs adaptera, co supabase.js (store.js dokleja warstwę wspólną):
  *   mode: 'demo'
- *   auth:       session(), signUp({email,password,name}), signIn({email,password}), signOut(), resetPassword(email), onChange(cb)
+ *   auth:       session(), signUp({email,password,name}), signIn({email,password}), signOut(), resetPassword(email),
+ *               verifyEmailCode({email,code}), resendEmailCode({email}), onChange(cb)
+ *   Demo nie wymaga potwierdzenia e-maila (signUp loguje od razu). verifyEmailCode/resendEmailCode są atrapami
+ *   do testów ekranu kodu: kod demo to zawsze DEMO_CODE ('123456'), e-maile nie są wysyłane.
  *   org:        current(), create({name})
  *   positions:  list(), get(id), create(data), update(id, patch)
  *   candidates: list({position_id?}), get(id), create(data), update(id, patch)
@@ -15,6 +18,8 @@
  */
 
 export const STORAGE_KEY = 'tekma.demo.v1';
+/** Kod potwierdzający w trybie demo (atrapa — w demo nie wysyłamy e-maili). */
+export const DEMO_CODE = '123456';
 
 const EMPTY = () => ({
   v: 1,
@@ -152,6 +157,33 @@ export function createLocalAdapter() {
       email = normEmail(email);
       if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
       throw new Error('W trybie demo nie wysyłamy e-maili, więc reset hasła nie działa. Załóż nowe konto demo — zajmie to chwilę.');
+    },
+
+    /** Atrapa: przyjmuje wyłącznie DEMO_CODE dla istniejącego konta demo i loguje je. */
+    async verifyEmailCode({ email, code }) {
+      email = normEmail(email);
+      code = String(code || '').replace(/\D/g, '');
+      if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
+      if (code.length !== 6) throw new Error('Wpisz 6-cyfrowy kod z e-maila.');
+      await sleep(120);
+      const user = db.users.find((u) => u.email === email);
+      if (!user) throw new Error('Nie ma konta demo z tym adresem e-mail. Załóż konto.');
+      if (code !== DEMO_CODE) {
+        const e = new Error(`Kod jest nieprawidłowy lub wygasł. Poproś o nowy. (Tryb demo: kod to ${DEMO_CODE}.)`);
+        e.code = 'otp_expired';
+        throw e;
+      }
+      db.session = { user_id: user.id, created_at: now() };
+      save(); emit();
+      return sessionObj();
+    },
+
+    /** Atrapa: w demo nie wysyłamy e-maili — zwraca true, kod to zawsze DEMO_CODE. */
+    async resendEmailCode({ email }) {
+      email = normEmail(email);
+      if (!EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail.');
+      await sleep(120);
+      return true;
     },
 
     onChange(cb) { listeners.add(cb); return () => listeners.delete(cb); },
