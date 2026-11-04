@@ -510,7 +510,7 @@ section{position:relative}
 @supports (corner-shape: squircle){.shot-frame{corner-shape:squircle}}
 
 /* ===== styl Creative Vision: płaskie kafelki z cienką linią, sygnaturowy gradient na słowach-kluczach ===== */
-:root{--grad:linear-gradient(90deg,#5eead4 0%,#38bdf8 24%,#818cf8 50%,#c084fc 76%,#f472b6 100%);--hair:rgba(255,255,255,.12)}
+:root{--grad:linear-gradient(90deg,#e9685f 0%,#e03f3b 20%,#ac2069 40%,#88409f 60%,#3e63ef 80%,#51bad4 100%);--hair:rgba(255,255,255,.12)}
 .gr{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 /* gradientowa kreska przy etykiecie sekcji */
 .kicker::before{content:"";display:inline-block;width:28px;height:3px;border-radius:2px;background:var(--grad);margin-right:12px;vertical-align:middle;transform:translateY(-1px)}
@@ -518,15 +518,15 @@ section{position:relative}
 
 /* kafelki: płaskie, ciemne, z cienką linią; po najechaniu gradientowa ramka + poświata */
 .tile,.plan-card,.cta-box{background:#0d0d0d;box-shadow:inset 0 0 0 1px var(--hair);border-radius:24px}
-.tile::before,.plan-card::before{background:radial-gradient(520px circle at var(--mx,50%) var(--my,0%),rgba(129,140,248,.14),rgba(94,234,212,.05) 45%,transparent 70%)}
+.tile::before,.plan-card::before{background:radial-gradient(520px circle at var(--mx,50%) var(--my,0%),rgba(172,32,105,.2),rgba(62,99,239,.1) 45%,transparent 70%)}
 .tile::after,.plan-card::after,.cta-box::after{content:"";display:block;position:absolute;inset:0;border-radius:inherit;padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .35s;pointer-events:none}
 .tile:hover::after,.plan-card:hover::after{opacity:.85}
-.plan-card.pro{background:linear-gradient(180deg,#14141c,#0d0d0d 60%);box-shadow:inset 0 0 0 1px var(--hair),0 30px 90px -34px rgba(129,140,248,.45)}
+.plan-card.pro{background:linear-gradient(180deg,#1a1018,#0d0d0d 60%);box-shadow:inset 0 0 0 1px var(--hair),0 30px 90px -34px rgba(172,32,105,.55)}
 .plan-card.pro::after{opacity:1}
 .cta-box{background:#0d0d0d}
-.cta-box::before{background:radial-gradient(closest-side,rgba(129,140,248,.35),rgba(94,234,212,.12) 55%,transparent 72%)}
+.cta-box::before{background:radial-gradient(closest-side,rgba(172,32,105,.4),rgba(62,99,239,.18) 55%,transparent 72%)}
 .cta-box::after{opacity:.5}
-.plan-card h3 em{background:var(--grad);color:#05060a}
+.plan-card h3 em{background:var(--grad);color:#fff}
 
 /* większe odstępy między pakietami */
 .prices{gap:clamp(20px,2.6vw,36px)}
