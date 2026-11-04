@@ -530,3 +530,15 @@ section{position:relative}
 
 /* większe odstępy między pakietami */
 .prices{gap:clamp(20px,2.6vw,36px)}
+
+/* ===== siatka jak Creative Vision: jedna zaokrąglona ramka, komórki rozdzielone cienką linią, gradientowa kreska u góry po najechaniu ===== */
+.prices,.bento{gap:1px;background:var(--hair);border:1px solid var(--hair);border-radius:24px;overflow:hidden}
+.tile,.plan-card{border-radius:0;background:#0a0a0a;box-shadow:none;transition:background .3s}
+.tile{padding:36px}
+.plan-card{padding:40px 36px 38px}
+.tile:hover,.plan-card:hover{background:#101010}
+.tile::after,.plan-card::after{content:"";display:block;position:absolute;inset:0 0 auto 0;height:2px;padding:0;border-radius:0;background:var(--grad);-webkit-mask:none;mask:none;-webkit-mask-composite:initial;mask-composite:initial;opacity:0;transition:opacity .3s;pointer-events:none}
+.tile:hover::after,.plan-card:hover::after,.plan-card.pro::after{opacity:1}
+.plan-card.pro{background:linear-gradient(180deg,#1a1018,#0a0a0a 55%);box-shadow:none}
+.plan-card.pro:hover{background:linear-gradient(180deg,#201220,#0f0f0f 55%)}
+@media (max-width:900px){.prices,.bento{border-radius:20px}}
