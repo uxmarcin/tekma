@@ -725,3 +725,17 @@ section{position:relative}
 .shot-frame img{border-radius:0;box-shadow:none}
 .shot-frame::after{border-radius:0}
 .float{box-shadow:0 0 0 1px rgba(255,255,255,.14),0 24px 60px -12px rgba(0,0,0,.9)}
+
+/* kafelki w makietach: sam border, bez tła */
+.win .main .stat,.win .main .card,.stat,.card,.q{background:transparent!important;box-shadow:0 0 0 1px rgba(255,255,255,.09) inset;border:0}
+.q.flag{background:rgba(251,146,60,.08)!important}
+.ed-col,.ed-k{background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.09) inset}
+.ed-k.flag{box-shadow:0 0 0 1px rgba(251,146,60,.5) inset}
+.mod .kan span{background:transparent}
+.kan>div{background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.09) inset;border-radius:10px}
+
+/* Framer-like interfejs: tło okna ciemnoszare, przyciski wypełnione bez borderu, squircle */
+.win,.win.sc,.win.ed,.mod-p{background:#171717}
+.win .btn,.win .btn.ghost,.win .sel,.win .pill,.ed-run,.ed-pill,.mod-p .btn{border:0!important;box-shadow:none;background:#252525;border-radius:10px}
+.win .btn.pri,.win .btn.primary,.win .btn.w,.win .btn:first-child.pri{background:#fff;color:#111}
+@supports (corner-shape:squircle){.win,.win *,.mod-p,.mod-p *{corner-shape:squircle}}
