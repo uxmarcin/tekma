@@ -316,7 +316,9 @@ export function mapRestError(status, data) {
   const code = String(codeOf(data));
   const m = msgOf(data).toLowerCase();
   if (code === '42501' || m.includes('row-level security')) {
-    return 'Brak uprawnień do tych danych. Upewnij się, że należysz do tej firmy (RLS).';
+    // 42501 zwraca RLS: zarówno gdy nie należysz do firmy, jak i gdy Twoja rola (np. rozmówca)
+    // nie pozwala na zapis stanowisk, kandydatów i rubryk (db/schema.sql, wersja 1.1).
+    return 'Brak uprawnień do tej operacji. Sprawdź, czy należysz do tej firmy i czy Twoja rola na to pozwala (rozmówca tylko ocenia).';
   }
   if (code === '23505') return 'Taki rekord już istnieje.';
   if (code === '23503') return 'Powiązany rekord nie istnieje (np. stanowisko zostało usunięte).';
