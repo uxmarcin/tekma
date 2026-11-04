@@ -12,3 +12,4 @@
 - [ ] Ubezpieczenie cyber/OC, później pentest; SOC 2 / ISO 27001 przy dużych kontraktach
 - [ ] Wybór hostingu docelowego (czy zostać w cyberfolks) — porównać dostawców (region UE, SLA, backupy, DPA)
 - [ ] Decyzja o formie prawnej (JDG vs sp. z o.o.) przed pierwszym dużym klientem
+- [ ] Lista przeniesienia do spółki: docs/migration-to-spolka.md
