@@ -15,17 +15,43 @@
  */
 
 export const ROUTES = [
+  // --- start (agent A)
   { pattern: '#/login', view: 'auth', layout: 'bare', title: 'Zaloguj się' },
   { pattern: '#/signup', view: 'auth', layout: 'bare', title: 'Załóż konto' },
   { pattern: '#/reset', view: 'auth', layout: 'bare', title: 'Reset hasła' },
-  { pattern: '#/onboarding', view: 'onboarding', layout: 'bare', title: 'Twoja firma' },
+  { pattern: '#/onboarding', view: 'onboarding', layout: 'bare', title: 'Twoja firma' }, // ?krok=1|2|3
+  // --- pulpit i nawigacja (agent A)
   { pattern: '#/', view: 'dashboard', layout: 'shell', title: 'Pulpit', nav: 'dashboard' },
+  { pattern: '#/notifications', view: 'notifications', layout: 'shell', title: 'Powiadomienia', nav: 'dashboard' },
+  // --- rekrutacja (agent B)
   { pattern: '#/positions', view: 'positions', layout: 'shell', title: 'Stanowiska', nav: 'positions' },
-  { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Lejek', nav: 'positions' },
-  { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
-  { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
+  { pattern: '#/positions/new', view: 'position-new', layout: 'shell', title: 'Nowe stanowisko', nav: 'positions' }, // ?krok=1|2
+  { pattern: '#/positions/:id/ad', view: 'position-ad', layout: 'shell', title: 'Stanowisko — ogłoszenie', nav: 'positions' },
+  { pattern: '#/positions/:id/team', view: 'position-team', layout: 'shell', title: 'Stanowisko — zespół', nav: 'positions' },
+  { pattern: '#/positions/:id/report', view: 'position-report', layout: 'shell', title: 'Stanowisko — raport', nav: 'positions' }, // agent C1
+  { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Lejek', nav: 'positions' }, // agent C1
   { pattern: '#/rubrics', view: 'rubrics', layout: 'shell', title: 'Rubryki', nav: 'rubrics' },
   { pattern: '#/rubrics/:id', view: 'rubrics', layout: 'shell', title: 'Rubryka', nav: 'rubrics' },
+  { pattern: '#/templates', view: 'templates', layout: 'shell', title: 'Biblioteka szablonów', nav: 'rubrics' },
+  { pattern: '#/careers', view: 'careers', layout: 'public', title: 'Strona kariery' },
+  { pattern: '#/apply', view: 'portal', layout: 'public', title: 'Portal kandydata' },
+  // --- kandydaci, rozmowa, decyzja (agent C1: candidates; agent C2: reszta)
+  { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
+  { pattern: '#/compare', view: 'compare', layout: 'shell', title: 'Porównanie kandydatów', nav: 'candidates' },
+  { pattern: '#/candidates/:id/live', view: 'live', layout: 'shell', title: 'Rozmowa na żywo', nav: 'candidates' },
+  { pattern: '#/candidates/:id/review', view: 'review', layout: 'shell', title: 'Ocena po rozmowie', nav: 'candidates' },
+  { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
+  // --- po zatrudnieniu (agent D)
+  { pattern: '#/people', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
+  { pattern: '#/people/:id', view: 'person', layout: 'shell', title: 'Osoba', nav: 'people' }, // ?tab=przeglad|1-1|check-iny|cele|szkolenia
+  { pattern: '#/goals', view: 'goals', layout: 'shell', title: 'Cele', nav: 'goals' },
+  { pattern: '#/checkin', view: 'checkin', layout: 'public', title: 'Check-in' },
+  { pattern: '#/course-review', view: 'course-review', layout: 'public', title: 'Powtórka z kursu' },
+  // --- ustawienia, zgodność, marketplace (agent E)
+  { pattern: '#/settings', view: 'settings', layout: 'shell', title: 'Ustawienia', nav: 'settings' }, // ?tab=firma|zespol|integracje|plan
+  { pattern: '#/compliance', view: 'compliance', layout: 'shell', title: 'RODO i AI Act', nav: 'compliance' },
+  { pattern: '#/marketplace', view: 'marketplace', layout: 'shell', title: 'Rekruterzy', nav: 'marketplace' },
+  { pattern: '#/marketplace/:id', view: 'recruiter', layout: 'shell', title: 'Profil rekrutera', nav: 'marketplace' },
 ];
 
 const NAV = {
@@ -119,15 +145,17 @@ async function handleRoute() {
   try { session = await store.auth.session(); } catch (e) { console.error(e); }
   if (seq !== state.navSeq) return;
   state.user = session ? session.user : null;
+  const isPublic = m.route.layout === 'public';
   const isAuthRoute = m.route.view === 'auth';
-  if (!state.user) {
+  if (isPublic) { /* strony publiczne i mobilne: bez strażnika */ }
+  else if (!state.user) {
     if (!isAuthRoute) { location.replace('#/login'); return; }
   } else if (isAuthRoute) {
     location.replace('#/'); return;
   }
 
   // strażnik: firma
-  if (state.user) {
+  if (state.user && !isPublic) {
     if (!state.org) {
       try { state.org = await store.org.current(); } catch (e) { console.error(e); renderFatal(e); return; }
       if (seq !== state.navSeq) return;
