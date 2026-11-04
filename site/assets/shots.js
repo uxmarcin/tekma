@@ -6,7 +6,7 @@
     tabs.forEach((t, j) => { t.setAttribute('aria-selected', j === i); t.tabIndex = j === i ? 0 : -1; });
     panel.setAttribute('aria-labelledby', tabs[i].id);
     img.classList.add('swap');
-    const next = new Image(); next.onload = next.onerror = () => { img.src = data[i].src; img.alt = data[i].t + ' — ekran aplikacji Tekma'; cap.innerHTML = ''; const b = document.createElement('b'); b.textContent = data[i].t; cap.append(b, data[i].d); img.classList.remove('swap'); };
+    const next = new Image(); next.onload = next.onerror = () => { img.src = data[i].src; if (data[i].w) { img.width = data[i].w; img.height = data[i].h; } img.alt = data[i].t + ' — ekran aplikacji Tekma'; cap.innerHTML = ''; const b = document.createElement('b'); b.textContent = data[i].t; cap.append(b, data[i].d); img.classList.remove('swap'); };
     next.src = data[i].src;
     if (focus) tabs[i].focus();
   };

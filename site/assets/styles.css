@@ -542,3 +542,11 @@ section{position:relative}
 .plan-card.pro{background:linear-gradient(180deg,#1a1018,#0a0a0a 55%);box-shadow:none}
 .plan-card.pro:hover{background:linear-gradient(180deg,#201220,#0f0f0f 55%)}
 @media (max-width:900px){.prices,.bento{border-radius:20px}}
+
+/* pełny ekran desktop w hero: bez przycinania i bez mgły na dole; na wąskich ekranach skalowany proporcjonalnie (fit.js) */
+.stage::after{display:none}
+#tilt .app{grid-template-columns:232px 1fr!important}
+#tilt .side{display:flex!important}
+#tilt.fitted{overflow:visible}
+#tilt.fitted .win{max-width:none}
+.stage{margin-bottom:8px}
