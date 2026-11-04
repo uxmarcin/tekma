@@ -739,3 +739,19 @@ section{position:relative}
 .win .btn,.win .btn.ghost,.win .sel,.win .pill,.ed-run,.ed-pill,.mod-p .btn{border:0!important;box-shadow:none;background:#252525;border-radius:10px}
 .win .btn.pri,.win .btn.primary,.win .btn.w,.win .btn:first-child.pri{background:#fff;color:#111}
 @supports (corner-shape:squircle){.win,.win *,.mod-p,.mod-p *{corner-shape:squircle}}
+
+/* System powierzchni jak w Figmie: canvas #141414, karty surface, kontrolki surface-2; AI = jeden zarezerwowany kolor */
+:root{--ai:#4d8dff;--ai-2:#2fd0ff;--ai-soft:rgba(77,141,255,.14);--ai-soft2:rgba(77,141,255,.07)}
+.win,.win.sc,.win.ed,.mod-p{background:#141414}
+.win .btn,.win .btn.ghost,.win .sel,.win .pill,.ed-run,.ed-pill,.mod-p .btn,.scale button{background:#222}
+.ed-k,.kan>div,.mod .kan span{background:#222;box-shadow:none}
+.ed-col{background:transparent;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset}
+.ed-k span{color:var(--ai)}
+.ed-k span::before{content:"✦ ";font-size:9px}
+.ed-k span i{color:#9a9a9a;font-style:normal}
+.line.ai{background:var(--ai-soft2);box-shadow:0 0 0 1px var(--ai) inset;color:#e8e8e8}
+.line.ai svg{fill:var(--ai)!important}
+.scale button.ai{box-shadow:0 0 0 1.5px var(--ai) inset;color:var(--ai)}
+.kan span small{color:var(--ai)}
+.kan span.fl small{color:#fb923c}
+.cv .ring{background:conic-gradient(var(--ai) calc(var(--p)*1%),#2b2b2b 0)}
