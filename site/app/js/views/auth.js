@@ -1,26 +1,30 @@
 /**
- * views/auth.js — logowanie (#/login), rejestracja (#/signup), reset hasła (#/reset)
+ * views/auth.js — logowanie (#/login, Figma 22:1908), rejestracja (#/signup, Figma 22:1686), reset hasła (#/reset)
  * oraz ekran „Sprawdź skrzynkę” (kod 6-cyfrowy z e-maila) po rejestracji z needsConfirmation
  * i po próbie logowania niepotwierdzonym adresem (błąd `email_not_confirmed` → automatyczna ponowna wysyłka).
  *
- * Tryb wybiera ctx.path. Stany: ładowanie (przycisk busy), błąd (nad formularzem / pod polem kodu),
- * „sprawdź skrzynkę” po wysłaniu linku resetu.
+ * Układ z Figmy: lewa kolumna (logo, formularz 380 px, stopka ©), prawa kolumna „Showcase” na czerni
+ * z podglądem karty oceny (ukryta poniżej 900 px). Tryb wybiera ctx.path.
+ * Stany: ładowanie (przycisk busy), błąd (nad formularzem / pod polem kodu), „sprawdź skrzynkę”.
  * export default async function render(ctx) -> HTMLElement
  */
 
 const RESEND_SECONDS = 60;
 const CODE_LENGTH = 6;
 const DEMO_CODE = '123456';
+const RATE_LIMIT_MSG = 'Wysłaliśmy już kilka wiadomości — odczekaj chwilę (limit wysyłki e-maili) i spróbuj ponownie.';
+const LOGO_PATHS = '<path d="M3 6H17.5V22.5L12.5 28V12H3Z"/><path d="M20 6H29L20 12.5Z"/>';
 
 export default async function render(ctx) {
   await ctx.ui.loadCss(new URL('./auth.css', import.meta.url));
   const mode = ctx.path === '#/signup' ? 'signup' : ctx.path === '#/reset' ? 'reset' : 'login';
   const { h } = ctx.ui;
-  const wrap = h('div', { style: 'width:100%;display:flex;flex-direction:column;align-items:center' });
+
+  const formSlot = h('div', { class: 'auth-form-slot' });
   // swap(el, focusEl?) podmienia kartę w miejscu (ekran kodu ↔ formularz) bez zmiany trasy
   const swap = (el, focusEl) => {
-    wrap.replaceChildren(el);
-    if (ctx.store.mode === 'demo') wrap.appendChild(demoNote(ctx));
+    formSlot.replaceChildren(el);
+    if (ctx.store.mode === 'demo') formSlot.appendChild(demoNote(ctx));
     const target = focusEl || el.querySelector('h1');
     if (target) {
       if (target.tagName === 'H1') target.setAttribute('tabindex', '-1');
@@ -28,9 +32,31 @@ export default async function render(ctx) {
     }
   };
   const view = { ctx, swap };
-  wrap.appendChild(mode === 'signup' ? signupCard(view) : mode === 'reset' ? resetCard(view) : loginCard(view));
-  if (ctx.store.mode === 'demo') wrap.appendChild(demoNote(ctx));
-  return wrap;
+  formSlot.appendChild(mode === 'signup' ? signupCard(view) : mode === 'reset' ? resetCard(view) : loginCard(view));
+  if (ctx.store.mode === 'demo') formSlot.appendChild(demoNote(ctx));
+
+  const page = h('div', { class: 'auth' },
+    h('div', { class: 'auth-side' },
+      logo(ctx),
+      h('div', { class: 'auth-spacer', 'aria-hidden': 'true' }),
+      formSlot,
+      h('div', { class: 'auth-spacer', 'aria-hidden': 'true' }),
+      h('p', { class: 'auth-copy' }, '© 2026 Tekma · ', h('a', { href: '../polityka-prywatnosci.html' }, 'Prywatność'), ' · ', h('a', { href: '../regulamin.html' }, 'Regulamin')),
+    ),
+    showcase(ctx),
+  );
+  return page;
+}
+
+export function logo(ctx, cls = 'logo') {
+  const { h } = ctx.ui;
+  const el = h('a', { class: cls, href: '../', 'aria-label': 'Tekma — strona główna' });
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+  svg.setAttribute('viewBox', '0 0 32 32');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.innerHTML = LOGO_PATHS;
+  el.append(svg, h('span', null, 'tekma'));
+  return el;
 }
 
 function demoNote(ctx) {
@@ -39,36 +65,44 @@ function demoNote(ctx) {
     h('span', null, h('b', null, 'Tryb demo: '), 'dane zostają tylko w tej przeglądarce. Konto demo zakładasz w kilka sekund.'));
 }
 
+/** Przycisk „Kontynuuj z Google” + separator „lub” (Figma). Logowanie Google nie jest jeszcze podłączone. */
+function googleRow(ctx) {
+  const { h, icon, toast } = ctx.ui;
+  const g = h('button', { type: 'button', class: 'auth-google' }, icon('google'), h('span', null, 'Kontynuuj z Google'));
+  g.addEventListener('click', () => toast('Logowanie przez Google pojawi się wkrótce. Użyj adresu e-mail i hasła.', 'neutral'));
+  return [g, h('div', { class: 'auth-or', 'aria-hidden': 'true' }, h('i'), h('span', null, 'lub'), h('i'))];
+}
+
 /** Wspólny szkielet formularza z obsługą błędu i stanu ładowania. */
-function form(ctx, { onSubmit, fields, submit, error }) {
+function form(ctx, { onSubmit, fields, submit, error, before = [], after = [] }) {
   const { h } = ctx.ui;
   const errorSlot = h('div');
-  const f = h('form', { novalidate: true, on: { submit: async (e) => {
+  const f = h('form', { class: 'auth-f', novalidate: true, on: { submit: async (e) => {
     e.preventDefault();
     errorSlot.replaceChildren();
-    for (const fl of fields) fl.setError('');
+    for (const fl of fields) if (fl.setError) fl.setError('');
     submit.setBusy(true);
     try {
       await onSubmit();
     } catch (err) {
-      const msg = (err && err.message) || 'Coś poszło nie tak. Spróbuj ponownie.';
+      const msg = (err && err.code === 'rate_limit') ? RATE_LIMIT_MSG : ((err && err.message) || 'Coś poszło nie tak. Spróbuj ponownie.');
       errorSlot.replaceChildren(ctx.ui.formError(msg));
     } finally {
       submit.setBusy(false);
     }
-  } } }, errorSlot, fields, submit);
+  } } }, errorSlot, before, fields, after, submit);
   if (error) errorSlot.replaceChildren(ctx.ui.formError(error));
   return f;
 }
 
-/* ------------------------------------------------ logowanie */
+/* ------------------------------------------------ logowanie (Figma 22:1908) */
 function loginCard({ ctx, swap }, { prefillEmail = '' } = {}) {
   const { h, field, button } = ctx.ui;
-  const email = field({ label: 'E-mail', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl', value: prefillEmail });
-  const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'current-password', required: true });
+  const email = field({ label: 'E-mail służbowy', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@nordlight.io', value: prefillEmail });
+  const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'current-password', required: true, placeholder: '••••••••••' });
   const submit = button({ label: 'Zaloguj się', variant: 'primary', type: 'submit', block: true });
   const f = form(ctx, {
-    fields: [email, password], submit,
+    fields: [email, password], submit, before: googleRow(ctx),
     onSubmit: async () => {
       if (!email.value.trim()) { email.setError('Podaj adres e-mail.'); email.input.focus(); return; }
       if (!password.value) { password.setError('Podaj hasło.'); password.input.focus(); return; }
@@ -85,50 +119,59 @@ function loginCard({ ctx, swap }, { prefillEmail = '' } = {}) {
       ctx.navigate('#/');
     },
   });
-  const card = h('div', { class: 'bare-card' },
-    h('h1', null, 'Zaloguj się'),
-    h('p', { class: 'lead' }, 'Wróć do swoich stanowisk, kandydatów i kart oceny.'),
+  const card = h('div', { class: 'auth-card' },
+    h('h1', null, 'Witaj ponownie'),
+    h('p', { class: 'lead' }, 'Zaloguj się do Tekmy.'),
     f,
-    h('div', { class: 'bare-foot' }, h('a', { href: '#/reset' }, 'Nie pamiętasz hasła?')),
-    h('div', { class: 'bare-foot' }, 'Nie masz konta? ', h('a', { href: '#/signup' }, 'Załóż konto')),
+    h('p', { class: 'auth-foot' }, 'Nie masz konta? ', h('a', { href: '#/signup' }, 'Załóż je za darmo')),
+    h('p', { class: 'auth-foot' }, h('a', { href: '#/reset' }, 'Nie pamiętasz hasła?')),
   );
   queueFocus(prefillEmail ? password.input : email.input);
   return card;
 }
 
-/* ------------------------------------------------ rejestracja */
+/* ------------------------------------------------ rejestracja (Figma 22:1686) */
 function signupCard({ ctx, swap }, { prefill = {} } = {}) {
   const { h, field, button } = ctx.ui;
-  const name = field({ label: 'Imię i nazwisko', name: 'name', type: 'text', autocomplete: 'name', required: true, placeholder: 'Anna Nowak', value: prefill.name || '' });
-  const email = field({ label: 'Służbowy e-mail', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl', value: prefill.email || '' });
-  const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'new-password', required: true, hint: 'Co najmniej 10 znaków. Najlepiej zdanie, które łatwo zapamiętać.' });
-  const submit = button({ label: 'Załóż konto', variant: 'primary', type: 'submit', block: true });
-  const card = h('div', { class: 'bare-card' });
+  const name = field({ label: 'Imię i nazwisko', name: 'name', type: 'text', autocomplete: 'name', required: true, placeholder: 'Anna Kowalczyk', value: prefill.name || '' });
+  const email = field({ label: 'E-mail służbowy', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@nordlight.io', value: prefill.email || '' });
+  const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'new-password', required: true, placeholder: '••••••••••', hint: 'Co najmniej 10 znaków. Najlepiej zdanie, które łatwo zapamiętać.' });
+  const consentInput = h('input', { type: 'checkbox', name: 'consent', id: 'consent', checked: Boolean(prefill.consent) });
+  const consentErr = h('div', { class: 'error', role: 'alert' });
+  const consent = h('div', { class: 'field auth-consent' },
+    h('label', { class: 'check', htmlFor: 'consent' }, consentInput, h('span', null, 'Akceptuję ', h('a', { href: '../regulamin.html', target: '_blank', rel: 'noopener' }, 'regulamin'), ' i ', h('a', { href: '../polityka-prywatnosci.html', target: '_blank', rel: 'noopener' }, 'politykę prywatności'), '. Dane przechowujemy w UE.')),
+    consentErr,
+  );
+  consent.setError = (m) => { consentErr.textContent = m || ''; consent.classList.toggle('has-error', Boolean(m)); };
+  consentInput.addEventListener('change', () => consent.setError(''));
+  const submit = button({ label: 'Utwórz konto', variant: 'primary', type: 'submit', block: true });
+  const card = h('div', { class: 'auth-card' });
 
   const f = form(ctx, {
-    fields: [name, email, password], submit,
+    fields: [name, email, password, consent], submit, before: googleRow(ctx),
     onSubmit: async () => {
       let bad = false;
       if (!name.value.trim()) { name.setError('Podaj imię i nazwisko.'); bad = true; }
       if (!email.value.trim()) { email.setError('Podaj adres e-mail.'); bad = true; }
       if (password.value.length < 10) { password.setError('Hasło musi mieć co najmniej 10 znaków.'); bad = true; }
-      if (bad) { [name, email, password].find((x) => x.classList.contains('has-error')).input.focus(); return; }
+      if (!consentInput.checked) { consent.setError('Zaakceptuj regulamin, żeby założyć konto.'); bad = true; }
+      if (bad) { const first = [name, email, password].find((x) => x.classList.contains('has-error')); (first ? first.input : consentInput).focus(); return; }
       const res = await ctx.store.auth.signUp({ name: name.value, email: email.value, password: password.value });
       if (res.needsConfirmation) {
         showCodeScreen({ ctx, swap }, {
           email: email.value.trim().toLowerCase(), reason: 'signup', back: 'signup',
-          prefill: { name: name.value.trim(), email: email.value.trim() },
+          prefill: { name: name.value.trim(), email: email.value.trim(), consent: true },
         });
         return;
       }
-      ctx.navigate('#/onboarding');
+      ctx.navigate('#/onboarding?krok=1');
     },
   });
   card.append(
     h('h1', null, 'Załóż konto'),
-    h('p', { class: 'lead' }, 'Strukturalna rekrutacja z AI, która tylko podpowiada. Decyzje zostają po Twojej stronie.'),
+    h('p', { class: 'lead' }, 'Pierwsze stanowisko skonfigurujesz w 5 minut. Bez karty.'),
     f,
-    h('div', { class: 'bare-foot' }, 'Masz już konto? ', h('a', { href: '#/login' }, 'Zaloguj się')),
+    h('p', { class: 'auth-foot' }, 'Masz już konto? ', h('a', { href: '#/login' }, 'Zaloguj się')),
   );
   queueFocus(prefill.email ? email.input : name.input);
   return card;
@@ -193,7 +236,7 @@ function codeCard({ ctx, swap }, { email, back, prefill }) {
       ctx.navigate('#/');   // strażnik: brak firmy → #/onboarding, inaczej pulpit
     } catch (err) {
       setBusy(false);
-      setError((err && err.message) || 'Nie udało się potwierdzić kodu. Spróbuj ponownie.');
+      setError((err && err.code === 'rate_limit') ? RATE_LIMIT_MSG : ((err && err.message) || 'Nie udało się potwierdzić kodu. Spróbuj ponownie.'));
       input.focus(); input.select();
     }
   }
@@ -231,11 +274,13 @@ function codeCard({ ctx, swap }, { email, back, prefill }) {
       startCountdown();
     } catch (err) {
       resendBtn.disabled = false;
-      setError((err && err.message) || 'Nie udało się wysłać kodu. Spróbuj ponownie.');
-      // limit wysyłki (ok. 60 s między e-mailami) → zablokuj przycisk na czas odliczania
+      // limit wysyłki (ok. 60 s między e-mailami) → komunikat z Figmy + blokada przycisku na czas odliczania
       if (err && err.code === 'rate_limit') {
+        setError(RATE_LIMIT_MSG);
         const sec = /po ok\. (\d+) s/.exec(err.message || '');
         startCountdown(sec ? Number(sec[1]) : RESEND_SECONDS);
+      } else {
+        setError((err && err.message) || 'Nie udało się wysłać kodu. Spróbuj ponownie.');
       }
     }
     input.focus();
@@ -270,7 +315,7 @@ function codeCard({ ctx, swap }, { email, back, prefill }) {
     submit,
   );
 
-  const card = h('div', { class: 'bare-card code-card' },
+  const card = h('div', { class: 'auth-card code-card' },
     h('h1', null, 'Sprawdź skrzynkę'),
     h('p', { class: 'lead' }, 'Wpisz kod, który wysłaliśmy na ', h('b', null, email), '.'),
     f,
@@ -286,9 +331,9 @@ function codeCard({ ctx, swap }, { email, back, prefill }) {
 /* ------------------------------------------------ reset hasła */
 function resetCard({ ctx }) {
   const { h, field, button } = ctx.ui;
-  const email = field({ label: 'E-mail', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl' });
+  const email = field({ label: 'E-mail służbowy', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@nordlight.io' });
   const submit = button({ label: 'Wyślij link', variant: 'primary', type: 'submit', block: true });
-  const card = h('div', { class: 'bare-card' });
+  const card = h('div', { class: 'auth-card' });
   const f = form(ctx, {
     fields: [email], submit,
     onSubmit: async () => {
@@ -306,7 +351,7 @@ function resetCard({ ctx }) {
     h('h1', null, 'Reset hasła'),
     h('p', { class: 'lead' }, 'Podaj e-mail konta. Wyślemy link do ustawienia nowego hasła.'),
     f,
-    h('div', { class: 'bare-foot' }, h('a', { href: '#/login' }, 'Wróć do logowania')),
+    h('p', { class: 'auth-foot' }, h('a', { href: '#/login' }, 'Wróć do logowania')),
   );
   queueFocus(email.input);
   return card;
@@ -315,4 +360,66 @@ function resetCard({ ctx }) {
 function queueFocus(el) {
   // router po wstawieniu widoku ustawia fokus na [autofocus] (desktop) albo na h1
   el.setAttribute('autofocus', '');
+}
+
+/* ------------------------------------------------ Showcase (prawa kolumna z Figmy): podgląd karty oceny w skali 0,62 */
+function showcase(ctx) {
+  const { h, icon } = ctx.ui;
+  const badge = (text, tone = 'neutral') => h('span', { class: `tag ${tone}` }, text);
+  const scoreRow = (sel, ai) => h('div', { class: 'sc-score' },
+    [1, 2, 3, 4, 5].map((n) => h('span', { class: `sc-n${n === sel ? ' on' : ''}` }, String(n))),
+    h('span', { class: 'sp' }),
+    h('span', { class: 'ai-note' }, icon('spark', 12), `AI sugeruje ${ai}`),
+  );
+  const question = (text, comp, weight, raters, sel, ai, flag) => h('div', { class: 'sc-q' },
+    h('b', null, text),
+    h('div', { class: 'sc-meta' }, badge(comp), h('small', null, `Waga ×${weight}`), flag ? badge(flag, 'warn') : null, h('span', { class: 'sp' }), h('small', null, raters)),
+    scoreRow(sel, ai),
+  );
+  const line = (time, who, text, hi) => h('div', { class: 'sc-line' },
+    h('span', { class: 'sc-time' }, time),
+    h('div', { class: `sc-txt${hi ? ' hi' : ''}` }, h('b', null, who), h('p', null, text)),
+  );
+  const match = (ok, text) => h('div', { class: 'sc-match' }, icon(ok ? 'check' : 'flag', 16), h('span', null, text));
+  const mock = h('div', { class: 'sc-mock', 'aria-hidden': 'true' },
+    h('div', { class: 'sc-cols' },
+      h('div', { class: 'panel sc-card' },
+        h('div', { class: 'panel-h' }, h('b', null, 'Karta oceny · Rozmowa techniczna'), h('span', { class: 'r' }, 'Rubryka v3 · 4 pytania')),
+        question('Opowiedz o swoim największym wyzwaniu ze skalowaniem systemu.', 'Projektowanie systemów', 3, 'Anna 4 · Tomasz 4', 4, 4),
+        question('Jak debugujesz problem, którego nie da się odtworzyć lokalnie?', 'Rozwiązywanie problemów', 2, 'Anna 5 · Tomasz 4', 5, 5),
+        question('Opisz decyzję techniczną, która budziła Twój sprzeciw.', 'Współpraca', 2, 'Anna 2 · Tomasz 5', 3, 3, '⚑ Rozbieżność 3 pkt'),
+        question('Jak dbasz o jakość kodu w małym zespole?', 'Jakość', 1, 'Anna 4 · Tomasz 4', 4, 4),
+        h('div', { class: 'sc-result' },
+          h('div', null, h('small', null, 'Wynik etapu (ważony)'), h('b', null, '4,1 / 5')),
+          h('div', { class: 'sc-rec' }, h('small', null, 'Rekomendacja'), badge('Tak (2 z 2 rozmówców)', 'good')),
+        ),
+      ),
+      h('div', { class: 'sc-side' },
+        h('div', { class: 'panel' },
+          h('div', { class: 'panel-h' }, h('b', null, 'Dopasowanie CV'), h('span', { class: 'r' }, 'Dlaczego taki wynik?')),
+          h('div', { class: 'sc-cv' },
+            h('div', { class: 'sc-ring' }, h('b', null, '86')),
+            h('div', { class: 'sc-matches' },
+              match(true, '6 lat z Go i PostgreSQL'), match(true, 'Skalowała kolejki zadań do 2 mln/dzień'), match(true, 'Mentoring juniorów'),
+              match(false, 'Brak doświadczenia z Kafką'), match(false, 'Krótko w ostatniej firmie (8 mies.)'),
+            ),
+          ),
+        ),
+        h('div', { class: 'panel' },
+          h('div', { class: 'panel-h' }, h('b', null, 'Nagranie i transkrypcja'), h('span', { class: 'r' }, '48:12')),
+          h('div', { class: 'sc-lines' },
+            line('12:04', 'Tomasz', 'Co pękło jako pierwsze, gdy ruch się podwoił?'),
+            line('12:11', 'Marta', 'Kolejka w monolicie. Przenieśliśmy ją na partycjonowane tabele — p95 spadło z 4 s do 0,4 s.', true),
+            line('12:48', 'Tomasz', 'Która część tej decyzji była Twoja?'),
+          ),
+        ),
+        h('div', { class: 'sc-note' }, icon('shield', 16), h('span', null, 'Sugestie AI są pomocnicze i zawsze mają uzasadnienie. Decyzję podejmuje człowiek (AI Act, zał. III).')),
+      ),
+    ),
+  );
+  return h('aside', { class: 'auth-show', 'aria-label': 'Co daje Tekma' },
+    h('h2', null, 'Zatrudniaj na podstawie tego, co kandydat naprawdę powiedział.'),
+    h('p', null, 'Rubryki, notetaker AI i karty ocen w jednym miejscu. Po ofercie — plan pierwszych 90 dni.'),
+    h('div', { class: 'auth-preview' }, mock),
+  );
 }

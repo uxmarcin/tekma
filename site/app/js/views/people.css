@@ -1,0 +1,106 @@
+/* views/people.css — moduł „Po zatrudnieniu” (Ludzie, Osoba, Cele): wspólne elementy 1:1 z Figmą.
+   Prefiks klas: pp-. Tylko tokeny z app.css. Panele mają 1px obrys (--line) i promień 12 — jak w ramkach Figmy. */
+
+.pp{display:flex;flex-direction:column;gap:24px;min-width:0;padding:16px 24px 28px}
+.pp *{min-width:0}
+
+/* nagłówek strony (H1 30/36, podtytuł 14 muted, akcje po prawej) */
+.pp-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.pp-head .t{flex:1 1 320px;display:flex;flex-direction:column;gap:4px}
+.pp-head h1{font:600 30px/36px var(--display);letter-spacing:-.02em;color:var(--ink)}
+.pp-head p{font-size:14px;line-height:20px;color:var(--muted)}
+.pp-head .actions{display:flex;align-items:center;gap:12px;flex:none;flex-wrap:wrap}
+
+/* przyciski: w tym module 36 px, promień 8, drugorzędny z obrysem (Figma) */
+.pp .btn,.pp-btn{height:36px;padding:0 14px;border-radius:var(--r-xs);font-size:14px;font-weight:500}
+.pp .btn-secondary{box-shadow:inset 0 0 0 1px var(--s4)}
+.pp .btn-sm{height:28px;padding:0 10px;font-size:13px}
+.pp .btn-icon{width:36px;padding:0}
+.pp .btn-icon.btn-sm{width:28px}
+
+/* panel */
+.pp-panel{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);display:flex;flex-direction:column;overflow:hidden}
+.pp-panel-h{display:flex;align-items:center;gap:12px;height:48px;padding:0 16px;border-bottom:1px solid var(--line);font-size:14px;line-height:20px}
+.pp-panel-h b,.pp-panel-h h2{flex:1;font:500 14px/20px var(--sans);color:var(--ink);letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-panel-h span{color:var(--muted);white-space:nowrap}
+.pp-panel-h .btn-sm{margin-right:-6px}
+.pp-panel .pp-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.pp-panel .pp-row:last-child{border-bottom:0}
+
+/* siatki */
+.pp-cols{display:grid;grid-template-columns:3fr 2fr;gap:16px;align-items:start}
+.pp-col{display:flex;flex-direction:column;gap:16px}
+.pp-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.pp-kpi{background:var(--bg);border:1px solid var(--line);border-radius:var(--r-md);padding:18px 20px;display:flex;flex-direction:column;gap:6px}
+.pp-kpi small{font-size:12px;line-height:16px;color:var(--muted)}
+.pp-kpi b{font:600 30px/36px var(--display);letter-spacing:-.02em;color:var(--ink);white-space:nowrap}
+
+/* odznaka (Figma: promień 6, 2×8, 12/16 medium) */
+.pp-badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:6px;font-size:12px;font-weight:500;line-height:16px;white-space:nowrap;background:var(--s3);color:var(--body)}
+.pp-badge.good{background:var(--good-soft);color:var(--good-ink)}
+.pp-badge.warn{background:var(--warn-soft);color:var(--warn-ink)}
+.pp-badge.bad{background:var(--bad-soft);color:var(--bad-ink)}
+.pp-badge.info{background:var(--info-soft);color:var(--info-ink)}
+.pp-badge.accent{background:var(--accent-soft);color:var(--ink)}
+
+/* pasek postępu 6 px */
+.pp-bar{height:6px;border-radius:var(--r-pill);background:var(--s3);overflow:hidden;flex:none}
+.pp-bar i{display:block;height:100%;background:var(--ink);border-radius:var(--r-pill);transition:width var(--t) var(--ease)}
+.pp-bar.good i{background:var(--good)}
+.pp-bar.warn i{background:var(--warn)}
+.pp-bar.bad i{background:var(--bad)}
+.pp-bar.accent i{background:var(--ink)}
+
+/* awatary */
+.pp .av{background:var(--s3);color:var(--body);font-weight:500;font-size:12px}
+.pp .av.sm{width:24px;height:24px;font-size:12px}
+.pp .av.xl{width:56px;height:56px;font-size:16px;line-height:24px}
+
+/* tabela-lista (Ludzie, Cele): nagłówek 12/16 muted na --s2, wiersze 12×16, kolumny o stałych szerokościach */
+.pp-table{display:flex;flex-direction:column}
+.pp-table .pp-th{display:flex;gap:16px;align-items:center;padding:10px 16px;background:var(--s2);border-bottom:1px solid var(--line);font-size:12px;line-height:16px;font-weight:500;color:var(--muted)}
+.pp-table .pp-tr{display:flex;gap:16px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--line);color:var(--body);font-size:14px;line-height:20px;text-align:left;width:100%;transition:background var(--t)}
+.pp-table .pp-tr:last-child{border-bottom:0}
+.pp-table a.pp-tr:hover,.pp-table button.pp-tr:hover{background:var(--s1)}
+.pp-table a.pp-tr:focus-visible,.pp-table button.pp-tr:focus-visible{outline-offset:-2px}
+.pp-table .c{flex:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.pp-table .c.grow{flex:1 1 0;min-width:0}
+.pp-table .c .pct{font-size:12px;line-height:16px;font-weight:500;color:var(--body)}
+.pp-table .c.small{font-size:12px;line-height:16px}
+
+/* lista „Ludzie” */
+.pp-who{display:flex;flex-direction:column;gap:1px;min-width:0}
+.pp-who b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-who small{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pp-people-table .c .lbl{display:none}
+
+/* podpowiedzi, teksty pomocnicze */
+.pp-muted{color:var(--muted)}
+.pp-cap{font-size:12px;line-height:16px;color:var(--muted)}
+
+/* formularze w oknach modułu */
+.pp-form .field{margin-bottom:14px}
+
+@media (max-width:1099px){
+  .pp-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:899px){
+  .pp{padding:4px 0 8px;gap:20px}
+  .pp-cols{grid-template-columns:1fr}
+  .pp-head h1{font-size:26px;line-height:32px}
+}
+/* lista i drzewo celów na wąskich ekranach: wiersze jako karty, komórki z etykietą */
+@media (max-width:799px){
+  .pp-table .pp-th{display:none}
+  .pp-table .pp-tr{flex-wrap:wrap;gap:8px 16px;padding:12px 16px}
+  .pp-table .pp-tr .c{width:auto !important;font-size:13px}
+  .pp-table .pp-tr .c.grow{flex-basis:100%}
+  .pp-people-table .c .lbl{display:inline;color:var(--muted);font-size:12px}
+}
+@media (max-width:599px){
+  .pp-kpis{grid-template-columns:1fr 1fr;gap:10px}
+  .pp-kpi{padding:14px 16px}
+  .pp-kpi b{font-size:24px;line-height:30px}
+  .pp-head .actions{width:100%}
+  .pp-head .actions .btn{flex:1}
+}

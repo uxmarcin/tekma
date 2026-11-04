@@ -1,55 +1,50 @@
 /**
- * views/candidates.js — baza kandydatów (#/candidates) + okno „Dodaj kandydata”.
+ * views/candidates.js — baza kandydatów (#/candidates) + okno „Dodaj kandydata”.   (Figma 13:1345 „Kandydaci”)
  *
  *   export default async function render(ctx) -> HTMLElement
- *   export function openAddCandidateModal(ctx, { positions?, positionId?, onCreated? }) -> {close}
- *       (używa go też widok lejka: views/pipeline.js)
- *   export function discrepancyIds(scorecards) -> Set<candidate_id>
- *       kandydaci, u których dwie oceny tego samego pytania różnią się o ≥ 2 pkt (ta sama reguła, co store.stats)
+ *   export function openAddCandidateModal(ctx, { positions?, positionId?, stage?, source?, onCreated? }) -> {close}
+ *       (używa go też lejek: views/pipeline.js — „Dodaj” pod kolumną ustawia etap)
+ *   export function discrepancyIds(scorecards) -> Set<candidate_id>     oceny tego samego pytania różnią się o ≥ 2 pkt
+ *   export function discrepancyGaps(scorecards) -> Map<candidate_id, gap>  największa rozbieżność (pkt)
+ *   export function candidateHref(c) -> '#/candidates/:id?stage=…'
  *
- * Filtry (szukaj, stanowisko, status, sortowanie) trzymamy w query hasha (#/candidates?q=…&position=…&status=…&sort=…)
- * przez history.replaceState — bez przeładowania widoku. Dopasowanie CV to zawsze sugestia AI (ai.cvScore) i jest tak oznaczone.
- * Karta kandydata (#/candidates/:id?stage=…) należy do innego widoku — tylko do niej linkujemy.
- * Tytuł „Kandydaci” i akcja „Dodaj kandydata” żyją w pasku górnym routera (ctx.setHeader) — także na mobile.
+ * Układ: tytuł + „Importuj z LinkedIn” + „Dodaj kandydata”; filtry (szukaj, stanowisko, etap, źródło, status) i licznik;
+ * tabela: Kandydat (awatar, imię, „⚑”/„Nowy”), Stanowisko, Etap (badge), CV (pasek 40×4 + liczba — sugestia AI),
+ * Źródło, Aplikacja („12 paź”). Nagłówki sortują (aria-sort). Filtry żyją w query hasha (history.replaceState).
+ * Kliknięcie wiersza → #/candidates/:id?stage=… (karta oceny, inny widok).
  */
 
 import { SOURCES } from '../seed.js';
+import { shortDate } from './position-header.js';
 
-const STATUS_LABEL = { active: 'Aktywni', rejected: 'Odrzuceni', hired: 'Zatrudnieni', all: 'Wszyscy' };
-const SORTS = [
-  { key: 'applied_desc', label: 'Najnowsze zgłoszenia' },
-  { key: 'applied_asc', label: 'Najstarsze zgłoszenia' },
-  { key: 'name_asc', label: 'Nazwisko A–Z' },
-  { key: 'name_desc', label: 'Nazwisko Z–A' },
-  { key: 'score_desc', label: 'Dopasowanie CV: najwyższe' },
-  { key: 'score_asc', label: 'Dopasowanie CV: najniższe' },
-  { key: 'position_asc', label: 'Stanowisko A–Z' },
-  { key: 'stage_asc', label: 'Etap: od pierwszego' },
-  { key: 'stage_desc', label: 'Etap: od ostatniego' },
-];
+const STATUS_LABEL = { active: 'aktywni', rejected: 'odrzuceni', hired: 'zatrudnieni', all: 'wszyscy' };
+const SORTS = ['applied_desc', 'applied_asc', 'name_asc', 'name_desc', 'score_desc', 'score_asc', 'position_asc', 'position_desc', 'stage_asc', 'stage_desc', 'source_asc', 'source_desc'];
 const COLUMNS = [
   { key: 'name', label: 'Kandydat', cls: 'c-who' },
   { key: 'position', label: 'Stanowisko', cls: 'c-pos' },
   { key: 'stage', label: 'Etap', cls: 'c-stage' },
+  { key: 'score', label: 'CV', cls: 'c-score', ai: true },
   { key: 'source', label: 'Źródło', cls: 'c-src' },
-  { key: 'score', label: 'Dopasowanie CV', cls: 'c-score', ai: true },
-  { key: 'applied', label: 'Zgłoszenie', cls: 'c-date' },
+  { key: 'applied', label: 'Aplikacja', cls: 'c-date' },
 ];
 
 const collator = new Intl.Collator('pl', { sensitivity: 'base' });
 const surname = (name) => { const p = String(name || '').trim().split(/\s+/); return p[p.length - 1] || ''; };
 
-export function discrepancyIds(cards) {
-  const out = new Set();
+export function discrepancyGaps(cards) {
+  const out = new Map();
   for (const card of cards || []) {
     const byQ = {};
     for (const r of card.ratings || []) (byQ[r.question_id] ||= []).push(Number(r.score));
     for (const scores of Object.values(byQ)) {
-      if (scores.length >= 2 && Math.max(...scores) - Math.min(...scores) >= 2) { out.add(card.candidate_id); break; }
+      if (scores.length < 2) continue;
+      const gap = Math.max(...scores) - Math.min(...scores);
+      if (gap >= 2 && gap > (out.get(card.candidate_id) || 0)) out.set(card.candidate_id, gap);
     }
   }
   return out;
 }
+export function discrepancyIds(cards) { return new Set(discrepancyGaps(cards).keys()); }
 
 export function candidateHref(c) {
   return `#/candidates/${encodeURIComponent(c.id)}?stage=${encodeURIComponent(c.stage || '')}`;
@@ -57,74 +52,74 @@ export function candidateHref(c) {
 
 /* ================================================================== widok */
 export default async function render(ctx) {
-  const { h, icon, button, tag, avatar, emptyState, aiBadge, formatDate, plural } = ctx.ui;
+  const { h, icon, button, tag, avatar, emptyState, plural } = ctx.ui;
   const { store, ai } = ctx;
-  await ctx.ui.loadCss(new URL('./candidates.css', import.meta.url));
+  await Promise.all([ctx.ui.loadCss(new URL('./position-header.css', import.meta.url)), ctx.ui.loadCss(new URL('./candidates.css', import.meta.url))]);
 
   const [positions, candidates, cards] = await Promise.all([store.positions.list(), store.candidates.list(), store.scorecards.list()]);
   const posById = Object.fromEntries(positions.map((p) => [p.id, p]));
-  const flagged = discrepancyIds(cards);
+  const gaps = discrepancyGaps(cards);
+  const allStages = [...new Set(positions.flatMap((p) => p.stages || []))];
+  const allSources = [...new Set([...SOURCES, ...candidates.map((c) => c.source).filter(Boolean)])];
 
   const state = {
     q: String(ctx.query.q || ''),
     position: ctx.query.position && posById[ctx.query.position] ? ctx.query.position : '',
+    stage: allStages.includes(ctx.query.stage) ? ctx.query.stage : '',
+    source: allSources.includes(ctx.query.source) ? ctx.query.source : '',
     status: ['active', 'rejected', 'hired', 'all'].includes(ctx.query.status) ? ctx.query.status : 'active',
-    sort: SORTS.some((s) => s.key === ctx.query.sort) ? ctx.query.sort : 'applied_desc',
+    sort: SORTS.includes(ctx.query.sort) ? ctx.query.sort : 'applied_desc',
     rows: candidates,
   };
 
-  const addBtn = button({ label: 'Dodaj kandydata', variant: 'primary', icon: 'plus', onClick: () => openAdd() });
-  ctx.setHeader({ title: 'Kandydaci', actions: [addBtn], width: 'wide' });
-
-  const root = h('div', { class: 'cd' });
+  ctx.setHeader({ title: 'Kandydaci', width: 'wide' });
+  const root = h('div', { class: 'cd ph-page' });
   const live = h('div', { class: 'sr-only', 'aria-live': 'polite' });
 
-  /* --- pasek narzędzi --- */
-  const searchInput = h('input', { type: 'search', value: state.q, placeholder: 'Szukaj: imię, e-mail, stanowisko', 'aria-label': 'Szukaj kandydatów', autocomplete: 'off' });
+  /* --- głowa --- */
+  const importBtn = button({ label: 'Importuj z LinkedIn', variant: 'secondary', onClick: () => openAdd({ source: 'LinkedIn' }) });
+  const addBtn = button({ label: 'Dodaj kandydata', variant: 'primary', onClick: () => openAdd() });
+  const head = h('div', { class: 'cd-head' }, h('h1', null, 'Kandydaci'), h('div', { class: 'cd-head-actions' }, importBtn, addBtn));
+
+  /* --- filtry --- */
+  const searchInput = h('input', { type: 'search', value: state.q, placeholder: 'Szukaj po imieniu, umiejętności…', 'aria-label': 'Szukaj kandydatów', autocomplete: 'off' });
   const clearBtn = h('button', { type: 'button', class: 'clear', 'aria-label': 'Wyczyść wyszukiwanie', hidden: !state.q }, icon('x'));
   const search = h('div', { class: 'cd-search' }, icon('search'), searchInput, clearBtn);
   searchInput.addEventListener('input', () => { state.q = searchInput.value; clearBtn.hidden = !state.q; update(); });
   clearBtn.addEventListener('click', () => { searchInput.value = ''; state.q = ''; clearBtn.hidden = true; update(); searchInput.focus(); });
 
-  const posSelect = h('select', { class: 'cd-select', 'aria-label': 'Filtruj po stanowisku' },
-    h('option', { value: '' }, 'Wszystkie stanowiska'),
-    positions.map((p) => h('option', { value: p.id, selected: p.id === state.position }, p.status === 'closed' ? `${p.title} (zamknięte)` : p.title)),
-  );
-  posSelect.addEventListener('change', () => { state.position = posSelect.value; update(); });
-
-  const segment = h('div', { class: 'segment', role: 'group', 'aria-label': 'Status kandydatów' },
-    ['active', 'rejected', 'hired', 'all'].map((s) => h('button', { type: 'button', 'aria-pressed': String(state.status === s), dataset: { status: s }, on: { click: () => setStatus(s) } }, STATUS_LABEL[s])),
-  );
-  const statusSelect = h('select', { class: 'cd-select cd-status-select', 'aria-label': 'Status kandydatów' },
-    ['active', 'rejected', 'hired', 'all'].map((s) => h('option', { value: s, selected: s === state.status }, STATUS_LABEL[s])));
-  statusSelect.addEventListener('change', () => setStatus(statusSelect.value));
-
-  const sortSelect = h('select', { class: 'cd-select', 'aria-label': 'Sortowanie' },
-    SORTS.map((s) => h('option', { value: s.key, selected: s.key === state.sort }, s.label)));
-  sortSelect.addEventListener('change', () => { state.sort = sortSelect.value; update(); });
-
-  // wiersz 1: szukaj + filtry; wiersz 2: podsumowanie + sortowanie (tytuł i „Dodaj kandydata” są w pasku górnym)
-  const bar = h('div', { class: 'cd-bar' }, search, posSelect, segment, statusSelect);
-  const summary = h('div', { class: 'cd-sum' });
-  const sumRow = h('div', { class: 'cd-sum-row' }, summary, sortSelect);
+  const filterSelect = (label, key, options, all) => {
+    const sel = h('select', { class: 'cd-filter', 'aria-label': `Filtruj: ${label}` },
+      h('option', { value: '' }, `${label}: ${all}`),
+      options.map((o) => h('option', { value: o.value, selected: o.value === state[key] }, `${label}: ${o.label}`)));
+    sel.addEventListener('change', () => { state[key] = sel.value; update(); });
+    return sel;
+  };
+  const posSelect = filterSelect('Stanowisko', 'position', positions.map((p) => ({ value: p.id, label: p.status === 'closed' ? `${p.title} (zamknięte)` : p.title })), 'wszystkie');
+  const stageSelect = filterSelect('Etap', 'stage', allStages.map((s) => ({ value: s, label: s })), 'wszystkie');
+  const sourceSelect = filterSelect('Źródło', 'source', allSources.map((s) => ({ value: s, label: s })), 'wszystkie');
+  const statusSelect = h('select', { class: 'cd-filter', 'aria-label': 'Status kandydatów' },
+    ['active', 'rejected', 'hired', 'all'].map((s) => h('option', { value: s, selected: s === state.status }, `Status: ${STATUS_LABEL[s]}`)));
+  statusSelect.addEventListener('change', () => { state.status = statusSelect.value; update(); });
+  const count = h('span', { class: 'cd-count' });
+  const bar = h('div', { class: 'cd-bar' }, search, posSelect, stageSelect, sourceSelect, statusSelect, h('span', { class: 'sp' }), count);
   const body = h('div', { class: 'cd-wrap' });
-  root.append(bar, sumRow, body, live);
+  root.append(head, bar, body, live);
 
-  function setStatus(s) {
-    state.status = s;
-    for (const b of segment.querySelectorAll('button')) b.setAttribute('aria-pressed', String(b.dataset.status === s));
-    statusSelect.value = s;
-    update();
-  }
   function resetFilters() {
     state.q = ''; searchInput.value = ''; clearBtn.hidden = true;
     state.position = ''; posSelect.value = '';
-    setStatus('active');
+    state.stage = ''; stageSelect.value = '';
+    state.source = ''; sourceSelect.value = '';
+    state.status = 'active'; statusSelect.value = 'active';
+    update();
   }
   function syncHash() {
     const p = new URLSearchParams();
     if (state.q) p.set('q', state.q);
     if (state.position) p.set('position', state.position);
+    if (state.stage) p.set('stage', state.stage);
+    if (state.source) p.set('source', state.source);
     if (state.status !== 'active') p.set('status', state.status);
     if (state.sort !== 'applied_desc') p.set('sort', state.sort);
     const qs = p.toString();
@@ -137,9 +132,11 @@ export default async function render(ctx) {
     let rows = state.rows;
     if (state.status !== 'all') rows = rows.filter((c) => (c.status || 'active') === state.status);
     if (state.position) rows = rows.filter((c) => c.position_id === state.position);
+    if (state.stage) rows = rows.filter((c) => c.stage === state.stage);
+    if (state.source) rows = rows.filter((c) => c.source === state.source);
     if (q) rows = rows.filter((c) => {
       const p = posById[c.position_id];
-      return [c.full_name, c.email, c.source, c.stage, p && p.title].filter(Boolean).some((s) => String(s).toLowerCase().includes(q));
+      return [c.full_name, c.email, c.source, c.stage, p && p.title, p && p.department].filter(Boolean).some((s) => String(s).toLowerCase().includes(q));
     });
     const stageIdx = (c) => { const p = posById[c.position_id]; const i = p && p.stages ? p.stages.indexOf(c.stage) : -1; return i < 0 ? 99 : i; };
     const score = (c) => ai.cvScore(c, posById[c.position_id]);
@@ -151,17 +148,15 @@ export default async function render(ctx) {
       score: (a, b) => (score(a) - score(b)) * m,
       position: (a, b) => collator.compare((posById[a.position_id] || {}).title || '', (posById[b.position_id] || {}).title || '') * m,
       stage: (a, b) => (stageIdx(a) - stageIdx(b)) * m,
+      source: (a, b) => collator.compare(a.source || '', b.source || '') * m,
     };
     const cmp = cmps[field] || cmps.applied;
     return rows.slice().sort((a, b) => cmp(a, b) || collator.compare(a.full_name, b.full_name));
   }
-
   function headerSort(key) {
     const [f, d] = state.sort.split('_');
     const defaultDir = key === 'applied' || key === 'score' ? 'desc' : 'asc';
-    const next = f === key ? (d === 'asc' ? 'desc' : 'asc') : defaultDir;
-    state.sort = `${key}_${next}`;
-    sortSelect.value = state.sort;
+    state.sort = `${key}_${f === key ? (d === 'asc' ? 'desc' : 'asc') : defaultDir}`;
     update();
   }
 
@@ -170,13 +165,12 @@ export default async function render(ctx) {
     syncHash();
     const rows = visible();
     const total = state.rows.length;
-    const filtered = Boolean(state.q.trim() || state.position || state.status !== 'active');
-    summary.replaceChildren(...[
-      h('span', null, total === 0 ? 'Brak kandydatów' : `${plural(rows.length, 'kandydat', 'kandydaci', 'kandydatów')}${state.status !== 'all' ? ` · ${STATUS_LABEL[state.status].toLowerCase()}` : ''}${rows.length !== total ? ` · z ${total} w bazie` : ''}`),
-      filtered && total ? h('button', { type: 'button', class: 'link', on: { click: resetFilters } }, 'Wyczyść filtry') : null,
-    ].filter(Boolean));
+    const filtered = Boolean(state.q.trim() || state.position || state.stage || state.source || state.status !== 'active');
+    count.replaceChildren(
+      total === 0 ? 'Brak kandydatów' : plural(rows.length, 'kandydat', 'kandydatów', 'kandydatów'),
+      filtered && total && rows.length !== total ? h('button', { type: 'button', class: 'link', on: { click: resetFilters } }, 'Wyczyść filtry') : null,
+    );
     live.textContent = `${plural(rows.length, 'wynik', 'wyniki', 'wyników')}.`;
-
     if (total === 0) {
       body.replaceChildren(positions.length
         ? emptyState({ icon: 'users', title: 'Baza kandydatów jest pusta', text: 'Dodaj pierwszą osobę. Trafi na pierwszy etap lejka wybranego stanowiska.', action: { label: 'Dodaj kandydata', icon: 'plus', onClick: () => openAdd() } })
@@ -193,54 +187,42 @@ export default async function render(ctx) {
   function table(rows) {
     const [sf, sd] = state.sort.split('_');
     const thead = h('thead', null, h('tr', null,
-      COLUMNS.map((c) => h('th', { scope: 'col', class: c.ai ? 'cd-th-ai' : null, 'aria-sort': sf === c.key ? (sd === 'asc' ? 'ascending' : 'descending') : null },
-        h('button', { type: 'button', on: { click: () => headerSort(c.key) }, title: `Sortuj: ${c.label}` }, c.label, icon('chevron')),
-        c.ai ? aiBadge('AI') : null,
+      COLUMNS.map((c) => h('th', { scope: 'col', class: c.cls, 'aria-sort': sf === c.key ? (sd === 'asc' ? 'ascending' : 'descending') : null },
+        h('button', { type: 'button', on: { click: () => headerSort(c.key) }, title: `Sortuj: ${c.label}` }, c.label, c.ai ? h('span', { class: 'sr-only' }, ' (sugestia AI)') : null, icon('chevron')),
       )),
-      h('th', { scope: 'col', class: 'cd-go' }, h('span', { class: 'sr-only' }, 'Otwórz')),
     ));
     const tbody = h('tbody', null, rows.map(rowEl));
-    const colgroup = h('colgroup', null, ['who', 'pos', 'stage', 'src', 'score', 'date', 'go'].map((k) => h('col', { class: `w-${k}` })));
-    return h('table', { class: 'cd-table' }, colgroup, thead, tbody);
+    const colgroup = h('colgroup', null, ['who', 'pos', 'stage', 'score', 'src', 'date'].map((k) => h('col', { class: `w-${k}` })));
+    return h('div', { class: 'cd-panel' }, h('table', { class: 'cd-table' }, colgroup, thead, tbody));
   }
 
   function rowEl(c) {
     const p = posById[c.position_id];
     const score = ai.cvScore(c, p);
     const href = candidateHref(c);
-    const link = h('a', { href }, c.full_name);
-    const tr = h('tr', { on: { click: (e) => {
-      if (e.target.closest('a,button')) return;
-      ctx.navigate(href);
-    } } },
-      h('td', { class: 'c-who' }, h('div', { class: 'cd-who' }, avatar(c.full_name), h('div', { class: 't' }, link, c.email ? h('small', null, c.email) : null))),
+    const gap = gaps.get(c.id) || 0;
+    const isNew = (c.status || 'active') === 'active' && p && p.stages && c.stage === p.stages[0] && Date.now() - new Date(c.applied_at).getTime() < 3 * 864e5;
+    const last = p && p.stages && c.stage === p.stages[p.stages.length - 1];
+    const stageTag = c.status === 'rejected' ? tag('Odrzucony', 'bad') : c.status === 'hired' ? tag('Zatrudniony', 'good') : last ? tag(c.stage || '—', 'good') : tag(c.stage || '—', 'neutral');
+    const tr = h('tr', { on: { click: (e) => { if (e.target.closest('a,button')) return; ctx.navigate(href); } } },
+      h('td', { class: 'c-who' }, h('div', { class: 'cd-who' }, avatar(c.full_name), h('a', { href }, c.full_name),
+        gap >= 2 ? h('span', { class: 'tag warn', title: `Oceny rozmówców różnią się o ${gap} pkt` }, '⚑', h('span', { class: 'sr-only' }, ` Rozbieżność ${gap} pkt`)) : null,
+        isNew ? tag('Nowy', 'accent') : null)),
       h('td', { class: 'c-pos' }, h('span', { class: 'cd-pos' }, p ? p.title : h('span', { class: 'faint' }, 'Brak stanowiska'))),
-      h('td', { class: 'c-stage' }, h('div', { class: 'cd-stage' },
-        c.status === 'rejected' ? tag('Odrzucony', 'bad') : c.status === 'hired' ? tag('Zatrudniony', 'good') : tag(c.stage || '—', 'neutral'),
-        flagged.has(c.id) ? tag('Rozbieżność', 'warn') : null,
+      h('td', { class: 'c-stage' }, stageTag),
+      h('td', { class: 'c-score' }, h('span', { class: 'cd-cv', title: `Sugestia AI: ${ai.cvReason(c, p)}` },
+        h('span', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: `width:${score}%` })),
+        h('span', { class: 'sr-only' }, 'Dopasowanie CV (sugestia AI): '), h('b', null, String(score)),
       )),
       h('td', { class: 'c-src' }, h('span', { class: 'cd-src' }, c.source || '—')),
-      h('td', { class: 'c-score' }, h('span', { class: 'cd-cv', title: `Sugestia AI: ${ai.cvReason(c, p)}` },
-        icon('spark'), h('span', { class: 'sr-only' }, 'Sugestia AI: dopasowanie CV '), `${score}%`,
-        h('span', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: `width:${score}%` })),
-      )),
-      h('td', { class: 'c-date' }, h('time', { class: 'cd-date', datetime: c.applied_at || '' }, formatDate(c.applied_at, { relative: true }))),
-      h('td', { class: 'c-go' }, icon('chevron-right')),
+      h('td', { class: 'c-date' }, h('time', { class: 'cd-date', datetime: c.applied_at || '', title: ctx.ui.formatDate(c.applied_at) }, shortDate(c.applied_at))),
     );
     return tr;
   }
 
-  async function reload() {
-    state.rows = await store.candidates.list();
-    update();
-  }
-
-  function openAdd() {
-    openAddCandidateModal(ctx, {
-      positions,
-      positionId: state.position || undefined,
-      onCreated: async () => { await reload(); },
-    });
+  async function reload() { state.rows = await store.candidates.list(); update(); }
+  function openAdd({ source } = {}) {
+    openAddCandidateModal(ctx, { positions, positionId: state.position || undefined, source, onCreated: async () => { await reload(); } });
   }
 
   update();
@@ -248,7 +230,7 @@ export default async function render(ctx) {
 }
 
 /* ================================================================== okno „Dodaj kandydata” */
-export function openAddCandidateModal(ctx, { positions, positionId, onCreated } = {}) {
+export function openAddCandidateModal(ctx, { positions, positionId, stage, source, onCreated } = {}) {
   const { h, field, button, modal, toast, formError, aiBadge, icon } = ctx.ui;
   const { store, ai } = ctx;
   ctx.ui.loadCss(new URL('./candidates.css', import.meta.url));
@@ -258,7 +240,7 @@ export function openAddCandidateModal(ctx, { positions, positionId, onCreated } 
   const body = h('div');
   const submit = button({ label: 'Dodaj kandydata', variant: 'primary', type: 'submit' });
   const cancel = button({ label: 'Anuluj', variant: 'secondary' });
-  const m = modal({ title: 'Dodaj kandydata', body, actions: [cancel, submit] });
+  const m = modal({ title: source === 'LinkedIn' ? 'Importuj z LinkedIn' : 'Dodaj kandydata', body, actions: [cancel, submit] });
   cancel.addEventListener('click', () => m.close());
 
   (async () => {
@@ -282,9 +264,18 @@ export function openAddCandidateModal(ctx, { positions, positionId, onCreated } 
     const preset = list.find((p) => p.id === positionId);
     if (preset && !options.some((o) => o.value === preset.id)) options.unshift({ value: preset.id, label: `${preset.title} (zamknięte)` });
     const fPos = field({ label: 'Stanowisko', name: 'position', type: 'select', options, value: preset ? preset.id : options[0].value, required: true });
+    const fStage = field({ label: 'Etap', name: 'stage', type: 'select', options: [], hint: 'Domyślnie pierwszy etap lejka.' });
+    const fillStages = () => {
+      const p = list.find((x) => x.id === fPos.value);
+      const st = (p && p.stages) || [];
+      fStage.input.replaceChildren(...st.map((s) => h('option', { value: s, selected: s === stage }, s)));
+      if (!st.includes(stage)) fStage.input.value = st[0] || '';
+    };
+    fillStages();
     const fName = field({ label: 'Imię i nazwisko', name: 'full_name', type: 'text', required: true, placeholder: 'np. Anna Nowak', autocomplete: 'off' });
     const fEmail = field({ label: 'E-mail', name: 'email', type: 'email', placeholder: 'anna@przyklad.pl', autocomplete: 'off', hint: 'Opcjonalnie. Przyda się do zaproszeń na rozmowy.' });
-    const fSource = field({ label: 'Źródło', name: 'source', type: 'select', options: [...SOURCES, 'Inne'], value: SOURCES[0] });
+    const fLinked = source === 'LinkedIn' ? field({ label: 'Profil LinkedIn', name: 'linkedin', type: 'url', placeholder: 'https://www.linkedin.com/in/…', autocomplete: 'off', hint: 'Wklej link do profilu. Imię i e-mail uzupełnij poniżej — import danych z LinkedIn pojawi się wkrótce.' }) : null;
+    const fSource = field({ label: 'Źródło', name: 'source', type: 'select', options: [...SOURCES, 'Inne'], value: SOURCES.includes(source) ? source : SOURCES[0] });
 
     const aiNum = h('div', { class: 'n off', 'aria-hidden': 'true' }, '—');
     const aiText = h('p', null, 'Wpisz imię i nazwisko, a AI oszacuje dopasowanie CV do stanowiska.');
@@ -312,7 +303,7 @@ export function openAddCandidateModal(ctx, { positions, positionId, onCreated } 
       aiText.textContent = `${ai.cvReason(cand, pos)} To tylko sugestia — decyzja o dalszych etapach należy do Ciebie.`;
     };
     for (const f of [fName, fEmail, fPos]) f.input.addEventListener('input', refreshAi);
-    fPos.input.addEventListener('change', refreshAi);
+    fPos.input.addEventListener('change', () => { fillStages(); refreshAi(); });
 
     const form = h('form', { novalidate: true, on: { submit: async (e) => {
       e.preventDefault();
@@ -328,7 +319,7 @@ export function openAddCandidateModal(ctx, { positions, positionId, onCreated } 
       submit.setBusy(true);
       try {
         const created = await store.candidates.create({
-          position_id: fPos.value, full_name: fName.value, email, source: fSource.value,
+          position_id: fPos.value, full_name: fName.value, email, source: fSource.value, stage: fStage.value || undefined,
           cv_score: useAi.checked && typeof suggestion === 'number' ? suggestion : undefined,
         });
         const pos = list.find((p) => p.id === created.position_id);
@@ -341,15 +332,16 @@ export function openAddCandidateModal(ctx, { positions, positionId, onCreated } 
       }
     } } },
       errorSlot,
-      fPos,
+      fLinked,
+      h('div', { class: 'form-row' }, fPos, fStage),
       h('div', { class: 'form-row' }, fName, fEmail),
       fSource,
       aiBox,
-      h('p', { class: 'cd-note' }, icon('info', 12), ' Kandydat trafi na pierwszy etap lejka tego stanowiska.'),
+      h('p', { class: 'cd-note' }, icon('info', 12), ' Kandydat trafi na wybrany etap lejka tego stanowiska.'),
     );
     submit.addEventListener('click', () => form.requestSubmit());
     body.replaceChildren(form);
-    requestAnimationFrame(() => fName.input.focus());
+    requestAnimationFrame(() => (fLinked ? fLinked.input : fName.input).focus());
   }
 
   return m;

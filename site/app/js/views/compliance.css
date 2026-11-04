@@ -1,0 +1,37 @@
+/* views/compliance.css — RODO i AI Act (Figma 12:1352). Wspólne klasy `e-*` w admin-kit.css. */
+
+.cp-setting{display:flex;align-items:center;gap:16px;padding:16px 20px;border-bottom:1px solid var(--e-border)}
+.cp-setting:last-child{border-bottom:0}
+.cp-setting .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px;font-size:14px;line-height:20px}
+.cp-setting .t b{font-weight:500;color:var(--ink)}
+.cp-setting .t span{color:var(--muted)}
+.cp-dd-btn{display:inline-flex;align-items:center;gap:8px;padding:7px 10px 7px 12px;border-radius:var(--e-r-md);background:var(--s2);color:var(--body);font-size:14px;line-height:20px;transition:background var(--t)}
+.cp-dd-btn:hover{background:var(--s3)}
+.cp-dd-btn svg{color:var(--body)}
+@media (max-width:480px){
+  .cp-setting{flex-wrap:wrap}
+  .cp-setting .e-dd-wrap,.cp-setting .cp-dd-btn{margin-left:auto}
+}
+
+/* lista kontrolna */
+.cp-check{display:flex;flex-direction:column;gap:12px}
+.cp-check-h{display:flex;align-items:center;gap:10px;font-size:14px;line-height:20px}
+.cp-check-h b{font-weight:500;color:var(--ink)}
+.cp-check-h svg{color:var(--ink)}
+.cp-check-i{display:flex;align-items:center;gap:8px;font-size:14px;line-height:20px;color:var(--body)}
+.cp-check-i svg{color:var(--good);flex:none}
+.cp-check-i.is-off svg{color:var(--warn)}
+.cp-check-i.is-off span{color:var(--warn-ink)}
+
+/* wnioski o dane */
+.cp-req{width:100%;text-align:left;font:inherit}
+.cp-req .t{align-items:flex-start}
+
+/* okno z podmiotami */
+.cp-proc-list{display:flex;flex-direction:column;margin-top:12px}
+.cp-proc{display:flex;flex-direction:column;gap:2px;padding:10px 0;border-top:1px solid var(--line)}
+.cp-proc:first-child{border-top:0}
+.cp-proc b{font-weight:500;color:var(--ink);font-size:14px}
+.cp-proc small{font-size:12px;color:var(--muted)}
+
+@supports (corner-shape: squircle){.cp-dd-btn{corner-shape:squircle}}

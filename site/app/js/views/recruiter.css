@@ -1,0 +1,56 @@
+/* views/recruiter.css — Profil rekrutera (Figma 32:5281). Wspólne klasy `e-*` w admin-kit.css. */
+
+.rc{gap:24px}
+.rc-crumbs{display:flex;align-items:center;gap:6px;font-size:14px;line-height:20px;color:var(--muted);min-width:0}
+.rc-crumbs a{display:inline-flex;align-items:center;gap:6px;color:var(--muted);border-radius:var(--r-2xs);transition:color var(--t)}
+.rc-crumbs a svg{display:none}
+.rc-crumbs a:hover{color:var(--ink)}
+.rc-crumbs span[aria-hidden]{color:var(--faint)}
+.rc-crumbs .cur{color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:899px){
+  .rc{padding-top:8px}
+  .rc-crumbs{height:44px;margin-bottom:-8px}
+  .rc-crumbs a{width:44px;height:44px;display:grid;place-items:center;margin-left:-12px;color:var(--ink)}
+  .rc-crumbs a svg{display:block}
+  .rc-crumbs a span,.rc-crumbs span[aria-hidden]{display:none}
+  .rc-crumbs .cur{font-size:12px;line-height:16px;color:var(--muted)}
+}
+
+.rc-head{display:flex;align-items:center;gap:16px;min-width:0}
+.rc-head .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.rc-head .n{display:flex;align-items:center;gap:8px;min-width:0;flex-wrap:wrap}
+.rc-head h1{font:600 30px/36px var(--display);letter-spacing:-.02em;color:var(--ink);min-width:0}
+.rc-head p{font-size:14px;line-height:20px;color:var(--muted)}
+.rc-actions{display:flex;gap:8px;flex:none}
+@media (max-width:899px){
+  .rc-head{flex-wrap:wrap}
+  .rc-head h1{font-size:26px;line-height:32px}
+  .rc-actions{width:100%}
+  .rc-actions .e-btn{flex:1}
+}
+@media (max-width:480px){.rc-head .e-av.s72{width:56px;height:56px;font-size:16px}}
+
+.rc-about{display:flex;flex-direction:column;gap:10px}
+.rc-about h2{font:500 14px/20px var(--sans);letter-spacing:0;color:var(--ink)}
+.rc-about p{font-size:14px;line-height:20px;color:var(--body)}
+.rc-review{display:flex;flex-direction:column;gap:4px;padding:12px 16px;border-bottom:1px solid var(--e-border)}
+.rc-review:last-child{border-bottom:0}
+.rc-review small{font-size:12px;line-height:16px;font-weight:500;color:var(--muted)}
+.rc-review p{font-size:14px;line-height:20px;color:var(--body)}
+
+.rc-stats{display:flex;gap:16px;min-height:100px}
+.rc-stats .s{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.rc-stats b{font:600 24px/30px var(--display);letter-spacing:-.015em;color:var(--ink);white-space:nowrap}
+.rc-stats small{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:480px){.rc-stats{flex-wrap:wrap}.rc-stats .s{flex-basis:40%}}
+
+.e-kv b{white-space:nowrap}
+@media (max-width:480px){.e-kv{flex-direction:column;gap:2px}.e-kv b{text-align:left;white-space:normal}}
+
+/* okno propozycji */
+.rc-terms-l{margin:-8px 0 6px}
+.rc-terms-box{display:flex;flex-direction:column;background:var(--s1);border-radius:var(--r-md);padding:4px 14px;margin-bottom:16px}
+.rc-terms-box > div{display:flex;gap:8px;justify-content:space-between;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
+.rc-terms-box > div:first-child{border-top:0}
+.rc-terms-box span{color:var(--muted)}
+.rc-terms-box b{color:var(--ink);font-weight:500;text-align:right}

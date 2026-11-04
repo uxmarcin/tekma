@@ -1,0 +1,51 @@
+/* views/marketplace.css — Marketplace rekruterów (Figma 32:4954). Wspólne klasy `e-*` w admin-kit.css. */
+
+.mk-filters{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.mk-search{display:flex;align-items:center;gap:8px;width:280px;max-width:100%;padding:7px 10px;border-radius:var(--e-r-md);background:var(--s2);color:var(--faint);cursor:text;transition:background var(--t)}
+.mk-search:hover{background:var(--s3)}
+.mk-search svg{flex:none;color:var(--body)}
+.mk-search input{flex:1;min-width:0;border:0;background:transparent;padding:0;font-size:14px;line-height:20px;color:var(--ink);-webkit-appearance:none;appearance:none}
+.mk-search input::placeholder{color:var(--faint)}
+.mk-search input::-webkit-search-cancel-button{-webkit-appearance:none}
+.mk-search:focus-within{outline:var(--focus-w) solid var(--focus-ring);outline-offset:var(--focus-offset)}
+.mk-search input:focus{outline:none}
+.mk-filter{position:relative;display:inline-flex;align-items:center;gap:6px;padding:7px 10px 7px 12px;border-radius:var(--e-r-md);box-shadow:inset 0 0 0 1px var(--e-border);font-size:14px;line-height:20px;color:var(--body);white-space:nowrap;transition:background var(--t)}
+.mk-filter:hover{background:var(--s1)}
+.mk-filter svg{color:var(--body);flex:none}
+.mk-filter select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;-webkit-appearance:none;appearance:none}
+.mk-filter:focus-within{outline:var(--focus-w) solid var(--focus-ring);outline-offset:var(--focus-offset)}
+.mk-sum{margin-top:-12px}
+.mk-sum .e-link{font-size:inherit}
+@media (max-width:899px){
+  .mk-search{width:100%}
+  .mk-filter{flex:1;justify-content:space-between}
+}
+
+/* siatka kart 332 px */
+.mk-grid{display:grid;grid-template-columns:repeat(auto-fill,332px);gap:16px}
+@media (max-width:899px){.mk-grid{grid-template-columns:1fr}}
+.mk-empty{grid-column:1 / -1;background:var(--s1);border-radius:var(--e-r-lg)}
+.mk-card{display:flex;flex-direction:column;gap:12px;color:var(--ink);transition:background var(--t),box-shadow var(--t)}
+.mk-card:hover{background:var(--s1)}
+.mk-card:focus-visible{outline-offset:0}
+.mk-top{display:flex;align-items:center;gap:12px;min-width:0}
+.mk-top .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.mk-top .n{display:flex;align-items:center;gap:6px;min-width:0}
+.mk-top .n b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mk-top small{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mk-ver{display:inline-grid;place-items:center;color:var(--ink);flex:none}
+.mk-stats{display:flex;gap:16px;min-width:0}
+.mk-stats .s{display:flex;flex-direction:column;min-width:0}
+.mk-stats b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink);white-space:nowrap}
+.mk-stats small{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap}
+.mk-price{padding:9px 12px;border-radius:var(--e-r-md);background:var(--s2);font-size:12px;line-height:16px;font-weight:500;color:var(--body)}
+
+/* okno „Moje zlecenia” */
+.mk-orders{display:flex;flex-direction:column}
+.mk-order{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--line);min-width:0}
+.mk-order:first-child{border-top:0}
+.mk-order .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.mk-order b{font-size:14px;font-weight:500;color:var(--ink)}
+.mk-order small{font-size:12px;color:var(--muted)}
+
+@supports (corner-shape: squircle){.mk-search,.mk-filter,.mk-price{corner-shape:squircle}}

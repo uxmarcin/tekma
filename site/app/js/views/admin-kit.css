@@ -1,0 +1,161 @@
+/* views/admin-kit.css — wspólne style widoków agenta E (Ustawienia, RODO i AI Act, Rekruterzy, Profil rekrutera).
+   Odwzorowanie Figmy („📱 App screens”, ramki 31:4384…32:5281): karty białe z linią 1 px (--line) i promieniem 12,
+   przyciski 36 px o promieniu 8, badge 12 px, toggle 34×20, panel z nagłówkiem 48 px. Tylko tokeny z app.css
+   (+ dwa lokalne promienie z Figmy: 6 px i 8 px, zadeklarowane na .e-root). */
+
+.e-root{
+  --e-r-sm:6px;             /* badge, chip roli (Figma radius/sm) */
+  --e-r-md:8px;             /* przyciski, pola, dropdown (Figma radius/md) */
+  --e-r-lg:12px;            /* karty, panele (Figma radius/lg) */
+  --e-border:var(--line);   /* border/default #ebebeb */
+  --e-border-strong:var(--s4); /* border/strong #dcdcdc */
+  display:flex;flex-direction:column;gap:24px;
+  padding:0;                /* odstępy boczne (56 px) i górne (24 px) daje .main-inner z app.css */
+  font-size:14px;line-height:20px;color:var(--ink);
+}
+@media (max-width:899px){.e-root{gap:20px}}
+
+/* ---------- nagłówek strony ---------- */
+.e-head{display:flex;align-items:center;gap:12px;min-width:0}
+.e-head-t{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.e-head h1{font:600 30px/36px var(--display);letter-spacing:-.02em;color:var(--ink)}
+.e-head p{font-size:14px;line-height:20px;color:var(--muted)}
+.e-head-a{display:flex;gap:8px;flex:none;align-items:center}
+@media (max-width:899px){
+  .e-head{flex-wrap:wrap}
+  .e-head h1{font-size:26px;line-height:32px}
+  .e-head-a{width:100%}
+}
+
+/* ---------- zakładki ---------- */
+.e-tabs{display:flex;gap:24px;border-bottom:1px solid var(--e-border);overflow-x:auto;scrollbar-width:none}
+.e-tabs::-webkit-scrollbar{display:none}
+.e-tab{flex:none;padding:0 0 10px;font-size:14px;line-height:20px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;border-radius:var(--r-2xs) var(--r-2xs) 0 0;transition:color var(--t)}
+.e-tab:hover{color:var(--ink)}
+.e-tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink)}
+.e-tab:focus-visible{outline-offset:0}
+
+/* ---------- przyciski (Figma Button: Md 36 / Sm 28, promień 8) ---------- */
+.e-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  padding:8px 14px;border-radius:var(--e-r-md);
+  font-size:14px;line-height:20px;font-weight:500;white-space:nowrap;
+  background:var(--s2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--e-border-strong);
+  transition:background var(--t) var(--ease),opacity var(--t);
+}
+.e-btn svg{width:16px;height:16px;flex:none}
+.e-btn:hover{background:var(--s3)}
+.e-btn:disabled,.e-btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.e-btn-primary{background:var(--accent);color:var(--accent-ink);box-shadow:none}
+.e-btn-primary:hover{background:var(--accent-hover)}
+.e-btn-ghost{background:transparent;box-shadow:none}
+.e-btn-ghost:hover{background:var(--s2)}
+.e-btn-danger{background:var(--bad-soft);color:var(--bad-ink);box-shadow:none}
+.e-btn-danger:hover{background:var(--bad-soft-hover)}
+.e-btn-sm{padding:6px 10px;font-size:12px;line-height:16px}
+.e-btn-sm svg{width:14px;height:14px}
+.e-btn.is-busy{opacity:.6;pointer-events:none}
+
+/* ---------- badge (12 px, promień 6) ---------- */
+.e-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:var(--e-r-sm);font-size:12px;line-height:16px;font-weight:500;white-space:nowrap;background:var(--s3);color:var(--body)}
+.e-badge.good{background:var(--good-soft);color:var(--good-ink)}
+.e-badge.info{background:var(--info-soft);color:var(--info-ink)}
+.e-badge.warn{background:var(--warn-soft);color:var(--warn-ink)}
+.e-badge.bad{background:var(--bad-soft);color:var(--bad-ink)}
+.e-badge.accent{background:var(--accent-soft);color:var(--ink)}
+button.e-badge{cursor:pointer;transition:filter var(--t)}
+button.e-badge:hover{filter:brightness(.96)}
+
+/* ---------- toggle 34×20 ---------- */
+.e-toggle{position:relative;width:34px;height:20px;flex:none;border-radius:var(--r-pill);background:var(--s3);transition:background var(--t);padding:0}
+.e-toggle i{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:var(--r-round);background:var(--bg);box-shadow:0 1px 2px rgba(0,0,0,.18);transition:transform var(--t) var(--ease)}
+.e-toggle[aria-checked="true"]{background:var(--accent)}
+.e-toggle[aria-checked="true"] i{transform:translateX(14px)}
+.e-toggle[aria-disabled="true"]{opacity:.4;cursor:not-allowed}
+:root[data-theme="dark"] .e-toggle i{background:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .e-toggle i{background:var(--ink)}}
+:root[data-theme="dark"] .e-toggle[aria-checked="true"] i{background:var(--bg)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .e-toggle[aria-checked="true"] i{background:var(--bg)}}
+
+/* ---------- panel / karta ---------- */
+.e-panel{background:var(--bg);border:1px solid var(--e-border);border-radius:var(--e-r-lg);min-width:0;overflow:hidden}
+.e-panel-h{display:flex;align-items:center;gap:8px;height:48px;padding:14px 16px;border-bottom:1px solid var(--e-border)}
+.e-panel-t{flex:1;min-width:0;font:500 14px/20px var(--sans);letter-spacing:0;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.e-panel-a{flex:none;font-size:14px;line-height:20px;color:var(--muted)}
+.e-panel-a button.link,.e-link{font:inherit;color:var(--muted);text-decoration:none;border-radius:var(--r-2xs);transition:color var(--t);cursor:pointer}
+.e-panel-a button.link:hover,.e-link:hover{color:var(--ink)}
+.e-card{background:var(--bg);border:1px solid var(--e-border);border-radius:var(--e-r-lg);padding:18px 20px;min-width:0}
+.e-card.soft{background:var(--s2)}
+
+/* ---------- układ 3:2 ---------- */
+.e-cols{display:grid;grid-template-columns:3fr 2fr;gap:16px;align-items:start}
+.e-col{display:flex;flex-direction:column;gap:16px;min-width:0}
+@media (max-width:899px){.e-cols{grid-template-columns:1fr}}
+
+/* ---------- pola z etykietą (Figma Input: biały, linia 1 px, promień 8) ---------- */
+.e-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.e-field label{font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.e-input,.e-field input,.e-field textarea,.e-field select{
+  width:100%;padding:10px 12px;border:1px solid var(--e-border-strong);border-radius:var(--e-r-md);
+  background:var(--bg);color:var(--ink);font-size:14px;line-height:20px;
+  -webkit-appearance:none;appearance:none;transition:border-color var(--t),background var(--t);
+}
+.e-field input::placeholder,.e-field textarea::placeholder{color:var(--faint)}
+.e-field input:hover,.e-field textarea:hover,.e-field select:hover{border-color:var(--deco)}
+.e-field input:focus-visible,.e-field textarea:focus-visible,.e-field select:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:var(--focus-offset)}
+.e-field textarea{resize:vertical;min-height:42px}
+.e-field select{padding-right:36px;background-image:var(--select-arrow);background-repeat:no-repeat;background-position:right 12px center}
+.e-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:480px){.e-row{grid-template-columns:1fr}}
+.e-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+
+/* ---------- dropdown (szary, 34 px) ---------- */
+.e-dd-wrap{position:relative;display:inline-flex;align-items:center;flex:none}
+.e-dd{appearance:none;-webkit-appearance:none;border:0;background:var(--s2);color:var(--body);font-size:14px;line-height:20px;padding:7px 34px 7px 12px;border-radius:var(--e-r-md);cursor:pointer;transition:background var(--t);max-width:100%}
+.e-dd:hover{background:var(--s3)}
+.e-dd-wrap > svg{position:absolute;right:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--body)}
+.e-dd-wrap.outline .e-dd{background:var(--bg);box-shadow:inset 0 0 0 1px var(--e-border)}
+.e-dd-wrap.outline .e-dd:hover{background:var(--s1)}
+
+/* ---------- awatary ---------- */
+.e-av{flex:none;display:grid;place-items:center;border-radius:var(--r-round);background:var(--s3);color:var(--body);font-weight:500;user-select:none}
+.e-av.s32{width:32px;height:32px;font-size:12px}
+.e-av.s44{width:44px;height:44px;font-size:16px}
+.e-av.s72{width:72px;height:72px;font-size:18px;font-weight:600;letter-spacing:-.01em}
+
+/* ---------- wiersze list ---------- */
+.e-list{display:flex;flex-direction:column}
+.e-li{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--e-border);min-width:0}
+.e-li:last-child{border-bottom:0}
+.e-li .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.e-li .t b{font-weight:500;font-size:14px;line-height:20px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.e-li .t small{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.e-li.clickable{cursor:pointer;transition:background var(--t)}
+.e-li.clickable:hover{background:var(--s1)}
+
+/* ---------- pomocnicze ---------- */
+.e-muted{color:var(--muted)}
+.e-caption{font-size:12px;line-height:16px;color:var(--muted)}
+.e-tags{display:flex;gap:6px;flex-wrap:wrap}
+.e-kv{display:flex;gap:8px;padding:10px 16px;border-bottom:1px solid var(--e-border);font-size:14px;line-height:20px}
+.e-kv:last-child{border-bottom:0}
+.e-kv span{flex:1;min-width:0;color:var(--muted)}
+.e-kv b{font-weight:500;color:var(--ink);text-align:right}
+.e-progress{height:6px;border-radius:var(--r-pill);background:var(--s3);overflow:hidden}
+.e-progress i{display:block;height:100%;background:var(--ink);border-radius:var(--r-pill);transition:width var(--t) var(--ease)}
+.e-progress i.warn{background:var(--warn)}
+.e-note{display:flex;gap:8px;align-items:flex-start;padding:12px 16px;border-radius:var(--e-r-lg);background:var(--s2);font-size:12px;line-height:16px;color:var(--muted)}
+.e-note svg{flex:none;color:var(--muted)}
+.e-menu{position:absolute;right:0;top:calc(100% + 4px);z-index:30;min-width:200px;background:var(--bg);border-radius:var(--r-lg);padding:6px;box-shadow:var(--shadow-pop)}
+.e-menu button{width:100%;display:flex;align-items:center;gap:10px;height:36px;padding:0 10px;border-radius:var(--r-xs);font-size:14px;color:var(--ink);text-align:left;transition:background var(--t)}
+.e-menu button:hover,.e-menu button:focus-visible{background:var(--s2);outline:none}
+.e-menu button.danger{color:var(--bad-ink)}
+.e-menu hr{margin:4px 6px}
+.e-more{width:28px;height:28px;display:grid;place-items:center;border-radius:var(--r-round);color:var(--body);transition:background var(--t)}
+.e-more:hover,.e-more[aria-expanded="true"]{background:var(--s2)}
+.e-empty{padding:40px 16px;text-align:center;color:var(--muted);font-size:14px}
+.e-empty b{display:block;color:var(--ink);font-weight:500;margin-bottom:4px}
+
+@supports (corner-shape: squircle){
+  .e-btn,.e-badge,.e-panel,.e-card,.e-input,.e-field input,.e-field textarea,.e-field select,.e-dd,.e-note,.e-menu,.e-menu button{corner-shape:squircle}
+}

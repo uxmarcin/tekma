@@ -103,6 +103,23 @@ const ICONS = {
   inbox: '<path d="M3.5 13.5V17a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-3.5M3.5 13.5L6 5.5h12l2.5 8M3.5 13.5h5l1.2 2.2h4.6l1.2-2.2h5"/>',
   filter: '<path d="M4 6h16M7 12h10M10 18h4"/>',
   star: '<path d="M12 3.5l2.6 5.4 5.9.8-4.3 4.1 1.1 5.9L12 16.9l-5.3 2.8 1.1-5.9-4.3-4.1 5.9-.8z"/>',
+  /* ikony z Figmy (pasek boczny, nagłówek, mobile) */
+  home: '<path d="M4 10.5L12 4l8 6.5V19a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 19z"/><path d="M9.5 20.5v-6h5v6"/>',
+  list: '<path d="M8.5 6.5H20M8.5 12H20M8.5 17.5H20"/><path d="M4 6.5h.3M4 12h.3M4 17.5h.3"/>',
+  shield: '<path d="M12 3.5l7 2.8v5.7c0 4.4-3 7.5-7 8.5-4-1-7-4.1-7-8.5V6.3z"/>',
+  globe: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.6 2.6 3.9 5.4 3.9 8.5s-1.3 5.9-3.9 8.5c-2.6-2.6-3.9-5.4-3.9-8.5S9.4 6.1 12 3.5z"/>',
+  'log-in': '<path d="M14 4h4.5A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5H14M3.5 12h11M10.5 8l4 4-4 4"/>',
+  'user-check': '<circle cx="10" cy="8.5" r="3.6"/><path d="M3.5 20c.5-3.9 3.1-6 6.5-6 1.2 0 2.3.3 3.2.8M15 17.5l2 2 4-4.5"/>',
+  'user-badge': '<rect x="4" y="3.5" width="16" height="17" rx="2.5"/><circle cx="12" cy="10" r="2.6"/><path d="M7.5 17.5c.6-2.2 2.3-3.4 4.5-3.4s3.9 1.2 4.5 3.4"/>',
+  bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 1.5h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>',
+  upload: '<path d="M12 15.5V4.5M7.5 9l4.5-4.5L16.5 9M4.5 15.5v3a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5v-3"/>',
+  plug: '<path d="M9 3.5v4M15 3.5v4M6.5 7.5h11v3a5.5 5.5 0 0 1-11 0zM12 16v4.5"/>',
+  'chevron-down': '<path d="M6 9l6 6 6-6"/>',
+  'chevron-up': '<path d="M6 15l6-6 6 6"/>',
+  grid: '<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>',
+  sparkle: '<path d="M12 3.5l1.6 4.9 4.9 1.6-4.9 1.6L12 16.5l-1.6-4.9L5.5 10l4.9-1.6z"/><path d="M18.5 16.5l.7 1.8 1.8.7-1.8.7-.7 1.8-.7-1.8-1.8-.7 1.8-.7z"/>',
+  google: '<path d="M21 12.2c0-.7-.1-1.3-.2-1.9H12v3.6h5.1a4.4 4.4 0 0 1-1.9 2.9v2.4h3c1.8-1.7 2.8-4.1 2.8-7z" fill="#4285F4" stroke="none"/><path d="M12 21.5c2.6 0 4.7-.8 6.3-2.3l-3-2.4c-.9.6-1.9.9-3.2.9-2.5 0-4.6-1.7-5.3-3.9H3.6v2.5A9.5 9.5 0 0 0 12 21.5z" fill="#34A853" stroke="none"/><path d="M6.7 13.8a5.7 5.7 0 0 1 0-3.6V7.7H3.6a9.5 9.5 0 0 0 0 8.6z" fill="#FBBC05" stroke="none"/><path d="M12 6.3c1.4 0 2.6.5 3.6 1.4l2.7-2.7A9.5 9.5 0 0 0 3.6 7.7l3.1 2.5c.7-2.2 2.8-3.9 5.3-3.9z" fill="#EA4335" stroke="none"/>',
+  play: '<path d="M8 5.5v13l10-6.5z"/>',
 };
 
 export function icon(name, size = 16) {
@@ -127,6 +144,7 @@ export const iconNames = Object.keys(ICONS);
 export function button({ label, variant = 'secondary', size = 'md', icon: iconName, onClick, disabled = false, type = 'button', block = false, title, attrs = {} } = {}) {
   const classes = ['btn', `btn-${variant}`];
   if (size === 'sm') classes.push('btn-sm');
+  if (size === 'lg') classes.push('btn-lg');
   if (block) classes.push('btn-block');
   if (!label && iconName) classes.push('btn-icon');
   const el = h('button', { class: classes.join(' '), type, disabled, title, 'aria-label': !label ? (title || iconName) : null, ...attrs },
@@ -292,7 +310,7 @@ export function confirm({ title = 'Na pewno?', text = '', confirmLabel = 'Potwie
 export function emptyState({ title, text, action, icon: iconName = 'inbox' } = {}) {
   const actions = action ? (Array.isArray(action) ? action : [action]).map((a) => (a instanceof Node ? a : button({ variant: 'primary', ...a }))) : [];
   return h('div', { class: 'empty' },
-    icon(iconName, 28),
+    h('span', { class: 'glyph', 'aria-hidden': 'true' }, icon(iconName, 16)),
     title ? h('h3', null, title) : null,
     text ? h('p', null, text) : null,
     actions.length ? h('div', { class: 'actions' }, actions) : null,

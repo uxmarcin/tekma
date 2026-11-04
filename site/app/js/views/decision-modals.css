@@ -1,0 +1,102 @@
+/* views/decision-modals.css — okna „Odrzuć kandydata” (Figma 27:3550) i „Przesuń dalej” (27:3756).
+   Tylko tokeny z app.css. Prefiks klas: dm-. Okno = ui.modal z klasą .dm-modal (nadpisania wymiarów z Figmy). */
+
+/* ---------- powłoka okna (Figma: 480/520 px, padding 24, gap 16, promień 16, cień 0 24 60 -12) ---------- */
+.modal.dm-modal{max-width:480px;border-radius:var(--r-lg);box-shadow:0 24px 60px -12px rgba(0,0,0,.25)}
+.modal.dm-modal.dm-modal-advance{max-width:520px}
+.modal.dm-modal .modal-h{padding:24px 24px 0;align-items:flex-start}
+.modal.dm-modal .modal-h h2{font-family:var(--sans);font-size:18px;line-height:26px;font-weight:600;letter-spacing:-.01em}
+.modal.dm-modal .modal-h .close{width:26px;height:26px;margin:0 -5px 0 0}
+.modal.dm-modal .modal-b{padding:16px 24px 0;font-size:14px;line-height:20px;color:var(--body)}
+.modal.dm-modal .modal-f{padding:16px 24px 24px;gap:8px}
+.modal.dm-modal .btn{height:36px;padding:0 14px;border-radius:var(--r-xs);font-size:14px}
+.modal.dm-modal .btn-danger{background:var(--bad);color:#fff}
+.modal.dm-modal .btn-danger:hover{background:var(--bad-ink)}
+.modal.dm-modal .btn-ghost{background:transparent}
+.modal.dm-modal .btn-ghost:hover{background:var(--s2)}
+.modal.dm-modal .form-error{margin-bottom:0}
+
+.dm{display:flex;flex-direction:column;gap:16px}
+.dm-desc{color:var(--muted);font-size:14px;line-height:20px}
+.dm-label{font-weight:500;color:var(--ink);font-size:14px;line-height:20px}
+
+/* ---------- powód: opcje-radio ---------- */
+.dm-options{display:flex;flex-direction:column;gap:16px}
+.dm-option{
+  position:relative;display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:var(--r-xs);box-shadow:inset 0 0 0 1px var(--line);
+  color:var(--body);font-size:14px;line-height:20px;cursor:pointer;
+  transition:background var(--t),box-shadow var(--t);
+}
+.dm-option:hover{background:var(--s1)}
+.dm-option input{position:absolute;opacity:0;width:1px;height:1px;margin:0}
+.dm-option .dm-radio{width:14px;height:14px;flex:none;border-radius:var(--r-round);box-shadow:inset 0 0 0 1.5px var(--s4);background:var(--bg);transition:box-shadow var(--t)}
+.dm-option.is-on{background:var(--accent-soft);box-shadow:inset 0 0 0 1.5px var(--accent)}
+.dm-option.is-on .dm-radio{box-shadow:inset 0 0 0 4.5px var(--ink)}
+.dm-option:has(input:focus-visible){outline:var(--focus-w) solid var(--focus-ring);outline-offset:var(--focus-offset)}
+
+/* ---------- wiadomość ---------- */
+.dm-msg{display:flex;flex-direction:column;gap:6px;background:var(--s2);border-radius:var(--r-xs);padding:10px 12px}
+.dm-msg-label{font-size:12px;line-height:16px;font-weight:500;color:var(--muted)}
+.dm-msg-text{
+  width:100%;border:0;background:transparent;padding:0;margin:0;resize:vertical;
+  color:var(--body);font-size:14px;line-height:20px;min-height:60px;border-radius:var(--r-2xs);
+}
+.dm-msg-text:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:4px}
+
+/* ---------- zgoda (checkbox 16, promień 4, czerń) ---------- */
+.dm-check{display:flex;align-items:center;gap:8px;font-size:12px;line-height:16px;color:var(--body);cursor:pointer;width:fit-content}
+.dm-check input{width:16px;height:16px;margin:0;border-radius:var(--r-2xs);accent-color:var(--ink);flex:none}
+
+/* ---------- notka: decyzja człowieka ---------- */
+.dm-note{display:flex;gap:8px;align-items:flex-start;font-size:12px;line-height:16px;color:var(--muted)}
+.dm-note svg{flex:none;color:var(--muted);margin-top:0}
+.dm-note p{margin:0}
+
+/* ---------- przesuń dalej: podsumowanie ---------- */
+.dm-sum{display:flex;align-items:center;gap:12px;background:var(--s2);border-radius:var(--r-md);padding:12px 14px;min-width:0}
+.dm-sum .av{width:36px;height:36px;font-size:12px;color:var(--body)}
+.dm-sum .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.dm-sum .t b{font-weight:500;color:var(--ink);font-size:14px;line-height:20px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dm-sum .t small{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dm-sum .tag{flex:none}
+
+/* pola: białe z obramowaniem (Figma: border/strong, promień 8, 12×10) */
+.dm-row{display:flex;gap:12px;align-items:flex-start}
+.dm-input{flex:1;min-width:0;display:flex;flex-direction:column;gap:6px}
+.dm-input label{font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.dm-field{
+  width:100%;height:40px;padding:0 12px;border:0;border-radius:var(--r-xs);
+  background:var(--bg);box-shadow:inset 0 0 0 1px var(--s4);color:var(--ink);font-size:14px;
+  -webkit-appearance:none;appearance:none;transition:box-shadow var(--t);
+}
+select.dm-field{padding-right:36px;background-image:var(--select-arrow);background-repeat:no-repeat;background-position:right 10px center;cursor:pointer}
+.dm-field:hover{box-shadow:inset 0 0 0 1px var(--deco)}
+.dm-field:focus-visible{outline:var(--focus-w) solid var(--focus-ring);outline-offset:var(--focus-offset)}
+
+/* sloty z kalendarza */
+.dm-slots-wrap{display:flex;flex-direction:column;gap:8px}
+.dm-slots-label{font-size:12px;line-height:16px;font-weight:500;color:var(--muted)}
+.dm-slots{display:flex;flex-wrap:wrap;gap:8px}
+.dm-slot{
+  padding:6px 12px;border-radius:var(--r-xs);box-shadow:inset 0 0 0 1px var(--line);
+  font-size:12px;line-height:16px;font-weight:500;color:var(--body);
+  transition:background var(--t),box-shadow var(--t),color var(--t);
+}
+.dm-slot:hover{background:var(--s1)}
+.dm-slot.is-on{background:var(--accent-soft);box-shadow:inset 0 0 0 1.5px var(--accent);color:var(--ink)}
+
+/* przełącznik 34×20 */
+.dm-notify{display:flex;align-items:center;gap:10px;font-size:14px;line-height:20px;color:var(--body)}
+.dm-notify span{flex:1;min-width:0}
+.dm-notify .switch{width:34px;height:20px}
+.dm-notify .switch::after{width:16px;height:16px}
+.dm-notify .switch[aria-checked="true"]::after{transform:translateX(14px)}
+
+@media (max-width:480px){
+  .dm-row{flex-direction:column}
+  .modal.dm-modal .modal-f .btn{flex:1}
+}
+@supports (corner-shape: squircle){
+  .modal.dm-modal,.dm-option,.dm-msg,.dm-sum,.dm-field,.dm-slot{corner-shape:squircle}
+}

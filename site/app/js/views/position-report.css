@@ -1,0 +1,80 @@
+/* views/position-report.css — raport stanowiska (#/positions/:id/report), Figma 24:2629.
+   Tylko tokeny z app.css. Prefiks klas: pr-. Głowa i wspólne nadpisania: position-header.css (.ph-page). */
+
+.pr{min-width:0}
+
+/* panel: białe tło, obramowanie, promień 12, nagłówek 48 px */
+.pr-panel{background:var(--bg);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--line);min-width:0;overflow:hidden}
+.pr-panel-h{display:flex;align-items:center;gap:12px;height:48px;padding:0 16px;border-bottom:1px solid var(--line)}
+.pr-panel-h h2{flex:1;min-width:0;font-family:var(--sans);font-size:14px;line-height:20px;font-weight:500;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-panel-h span{flex:none;font-size:14px;line-height:20px;color:var(--muted);white-space:nowrap}
+.pr-empty{padding:16px;font-size:14px;line-height:20px;color:var(--muted)}
+
+/* KPI: 4 karty, 20×18, gap 6 */
+.pr-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.pr-kpi{display:flex;flex-direction:column;gap:6px;padding:18px 20px;background:var(--bg);border-radius:var(--r-md);box-shadow:inset 0 0 0 1px var(--line);min-width:0}
+.pr-kpi small{font-size:12px;line-height:16px;color:var(--muted)}
+.pr-kpi b{font-family:var(--sans);font-size:30px;line-height:36px;font-weight:600;letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pr-kpi span{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* dwie kolumny 3:2 */
+.pr-cols{display:grid;grid-template-columns:3fr 2fr;gap:16px;align-items:start;min-width:0}
+.pr-side{display:flex;flex-direction:column;gap:16px;min-width:0}
+
+/* lejek: etykieta 150, tor 12 px, liczba 28, spadek 44 */
+.pr-bars{display:flex;flex-direction:column;gap:14px;padding:18px 20px}
+.pr-bar{display:flex;align-items:center;gap:12px;min-width:0}
+.pr-bar .lbl{flex:none;width:150px;font-size:14px;line-height:20px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-bar .track{flex:1;min-width:0;height:12px;border-radius:var(--r-pill);background:var(--s2);overflow:hidden}
+.pr-bar .track i{display:block;height:100%;min-width:12px;border-radius:var(--r-pill);background:var(--ink);transition:width var(--t) var(--ease)}
+.pr-bar b{flex:none;width:28px;text-align:right;font-size:14px;line-height:20px;font-weight:500;color:var(--ink);font-variant-numeric:tabular-nums}
+.pr-bar .drop{flex:none;width:44px;text-align:right;font-size:12px;line-height:16px;color:var(--muted);font-variant-numeric:tabular-nums}
+.pr-bar.is-worst .track i{background:var(--warn)}
+.pr-bar.is-worst .drop{color:var(--warn-ink)}
+
+/* powody odrzuceń */
+.pr-reasons{display:flex;flex-direction:column;gap:10px;padding:16px 20px}
+.pr-reason{display:flex;flex-direction:column;gap:4px;min-width:0}
+.pr-reason .t{display:flex;align-items:flex-start;gap:8px;font-size:14px;line-height:20px;color:var(--body)}
+.pr-reason .t span{flex:1;min-width:0}
+.pr-reason .t b{flex:none;font-size:12px;line-height:16px;font-weight:500;color:var(--muted);font-variant-numeric:tabular-nums}
+.pr-reason .bar{display:block;height:4px;border-radius:var(--r-pill);background:var(--s3);overflow:hidden}
+.pr-reason .bar i{display:block;height:100%;background:var(--ink);border-radius:var(--r-pill)}
+
+/* źródła */
+.pr-source{display:flex;align-items:flex-start;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);min-width:0}
+.pr-source:last-child{border-bottom:0}
+.pr-source .lbl{flex:1;min-width:0;font-size:14px;line-height:20px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr-source b{flex:none;font-size:12px;line-height:16px;font-weight:500;color:var(--body);padding-top:2px;font-variant-numeric:tabular-nums}
+.pr-source .sub{flex:none;font-size:12px;line-height:16px;color:var(--muted);padding-top:2px;white-space:nowrap}
+
+/* czekają za długo */
+.pr-wait{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--line);min-width:0}
+.pr-wait:last-child{border-bottom:0}
+.pr-wait .av{width:32px;height:32px;font-size:12px;color:var(--body)}
+.pr-wait .name{flex:1;min-width:0;font-size:14px;line-height:20px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-radius:var(--r-2xs)}
+.pr-wait .tag{flex:none}
+.pr-wait .btn{flex:none}
+
+/* ---------- responsywność ---------- */
+@media (max-width:1099px){
+  .pr-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .pr-cols{grid-template-columns:1fr}
+}
+@media (max-width:719px){
+  .pr-kpis{gap:12px}
+  .pr-kpi{padding:14px 16px}
+  .pr-kpi b{font-size:24px;line-height:30px}
+  .pr-bars{padding:14px 16px;gap:12px}
+  .pr-bar{flex-wrap:wrap;gap:6px 10px}
+  .pr-bar .lbl{width:100%}
+  .pr-wait{flex-wrap:wrap;gap:8px 10px}
+  .pr-wait .name{flex-basis:calc(100% - 44px)}
+  .pr-wait .btn{margin-left:auto}
+}
+@media print{
+  .side,.tabbar,.main-head,.demo-banner,.ph-tabs,.ph-actions,.pr-wait .btn{display:none !important}
+  .ph-page{padding:0}
+  .pr-panel,.pr-kpi{box-shadow:none;border:1px solid var(--line);break-inside:avoid}
+}
+@supports (corner-shape: squircle){.pr-panel,.pr-kpi{corner-shape:squircle}}

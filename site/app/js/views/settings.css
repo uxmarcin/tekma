@@ -1,0 +1,118 @@
+/* views/settings.css — Ustawienia (zakładki Firma / Zespół i uprawnienia / Integracje / Plan i płatności).
+   Wymiary z Figmy 31:4384, 31:4585, 31:4872, 31:5113. Wspólne klasy `e-*` w admin-kit.css. */
+
+.st-body{display:flex;flex-direction:column;gap:16px;min-width:0}
+.st-err{font-size:12px;line-height:16px;color:var(--bad-ink)}
+.st-err:empty{display:none}
+.e-field.has-error input{border-color:var(--bad)}
+.spacer{flex:1;min-width:1px}
+
+/* ---------- Firma ---------- */
+.st-profile{display:flex;flex-direction:column;gap:16px;padding:24px}
+.st-logo-row{display:flex;align-items:center;gap:16px}
+.st-logo{width:56px;height:56px;border-radius:var(--e-r-lg);background:var(--info);flex:none}
+.st-logo.tone-info{background:var(--info)}.st-logo.tone-good{background:var(--good)}.st-logo.tone-warn{background:var(--warn)}.st-logo.tone-bad{background:var(--bad)}.st-logo.tone-ink{background:var(--ink)}
+.st-careers{display:flex;flex-direction:column;gap:12px;padding:14px 16px}
+.st-url{display:flex;align-items:center;gap:8px;width:100%;padding:9px 12px;border-radius:var(--e-r-md);background:var(--s2);color:var(--body);font-size:14px;line-height:20px;text-align:left;transition:background var(--t)}
+.st-url:hover{background:var(--s3)}
+.st-url svg{flex:none;color:var(--body)}
+.st-url span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-opt{display:flex;align-items:center;gap:8px}
+.st-opt > span{flex:1;min-width:0;font-size:14px;line-height:20px;color:var(--body)}
+.st-values{display:flex;flex-direction:column;gap:6px;padding:14px 16px;font-size:14px;line-height:20px;color:var(--body)}
+
+/* ---------- Zespół ---------- */
+.st-team{display:flex;flex-direction:column;gap:24px}
+.st-bar{display:flex;align-items:center;gap:12px}
+.st-bar p{flex:1;min-width:0;font-size:14px;line-height:20px}
+.st-table{display:flex;flex-direction:column}
+.st-trow{display:grid;grid-template-columns:minmax(0,1fr) 160px 260px 120px 24px;gap:16px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--e-border);min-width:0}
+.st-trow:last-child{border-bottom:0}
+.st-trow.head{padding:10px 16px;background:var(--s2);font-size:12px;line-height:16px;font-weight:500;color:var(--muted);align-items:start}
+.st-trow.is-invite .e-av{color:var(--muted)}
+.st-who{display:flex;align-items:center;gap:10px;min-width:0}
+.st-who .t{min-width:0;display:flex;flex-direction:column;gap:1px}
+.st-who b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-who b em{font-style:normal;color:var(--muted);font-weight:400}
+.st-who small{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-role{display:inline-flex;padding:5px 10px;border-radius:var(--e-r-sm);background:var(--s2);font-size:12px;line-height:16px;font-weight:500;color:var(--body);white-space:nowrap}
+.st-access{font-size:14px;line-height:20px;color:var(--body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-last{font-size:12px;line-height:16px;color:var(--muted);white-space:nowrap}
+.st-more{display:flex;justify-content:flex-end}
+.st-menu-host{position:relative;margin:-6px -6px -6px 0}
+.st-roles{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
+.st-role-tile{display:flex;flex-direction:column;gap:4px;padding:14px 16px;border-right:1px solid var(--e-border);min-width:0}
+.st-role-tile:last-child{border-right:0}
+.st-role-tile b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.st-role-tile small{font-size:12px;line-height:16px;color:var(--muted)}
+@media (max-width:1100px){
+  .st-trow{grid-template-columns:minmax(0,1fr) 130px 200px 100px 24px}
+  .st-roles{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .st-role-tile:nth-child(3n){border-right:0}
+  .st-role-tile:nth-child(-n+3){border-bottom:1px solid var(--e-border)}
+}
+@media (max-width:899px){
+  .st-trow{grid-template-columns:minmax(0,1fr) 24px;row-gap:6px;column-gap:8px}
+  .st-trow.head{display:none}
+  .st-who{grid-column:1;grid-row:1}
+  .st-more{grid-column:2;grid-row:1}
+  .st-trow > :nth-child(2){grid-column:1;grid-row:2}
+  .st-trow > :nth-child(3){grid-column:1;grid-row:3;white-space:normal;font-size:12px;line-height:16px}
+  .st-trow > :nth-child(4){grid-column:1;grid-row:4}
+  .st-roles{grid-template-columns:1fr}
+  .st-role-tile{border-right:0;border-bottom:1px solid var(--e-border)}
+  .st-role-tile:last-child{border-bottom:0}
+}
+
+/* ---------- Integracje ---------- */
+.st-grid{display:grid;grid-template-columns:repeat(auto-fill,332px);gap:16px}
+@media (max-width:899px){.st-grid{grid-template-columns:1fr}}
+.st-int{display:flex;flex-direction:column;gap:12px}
+.st-int-top{display:flex;align-items:center;gap:10px;height:36px}
+.st-int-ico{width:36px;height:36px;border-radius:var(--e-r-md);background:var(--s2);display:grid;place-items:center;color:var(--ink);flex:none}
+.st-int > b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.st-int > small{font-size:12px;line-height:16px;color:var(--muted)}
+
+/* ---------- Plan i płatności ---------- */
+.st-plan{display:flex;flex-direction:column;gap:14px;padding:22px 24px}
+.st-plan-h{display:flex;align-items:center;gap:10px;min-width:0;flex-wrap:wrap}
+.st-plan-h h2{font:600 24px/30px var(--display);letter-spacing:-.015em;color:var(--ink)}
+.st-price{font:600 18px/26px var(--display);letter-spacing:-.01em;color:var(--ink);white-space:nowrap}
+.st-plan > p{font-size:14px;line-height:20px}
+.st-usage{display:flex;flex-direction:column;gap:6px}
+.st-usage .h{display:flex;gap:8px;align-items:flex-start;color:var(--body)}
+.st-usage .h span{flex:1;min-width:0;font-size:14px;line-height:20px}
+.st-usage .h b{font-size:12px;line-height:16px;font-weight:500;white-space:nowrap}
+.st-plan-a{display:flex;gap:8px;flex-wrap:wrap}
+.st-inv{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--e-border);min-width:0}
+.st-inv:last-child{border-bottom:0}
+.st-inv > b{width:110px;flex:none;font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.st-inv > span{flex:1;min-width:0;font-size:14px;line-height:20px;color:var(--body)}
+.st-pdf{font-size:12px;line-height:16px;font-weight:500;color:var(--muted);border-radius:var(--r-2xs);transition:color var(--t)}
+.st-pdf:hover{color:var(--ink)}
+.st-pay{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+.st-pay > b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.st-pay-card{display:flex;align-items:center;gap:10px;font-size:14px;line-height:20px;color:var(--body)}
+.st-pay-card svg{flex:none;color:var(--body)}
+.st-upsell{display:flex;flex-direction:column;gap:8px;border-color:var(--e-border)}
+.st-upsell b{font-size:14px;line-height:20px;font-weight:500;color:var(--ink)}
+.st-upsell small{font-size:12px;line-height:16px;color:var(--muted)}
+@media (max-width:480px){
+  .st-inv{flex-wrap:wrap}
+  .st-inv > b{width:auto}
+  .st-inv > span{flex-basis:100%;order:3}
+}
+
+/* okno „Zmień plan” */
+.st-plans{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.st-plan-opt{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border-radius:var(--r-md);background:var(--s1);text-align:left;transition:background var(--t)}
+.st-plan-opt:hover{background:var(--s2)}
+.st-plan-opt[aria-checked="true"]{background:var(--s2);box-shadow:inset 0 0 0 2px var(--ink)}
+.st-plan-opt .t{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.st-plan-opt b{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500;color:var(--ink)}
+.st-plan-opt small{font-size:12px;line-height:16px;color:var(--muted)}
+.st-plan-opt .p{font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap}
+
+@supports (corner-shape: squircle){
+  .st-logo,.st-url,.st-role,.st-int-ico,.st-plan-opt{corner-shape:squircle}
+}

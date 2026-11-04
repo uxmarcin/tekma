@@ -280,4 +280,52 @@ export const SEED = {
   ],
 };
 
+/**
+ * Dane demo pulpitu i powiadomień (teksty 1:1 z Figmy, ramki 9:2, 32:5680, 33:5764).
+ * Używane przez views/dashboard.js i views/notifications.js, gdy firma ma wczytane dane demo.
+ *   interviews — „Najbliższe rozmowy” (kolejność jak w ramce); candidate = pełne imię z SEED.candidates
+ *   alerts     — „Wymaga uwagi” spoza rekrutacji (1:1, nastrój, RODO); rozbieżne oceny liczy store.stats
+ *   funnel     — liczby na etapach lejka per stanowisko (etap z flagą „warn” = wąskie gardło)
+ *   stats      — liczniki, których aplikacja nie wylicza z danych (kalendarz, moduł „Ludzie”)
+ *   notifications — panel „Powiadomienia”
+ */
+export const DASHBOARD_DEMO = {
+  stats: { interviewsThisWeek: 6, peopleFirstSixMonths: 3 },
+  interviews: [
+    { candidate: 'Marta Lewandowska', position: 'Senior Backend Engineer', stage: 'Rozmowa techniczna', who: 'Anna, Tomasz', when: 'Dziś 14:00', today: true, mobileWhen: 'Rozmowa techniczna · 14:00', mobileIn: 'za 2 godz.' },
+    { candidate: 'Sofia Romero', position: 'Product Designer', stage: 'Zadanie projektowe', who: 'Maya', when: 'Jutro 10:30' },
+    { candidate: 'Jakub Szymański', position: 'Senior Backend Engineer', stage: 'Rozmowa z CEO', who: 'Piotr', when: 'Czw 11:00' },
+    { candidate: 'Lena Hoffmann', position: 'Founding Account Executive', stage: 'Rozmowa wstępna', who: 'Aleksandra', when: 'Pt 9:30' },
+    { candidate: 'Igor Pawlak', position: 'Data Analyst', stage: 'Zadanie SQL', who: 'Dev', when: 'Pt 15:00' },
+  ],
+  alerts: [
+    { type: 'discrepancy', tone: 'warn', label: '⚑ Rozbieżne oceny', text: 'Jakub Szymański: oceny różnią się o 3 pkt w pytaniu o skalowanie systemu.', short: 'Jakub Szymański · 3 pkt', candidate: 'Jakub Szymański', stage: 'Rozmowa techniczna' },
+    { type: 'one-on-one', tone: 'bad', label: 'Zaległe 1:1', text: 'Leo Fischer nie miał 1:1 od 14 dni.', short: 'Leo Fischer · 14 dni', href: '#/people' },
+    { type: 'mood', tone: 'warn', label: 'Spadek nastroju', text: 'Ewa Dąbrowska oceniła ostatni tydzień na 2/5.', short: 'Ewa Dąbrowska · 2/5', href: '#/people' },
+    { type: 'gdpr', tone: 'info', label: 'Wniosek o dane (RODO)', shortLabel: 'Wniosek RODO', text: 'Claire Dubois czeka na odpowiedź — zostało 26 dni.', short: 'Claire Dubois · 26 dni', href: '#/compliance' },
+  ],
+  funnelLabel: 'Lejek: Aplikacje → Oferta',
+  funnel: {
+    'Senior Backend Engineer': { counts: [24, 11, 6, 3, 1], warn: 2 },
+    'Product Designer': { counts: [18, 9, 4, 2, 0], warn: 1 },
+    'Founding Account Executive': { counts: [11, 6, 2, 1, 0], warn: 2 },
+    'Data Analyst': { counts: [7, 3, 1, 0, 0], warn: 1 },
+  },
+  notifications: [
+    { id: 'n1', icon: 'flag', tone: 'warn', title: 'Rozbieżne oceny: Jakub Szymański', meta: 'Anna 2 · Tomasz 5 w pytaniu „Współpraca” · 10 min', unread: true, candidate: 'Jakub Szymański', stage: 'Rozmowa techniczna' },
+    { id: 'n2', icon: 'check', tone: 'good', title: 'Tomasz wysłał ocenę: Marta Lewandowska', meta: 'Rozmowa techniczna · 4,1 / 5 · 32 min', unread: true, candidate: 'Marta Lewandowska', stage: 'Rozmowa techniczna' },
+    { id: 'n3', icon: 'users', title: 'Joanna Nowak dodała 2 kandydatów', meta: 'Senior Backend Engineer · 1 godz.', unread: true, position: 'Senior Backend Engineer' },
+    { id: 'n4', icon: 'calendar', title: 'Jutro 10:30 · Sofia Romero', meta: 'Zadanie projektowe · z Mayą · wczoraj', unread: false, candidate: 'Sofia Romero' },
+    { id: 'n5', icon: 'sparkle', title: 'AI przeanalizowało 4 nowe CV', meta: 'Product Designer · wczoraj', unread: false, position: 'Product Designer' },
+  ],
+  checklist: [
+    { key: 'profile', title: 'Uzupełnij profil firmy', text: 'AI użyje go do szkiców ogłoszeń', done: true },
+    { key: 'position', title: 'Dodaj pierwsze stanowisko', text: 'Senior Backend Engineer', done: true },
+    { key: 'rubric', title: 'Dopracuj rubrykę', text: '4 pytania z szablonu — sprawdź wagi', action: 'Otwórz', href: '#/rubrics' },
+    { key: 'team', title: 'Zaproś rozmówców', text: 'Bez limitu miejsc', action: 'Zaproś', href: '#/settings?tab=zespol' },
+    { key: 'calendar', title: 'Podłącz kalendarz', text: 'Notetaker dołączy do rozmów sam', action: 'Połącz', href: '#/settings?tab=integracje' },
+    { key: 'publish', title: 'Opublikuj ogłoszenie', text: 'Strona kariery jest gotowa', action: 'Opublikuj', href: '#/careers' },
+  ],
+};
+
 export default SEED;
