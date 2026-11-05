@@ -345,15 +345,16 @@ main:focus-visible,.main:focus-visible,h1:focus-visible{outline:none}
   .main-head .actions .btn svg{width:15px;height:15px}
   .main-head .actions .btn-icon{width:var(--control-h-sm);padding:0}
   /* akcja główna w nagłówku: sama ikona (np. „+”), podpis zostaje dla czytników ekranu */
-  .main-head .actions .btn:has(svg){width:36px;height:36px;padding:0;border-radius:var(--r-round);justify-content:center;flex:none}
-  .main-head .actions .btn:has(svg) svg{width:18px;height:18px}
+  .main-head .actions .btn:has(svg){width:44px;height:44px;padding:0;border-radius:var(--r-round);justify-content:center;flex:none}
+  .main-head .actions .btn:has(svg) svg{width:24px;height:24px}
   .main-head .actions .btn:has(svg) span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
   .main-head .head-user{display:flex;align-items:center;gap:2px;position:relative;flex:none}
-  .main-head .head-user .icon-btn{width:36px;height:36px}
-  .main-head .head-user .bell-badge{top:3px;right:2px}
-  .head-av{display:grid;place-items:center;width:36px;height:36px;border-radius:var(--r-round);transition:background var(--t)}
+  .main-head .head-user .icon-btn{width:44px;height:44px}
+  .main-head .head-user .icon-btn svg{width:24px;height:24px}
+  .main-head .head-user .bell-badge{top:5px;right:3px}
+  .head-av{display:grid;place-items:center;width:44px;height:44px;border-radius:var(--r-round);transition:background var(--t)}
   .head-av:hover,.head-av[aria-expanded="true"]{background:var(--s2)}
-  .head-av .av{width:28px;height:28px;font-size:10.5px}
+  .head-av .av{width:32px;height:32px;font-size:12px}
   .main-inner{padding-bottom:calc(var(--tabbar-h) + 24px + env(safe-area-inset-bottom))}
   .main > .demo-banner{margin:0 var(--pad-x);padding:6px 12px;border-radius:0 0 var(--r-md) var(--r-md);text-align:center}
   .tabbar{
