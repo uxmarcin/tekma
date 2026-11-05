@@ -12,6 +12,7 @@
 
 import { CATEGORIES, searchRoles, categoryOf, classifyTitle, categoryById } from '../positions-db.js';
 import { WORK_MODES, CONTRACTS } from '../store.js';
+import { salaryLabel } from '../ad-check.js';
 const norm = (x) => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l').trim();
 const uniqueValues = (list, key) => { const seen = new Set(); const out = []; for (const p of list) { const v = String(p[key] || '').trim(); if (v && !seen.has(v.toLowerCase())) { seen.add(v.toLowerCase()); out.push(v); } } return out; };
 import { DEFAULT_STAGES } from '../seed.js';
@@ -132,7 +133,7 @@ function positionRow(ctx, p, candidates) {
   const mine = candidates.filter((c) => c.position_id === p.id);
   const active = mine.filter((c) => c.status === 'active');
   const wm = (WORK_MODES.find((m) => m.key === p.work_mode) || {}).label;
-  const meta = [p.department, p.location, wm].filter(Boolean).join(' · ');
+  const meta = [p.department, p.location, wm, salaryLabel(p)].filter(Boolean).join(' · ');
   const open = p.status === 'open';
   const cat = (p.category && categoryById(p.category)) || categoryOf(p.title);
   return h('li', null,

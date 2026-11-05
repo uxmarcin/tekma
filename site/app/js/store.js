@@ -53,6 +53,17 @@ function cleanWork({ work_mode, contract_types } = {}) {
   return out;
 }
 
+const SALARY_CURRENCIES = ['PLN', 'EUR', 'USD'];
+/** Widełki brutto/mies.: obie granice albo żadna; „do” ≥ „od”. Zwraca pola do zapisu (null = brak widełek). */
+function cleanSalary({ salary_min, salary_max, salary_currency } = {}) {
+  const num = (v) => (v === '' || v === null || v === undefined ? null : Math.round(Number(String(v).replace(/\s/g, '').replace(',', '.'))));
+  const lo = num(salary_min), hi = num(salary_max);
+  if ((lo === null) !== (hi === null)) throw new Error('Podaj obie granice widełek albo żadną.');
+  if (lo !== null && (!Number.isFinite(lo) || !Number.isFinite(hi) || lo < 1 || hi > 10000000)) throw new Error('Widełki muszą być dodatnimi liczbami.');
+  if (lo !== null && hi < lo) throw new Error('Widełki: „do” nie może być mniejsze niż „od”.');
+  return { salary_min: lo, salary_max: hi, salary_currency: SALARY_CURRENCIES.includes(salary_currency) ? salary_currency : 'PLN' };
+}
+
 /** Stan zgody wpisu w bazie talentów: granted | expiring (≤14 dni) | expired | pending | none, plus liczba dni do końca. */
 export function talentConsent(row, today = new Date()) {
   if (!row) return { state: 'none', days: null };
@@ -68,7 +79,7 @@ export function createStore(adapter) {
   const positions = {
     list: () => adapter.positions.list(),
     get: (id) => adapter.positions.get(id),
-    async create({ title, department, location, stages, rubric_id, description, status, work_mode, contract_types, category } = {}) {
+    async create({ title, department, location, stages, rubric_id, description, status, work_mode, contract_types, category, salary_min, salary_max, salary_currency } = {}) {
       title = str(title);
       if (title.length < 2) throw new Error('Podaj nazwę stanowiska.');
       const st = Array.isArray(stages) && stages.length ? stages.map(str).filter(Boolean) : DEFAULT_STAGES;
@@ -78,6 +89,7 @@ export function createStore(adapter) {
         status: status === 'closed' ? 'closed' : 'open',
         stages: st, rubric_id: rubric_id || null, description: str(description),
         ...cleanWork({ work_mode, contract_types }),
+        ...(salary_min !== undefined || salary_max !== undefined ? cleanSalary({ salary_min, salary_max, salary_currency }) : {}),
         ...(category ? { category: str(category).slice(0, 40) } : {}),
       });
     },
@@ -87,6 +99,7 @@ export function createStore(adapter) {
       if ('stages' in p && (!Array.isArray(p.stages) || p.stages.length < 2)) throw new Error('Kanban musi mieć co najmniej 2 etapy.');
       if ('status' in p && !['open', 'closed'].includes(p.status)) throw new Error('Status stanowiska musi być „open” albo „closed”.');
       if ('work_mode' in p || 'contract_types' in p) Object.assign(p, cleanWork(p));
+      if ('salary_min' in p || 'salary_max' in p) Object.assign(p, cleanSalary(p));
       return adapter.positions.update(id, p);
     },
   };

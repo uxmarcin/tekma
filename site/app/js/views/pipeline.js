@@ -14,6 +14,8 @@
  * Tytuł, okruszek „Stanowiska” i akcja „Dodaj kandydata” żyją w pasku górnym routera (ctx.setHeader) — także na mobile.
  */
 
+import { openAdEditor } from './ad.js';
+import { salaryLabel } from '../ad-check.js';
 import { openAddCandidateModal, discrepancyIds, candidateHref } from './candidates.js';
 
 export default async function render(ctx) {
@@ -31,7 +33,8 @@ export default async function render(ctx) {
   const state = { candidates: [], flagged: new Set(), rubric: null, active: stages[0] || '', dragId: null, focusId: null };
 
   const addBtn = button({ label: 'Dodaj kandydata', variant: 'primary', icon: 'plus', onClick: () => openAddCandidateModal(ctx, { positionId: position.id, onCreated: async () => { await load(); draw(); } }) });
-  ctx.setHeader({ title: position.title, crumbs: [{ label: 'Stanowiska', href: '#/positions' }], actions: [addBtn], width: 'wide' });
+  const adBtn = button({ label: 'Ogłoszenie', variant: 'secondary', icon: 'edit', onClick: () => openAdEditor(ctx, position, { onSaved: (p) => { Object.assign(position, p); drawSub(); } }) });
+  ctx.setHeader({ title: position.title, crumbs: [{ label: 'Stanowiska', href: '#/positions' }], actions: [adBtn, addBtn], width: 'wide' });
 
   /* --- szkielet --- */
   const root = h('div', { class: 'pl' });
@@ -68,6 +71,7 @@ export default async function render(ctx) {
     const parts = [];
     if (position.department) parts.push(h('span', null, position.department));
     if (position.location) parts.push(h('span', null, position.location));
+    parts.push(salaryLabel(position) ? h('span', null, salaryLabel(position)) : h('button', { type: 'button', class: 'link', on: { click: () => adBtn.click() } }, 'Dodaj widełki'));
     parts.push(state.rubric
       ? h('span', null, 'Rubryka: ', h('a', { href: `#/rubrics/${encodeURIComponent(state.rubric.id)}` }, state.rubric.name))
       : h('span', null, h('a', { href: '#/rubrics' }, 'Brak rubryki'), ' — rozmowy nie będą porównywalne'));

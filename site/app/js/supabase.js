@@ -312,7 +312,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
 
   const positionsBase = table('positions');
   // work_mode / contract_types wymagają migracji 1.7 — bez niej zapisujemy stanowisko bez tych pól
-  const WORK_KEYS = ['work_mode', 'contract_types', 'category'];
+  const WORK_KEYS = ['work_mode', 'contract_types', 'category', 'salary_min', 'salary_max', 'salary_currency'];
   const stripWork = (d) => Object.fromEntries(Object.entries(d || {}).filter(([k]) => !WORK_KEYS.includes(k)));
   const hasWork = (d) => WORK_KEYS.some((k) => d && k in d);
   const positions = {
