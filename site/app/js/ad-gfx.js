@@ -208,14 +208,16 @@ export const TEMPLATES = [...HAND, ...buildStyles({ mix, rgba, ensure, deepen, b
 const FLIPPABLE = new Set(['mesh', 'noir', 'aurora', 'glass', 'pastel', 'gradient']);
 
 /** Tło ze zdjęcia: kadr „cover”, opcjonalne rozmycie i przyciemnienie (scrim) gwarantujące czytelność białego tekstu. */
-function drawPhoto(x, W, H, ph) {
+function drawPhoto(x, W, H, ph, P) {
   const img = ph.img; const iw = img.width || img.naturalWidth, ih = img.height || img.naturalHeight;
   const k = Math.max(W / iw, H / ih) * (ph.blur ? 1.08 : 1); const w = iw * k, hh = ih * k;
   x.save(); if (ph.blur) x.filter = `blur(${ph.blur * (x._sc || 1)}px)`;
   x.drawImage(img, (W - w) * (ph.fx ?? 0.5), (H - hh) * (ph.fy ?? 0.5), w, hh); x.restore();
   const d = Math.min(0.9, Math.max(0, ph.dim ?? 0.45));
   x.fillStyle = `rgba(0,0,0,${d})`; x.fillRect(0, 0, W, H);
-  const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, 'rgba(0,0,0,.28)'); g.addColorStop(0.7, 'rgba(0,0,0,.06)'); g.addColorStop(1, 'rgba(0,0,0,.2)'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+  const t = Math.min(0.8, Math.max(0, ph.tint ?? 0.25));          // zabarwienie kolorami palety
+  if (t > 0 && P) { const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, rgba(P.a, t)); g.addColorStop(0.6, rgba(P.c || P.b, t * 0.7)); g.addColorStop(1, rgba(P.b, t)); x.fillStyle = g; x.fillRect(0, 0, W, H); }
+  const g2 = x.createLinearGradient(0, 0, W, H); g2.addColorStop(0, 'rgba(0,0,0,.28)'); g2.addColorStop(0.7, 'rgba(0,0,0,.06)'); g2.addColorStop(1, 'rgba(0,0,0,.2)'); x.fillStyle = g2; x.fillRect(0, 0, W, H);
 }
 const onPhoto = (st) => ({ ...st, ink: '#ffffff', sub: 'rgba(255,255,255,.88)', acc: '#ffffff', mark: '#ffffff', ctaBg: '#ffffff', salaryBg: st.salary === 'box' ? '#ffffff' : st.salaryBg, salaryBorder: false });
 
@@ -234,7 +236,7 @@ export async function renderGraphic(canvas, { template, format, palette, data, o
   const PP = { ...P, a: base[pm[0]], b: base[pm[1]], c: base[pm[2]] };
   const flip = seed !== 7 && (FLIPPABLE.has(t.id) || t.flip) && ((seed >>> 3) & 1) === 1;
   const usePhoto = !!(photo && photo.img);
-  if (usePhoto) drawPhoto(x, f.w, f.h, photo);
+  if (usePhoto) drawPhoto(x, f.w, f.h, photo, PP);
   else { x.save(); if (flip) { x.translate(f.w, 0); x.scale(-1, 1); } t.bg(x, f.w, f.h, PP, r); if (t.deco) t.deco(x, f.w, f.h, PP); x.restore(); }
   const st = usePhoto ? onPhoto(t.st(PP)) : t.st(PP);
   const info = compose(x, f.w, f.h, P, data, opts, st);

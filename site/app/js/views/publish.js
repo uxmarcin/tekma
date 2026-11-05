@@ -29,8 +29,33 @@ export default async function render(ctx) {
   const setPreview = (v) => { preview = v; try { localStorage.setItem(PV, v ? '1' : '0'); } catch { /* brak storage */ } };
   const uploads = [];
   const custom = { mode: 'gradient', c1: '#2d68ff', c2: '#c084fc', c3: '#34d399', use3: false };
+  const DKEY = (id) => `tekma_design_v1:${(ctx.org && ctx.org.id) || 'org'}:${id}`;
+  let saveTimer = null; let onSaved = () => {};
+  function snapshot() {
+    const ph = gfx.photo; const photo = ph && ph.img ? { name: ph.name, dim: ph.dim, blur: ph.blur, tint: ph.tint, src: ph.src || null, data: ph.src ? null : (ph.data || null) } : null;
+    return { ...Object.fromEntries(Object.keys(DEF).map((k) => [k, gfx[k]])), custom: { ...custom }, photo };
+  }
+  function saveDesign() {
+    clearTimeout(saveTimer);
+    try { localStorage.setItem(DKEY(cur.id), JSON.stringify(snapshot())); onSaved(true); return true; } catch { onSaved(false); return false; }
+  }
+  const autosave = () => { clearTimeout(saveTimer); saveTimer = setTimeout(saveDesign, 500); };
+  function loadDesign(id) {
+    Object.assign(gfx, DEF, { photo: null }); Object.assign(custom, { mode: 'gradient', c1: '#2d68ff', c2: '#c084fc', c3: '#34d399', use3: false });
+    let raw = null; try { raw = JSON.parse(localStorage.getItem(DKEY(id)) || 'null'); } catch { raw = null; }
+    if (!raw) return false;
+    for (const k of Object.keys(DEF)) if (raw[k] !== undefined) gfx[k] = raw[k];
+    if (raw.custom) Object.assign(custom, raw.custom);
+    if (raw.photo && (raw.photo.data || raw.photo.src)) {
+      const im = new Image(); im.onload = () => { gfx.photo = { img: im, name: raw.photo.name, dim: raw.photo.dim ?? 0.45, blur: raw.photo.blur ?? 0, tint: raw.photo.tint ?? 0.25, src: raw.photo.src, data: raw.photo.data }; if (tab === 'gfx') paint(); };
+      im.src = raw.photo.data || new URL(`../../assets/bg/${raw.photo.src}`, import.meta.url).href;
+    }
+    return true;
+  }
   const palArg = () => (gfx.palette === 'custom' ? customPalette({ mode: custom.mode, c1: custom.c1, c2: custom.c2, c3: custom.use3 ? custom.c3 : '' }) : gfx.palette);
-  const gfx = { photo: null, template: 'mesh', format: 'li', palette: 'tekma', seed: 7, headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
+  const DEF = { template: 'mesh', format: 'li', palette: 'tekma', seed: 7, headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
+  const gfx = { photo: null, ...DEF };
+  loadDesign(cur.id);
   const pub = readPub(ctx.org);
   const root = h('div', { class: 'pb' });
   const side = h('aside', { class: 'pb-rail' });
@@ -43,7 +68,7 @@ export default async function render(ctx) {
   const MODES = [['page', 'eye', 'Podgląd ogłoszenia', 'Tak widzi je kandydat'], ['gfx', 'palette', 'Design', `${TEMPLATES.length} stylów grafik`], ['post', 'megaphone', 'Publikacja', 'Post i udostępnianie na LinkedIn']];
   function paintSide() {
     const pick = h('select', { class: 'pb-pick', 'aria-label': 'Stanowisko' }, positions.map((p) => h('option', { value: p.id, selected: p.id === cur.id }, p.title)));
-    pick.addEventListener('change', () => { cur = positions.find((p) => p.id === pick.value) || cur; paint(); });
+    pick.addEventListener('change', () => { saveDesign(); cur = positions.find((p) => p.id === pick.value) || cur; loadDesign(cur.id); paint(); });
     const modes = h('div', { class: 'pb-modes', role: 'tablist', 'aria-label': 'Widok' }, MODES.map(([k, ic, t, s]) => h('button', { type: 'button', role: 'tab', class: 'pb-mode', 'aria-selected': String(tab === k), on: { click: () => { tab = k; paint(); } } },
       h('span', { class: 'pb-mi' }, icon(ic)), h('span', { class: 'pb-mt' }, h('b', null, t), h('small', { class: 'muted' }, s)))));
     side.replaceChildren(h('label', { class: 'pb-pl' }, h('span', null, 'Stanowisko'), pick), modes, ...(sideExtra ? [sideExtra] : []));
@@ -98,6 +123,9 @@ export default async function render(ctx) {
     let rev = 0;
     const nameLbl = h('b', null, '');
     const seedLbl = h('span', { class: 'gx-seed muted' }, '');
+    const saveLbl = h('span', { class: 'gx-sv muted' }, '');
+    onSaved = (ok) => { saveLbl.textContent = ok ? 'Zapisano' : 'Nie udało się zapisać'; };
+    const saveBtn = button({ label: 'Zapisz', variant: 'secondary', icon: 'check', onClick: () => { const ok = saveDesign(); toast(ok ? 'Ustawienia Design zapisane dla tego stanowiska.' : 'Nie udało się zapisać (przeglądarka blokuje pamięć).', ok ? 'good' : 'error'); } });
     const gallery = h('div', { class: 'gx-gal', role: 'listbox', 'aria-label': 'Szablony' });
     const locked = (t) => !isPro && !preview && !FREE_TPL.includes(t.id);
     const proOnly = (t) => !isPro && !FREE_TPL.includes(t.id);
@@ -130,6 +158,7 @@ export default async function render(ctx) {
       await renderGraphic(big, { template: gfx.template, format: gfx.format, palette: palArg(), data, opts: o, seed: gfx.seed, photo: gfx.photo });
       const f = FORMATS.find((q) => q.id === gfx.format); bigWrap.style.setProperty('--ar', `${f.w} / ${f.h}`); bigWrap.dataset.fmt = gfx.format;
       nameLbl.textContent = TEMPLATES.find((t) => t.id === gfx.template).name;
+      autosave(); saveLbl.textContent = 'Zapisywanie…';
       paintThumbs();
     }
 
@@ -137,7 +166,7 @@ export default async function render(ctx) {
     const MAXPX = 2400;
     const fileIn = h('input', { type: 'file', accept: 'image/jpeg,image/png,image/webp', hidden: true, 'aria-label': 'Wybierz zdjęcie z dysku' });
     const phBox = h('div', { class: 'gx-ph' });
-    const useImg = (img, name) => { gfx.photo = { img, name, dim: gfx.photo ? gfx.photo.dim : 0.45, blur: gfx.photo ? gfx.photo.blur : 0 }; paintPhoto(); draw(); };
+    const useImg = (img, name, extra = {}) => { gfx.photo = { img, name, dim: gfx.photo ? gfx.photo.dim : 0.45, blur: gfx.photo ? gfx.photo.blur : 0, tint: gfx.photo ? gfx.photo.tint : 0.25, ...extra }; paintPhoto(); draw(); };
     async function addFile(file) {
       if (!file) return;
       if (!/^image\/(jpeg|png|webp)$/.test(file.type)) { toast('Wybierz zdjęcie JPG, PNG lub WebP.', 'error'); return; }
@@ -146,20 +175,21 @@ export default async function render(ctx) {
         const bmp = await createImageBitmap(file); const k = Math.min(1, MAXPX / Math.max(bmp.width, bmp.height));
         const c = document.createElement('canvas'); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k); c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height); bmp.close && bmp.close();
         const th = document.createElement('canvas'); th.width = 96; th.height = 64; const tk = Math.max(96 / c.width, 64 / c.height); th.getContext('2d').drawImage(c, (96 - c.width * tk) / 2, (64 - c.height * tk) / 2, c.width * tk, c.height * tk);
-        uploads.unshift({ name: file.name, img: c, thumb: th }); useImg(c, file.name);
+        const sk = Math.min(1, 1600 / Math.max(c.width, c.height)); const sc = document.createElement('canvas'); sc.width = Math.round(c.width * sk); sc.height = Math.round(c.height * sk); sc.getContext('2d').drawImage(c, 0, 0, sc.width, sc.height);
+        uploads.unshift({ name: file.name, img: c, thumb: th, data: sc.toDataURL('image/jpeg', 0.82) }); useImg(c, file.name, { data: uploads[0].data });
       } catch { toast('Nie udało się wczytać tego zdjęcia.', 'error'); }
     }
     fileIn.addEventListener('change', () => { addFile(fileIn.files[0]); fileIn.value = ''; });
     let libItems = [];
-    const loadLib = (it) => { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => useImg(im, it.name); im.onerror = () => toast('Nie udało się wczytać zdjęcia z biblioteki.', 'error'); im.src = new URL(`../../assets/bg/${it.file}`, import.meta.url).href; };
+    const loadLib = (it) => { const im = new Image(); im.crossOrigin = 'anonymous'; im.onload = () => useImg(im, it.name, { src: it.file }); im.onerror = () => toast('Nie udało się wczytać zdjęcia z biblioteki.', 'error'); im.src = new URL(`../../assets/bg/${it.file}`, import.meta.url).href; };
     function paintPhoto() {
       const ph = gfx.photo;
-      const sl = (label, key, max, unit) => { const out = h('output', null, `${Math.round(ph[key])}${unit}`); const i = h('input', { type: 'range', min: '0', max: String(max), value: String(ph[key]), 'aria-label': label }); i.addEventListener('input', () => { ph[key] = Number(i.value); if (key === 'dim') ph[key] = Number(i.value) / 100; out.textContent = `${Math.round(key === 'dim' ? ph[key] * 100 : ph[key])}${unit}`; later(); }); if (key === 'dim') i.value = String(Math.round(ph.dim * 100)); if (key === 'dim') out.textContent = `${Math.round(ph.dim * 100)}${unit}`; return h('label', { class: 'gx-rg' }, h('span', null, label), i, out); };
+      const sl = (label, key, max, unit) => { const frac = key === 'dim' || key === 'tint'; const cur0 = frac ? Math.round((ph[key] ?? 0) * 100) : (ph[key] ?? 0); const out = h('output', null, `${cur0}${unit}`); const i = h('input', { type: 'range', min: '0', max: String(max), value: String(cur0), 'aria-label': label }); i.addEventListener('input', () => { const v = Number(i.value); ph[key] = frac ? v / 100 : v; out.textContent = `${v}${unit}`; later(); }); return h('label', { class: 'gx-rg' }, h('span', null, label), i, out); };
       phBox.replaceChildren(...[
         h('div', { class: 'gx-phr' }, button({ label: 'Dodaj własne zdjęcie', variant: 'secondary', size: 'sm', icon: 'plus', onClick: () => fileIn.click() }), ph ? button({ label: 'Usuń tło', variant: 'secondary', size: 'sm', onClick: () => { gfx.photo = null; paintPhoto(); draw(); } }) : null),
         uploads.length ? h('div', { class: 'gx-phl' }, uploads.map((u) => { const b = h('button', { type: 'button', class: 'gx-pht', 'aria-pressed': String(!!ph && ph.img === u.img), title: u.name, on: { click: () => useImg(u.img, u.name) } }, u.thumb); return b; })) : null,
         libItems.length ? h('div', { class: 'gx-phl' }, libItems.map((it) => h('button', { type: 'button', class: 'gx-pht', title: it.name, 'aria-label': it.name, on: { click: () => loadLib(it) } }, h('img', { src: new URL(`../../assets/bg/${it.thumb || it.file}`, import.meta.url).href, alt: '', loading: 'lazy' })))) : null,
-        ph ? h('div', { class: 'gx-rgs' }, sl('Przyciemnienie', 'dim', 85, '%'), sl('Rozmycie', 'blur', 14, ' px')) : null,
+        ph ? h('div', { class: 'gx-rgs' }, sl('Przyciemnienie', 'dim', 85, '%'), sl('Rozmycie', 'blur', 14, ' px'), sl('Zabarwienie', 'tint', 80, '%')) : null,
         h('p', { class: 'gx-phn muted' }, ph ? 'Tekst na zdjęciu jest zawsze biały, a przyciemnienie dba o czytelność.' : 'Zdjęcie zostaje w Twojej przeglądarce i nie jest nigdzie wysyłane. Używaj tylko zdjęć, do których masz prawa.')].filter(Boolean));
     }
     paintPhoto();
@@ -208,7 +238,7 @@ export default async function render(ctx) {
       for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: palArg(), data: gfxData(), opts: gfxOpts(), seed: gfx.seed, photo: gfx.photo }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
       gfx.format = keep; toast('Pobrano wszystkie formaty.', 'good');
     } });
-    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, nameLbl, seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Style · ${TEMPLATES.length}`), chipBar), gallery);
+    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-dock' }, h('div', { class: 'gx-bar' }, nameLbl, seedLbl, h('span', { class: 'gx-act' }, saveLbl, saveBtn, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Style · ${TEMPLATES.length}`), chipBar)), gallery);
     const banner = preview && !isPro ? h('div', { class: 'gx-pv' }, icon('crown'), h('span', null, h('b', null, 'Podgląd Pro. '), 'Oglądasz wszystkie style, ale pobranie stylów Pro wymaga planu Pro.'), button({ label: 'Wyłącz podgląd', variant: 'secondary', size: 'sm', onClick: () => { setPreview(false); paint(); } }), button({ label: 'Zobacz plan Pro', variant: 'primary', size: 'sm', onClick: () => { location.hash = '#/settings/plan'; } })) : null;
     main2.prepend(...(banner ? [banner] : []));
     sideExtra = gSide;
