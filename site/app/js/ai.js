@@ -29,11 +29,11 @@ const QUOTES = {
       'Dodaliśmy cache, bo architekt tak zaproponował. Nie pamiętam, jakie były liczby.',
     ],
     mid: [
-      'Przenieśliśmy kokanban na partycjonowane tabele — p95 spadło z 4 s do 0,4 s.',
+      'Przenieśliśmy kolejkę na partycjonowane tabele — p95 spadło z 4 s do 0,4 s.',
       'Wąskim gardłem były blokady na jednej tabeli; rozbiliśmy ją po kliencie i obciążenie się wyrównało.',
     ],
     high: [
-      'Przenieśliśmy kokanban na partycjonowane tabele — p95 spadło z 4 s do 0,4 s. Rozważaliśmy też Kafkę, ale koszt operacyjny był za duży dla zespołu z trzema osobami.',
+      'Przenieśliśmy kolejkę na partycjonowane tabele — p95 spadło z 4 s do 0,4 s. Rozważaliśmy też Kafkę, ale koszt operacyjny był za duży dla zespołu z trzema osobami.',
       'Zaczęliśmy od pomiaru: 80% czasu to był jeden JOIN. Najpierw indeks, potem denormalizacja, na końcu read replica — każdy krok z liczbami przed i po.',
     ],
   },
