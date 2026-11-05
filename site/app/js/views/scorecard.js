@@ -49,11 +49,11 @@ export default async function render(ctx) {
     title: candidate.full_name,
     crumbs: [{ label: 'Kandydaci', href: '#/candidates' }],
     width: 'wide',
-    actions: position ? [ui.button({ label: 'Lejek stanowiska', variant: 'secondary', size: 'sm', icon: 'briefcase', onClick: () => ctx.navigate(`#/positions/${position.id}`) })] : [],
+    actions: position ? [ui.button({ label: 'Kanban stanowiska', variant: 'secondary', size: 'sm', icon: 'briefcase', onClick: () => ctx.navigate(`#/positions/${position.id}`) })] : [],
   });
 
   if (!stage) {
-    return ui.emptyState({ icon: 'alert', title: 'Stanowisko nie ma etapów', text: 'Dodaj etapy lejka w ustawieniach stanowiska, żeby móc oceniać kandydata.', action: position ? { label: 'Otwórz stanowisko', onClick: () => ctx.navigate(`#/positions/${position.id}`) } : null });
+    return ui.emptyState({ icon: 'alert', title: 'Stanowisko nie ma etapów', text: 'Dodaj etapy kanbanu w ustawieniach stanowiska, żeby móc oceniać kandydata.', action: position ? { label: 'Otwórz stanowisko', onClick: () => ctx.navigate(`#/positions/${position.id}`) } : null });
   }
 
   const card = await store.scorecards.get(candidate.id, stage);
@@ -433,16 +433,16 @@ export default async function render(ctx) {
       if (state.candidate.stage === nextStage) {
         moveBlock = h('p', { class: 'small muted sc-moved' }, ui.icon('check', 14), `Kandydat jest już na etapie „${nextStage}”.`);
       } else if (state.stages.indexOf(state.candidate.stage) > idx + 1) {
-        moveBlock = h('p', { class: 'small muted sc-moved' }, `Kandydat jest dalej w lejku: „${state.candidate.stage}”.`);
+        moveBlock = h('p', { class: 'small muted sc-moved' }, `Kandydat jest dalej w kanbanie: „${state.candidate.stage}”.`);
       } else {
         const btn = ui.button({ label: `Przenieś do etapu „${nextStage}”`, variant: 'primary', icon: 'arrow', block: true });
         btn.addEventListener('click', () => moveNext(nextStage, btn));
         moveBlock = h('div', { class: 'sc-move' }, btn, h('p', { class: 'small muted' }, 'Przeniesienie wykonuje się tylko na Twoje kliknięcie.'));
       }
     } else if (decision === 'yes' && !nextStage) {
-      moveBlock = h('p', { class: 'small muted sc-moved' }, 'To ostatni etap lejka.');
+      moveBlock = h('p', { class: 'small muted sc-moved' }, 'To ostatni etap kanbanu.');
     } else if (decision === 'no' && state.candidate.status === 'active' && state.position) {
-      moveBlock = h('p', { class: 'small muted sc-moved' }, 'Odrzucenie z podaniem powodu zrobisz w ', h('a', { class: 'link', href: `#/positions/${state.position.id}` }, 'lejku stanowiska'), '.');
+      moveBlock = h('p', { class: 'small muted sc-moved' }, 'Odrzucenie z podaniem powodu zrobisz w ', h('a', { class: 'link', href: `#/positions/${state.position.id}` }, 'kanbanie stanowiska'), '.');
     }
 
     const decisionBlock = h('div', { class: 'sc-sum sc-sum-decision' },

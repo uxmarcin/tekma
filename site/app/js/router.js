@@ -21,7 +21,7 @@ export const ROUTES = [
   { pattern: '#/onboarding', view: 'onboarding', layout: 'bare', title: 'Twoja firma' },
   { pattern: '#/', view: 'dashboard', layout: 'shell', title: 'Pulpit', nav: 'dashboard' },
   { pattern: '#/positions', view: 'positions', layout: 'shell', title: 'Stanowiska', nav: 'positions' },
-  { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Lejek', nav: 'positions' },
+  { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Kanban', nav: 'positions' },
   { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
   { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
   { pattern: '#/rubrics', view: 'rubrics', layout: 'shell', title: 'Rubryki', nav: 'rubrics' },

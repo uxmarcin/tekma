@@ -1,5 +1,5 @@
 /**
- * views/pipeline.js — lejek (kanban) jednego stanowiska: #/positions/:id
+ * views/pipeline.js — kanban jednego stanowiska: #/positions/:id
  *
  *   export default async function render(ctx) -> HTMLElement
  *   export function openRejectModal(ctx, candidate, { onDone }) -> {close}
@@ -37,7 +37,7 @@ export default async function render(ctx) {
   const root = h('div', { class: 'pl' });
   const live = h('div', { class: 'sr-only', 'aria-live': 'polite', 'aria-atomic': 'true' });
   const sub = h('div', { class: 'pl-sub' });
-  const tabs = h('div', { class: 'pl-tabs', role: 'tablist', 'aria-label': 'Etapy lejka' });
+  const tabs = h('div', { class: 'pl-tabs', role: 'tablist', 'aria-label': 'Etapy kanbanu' });
   const cols = h('div', { class: 'pl-cols' });
   const board = h('div', { class: 'pl-board', role: 'region', 'aria-label': 'Tablica etapów', tabindex: '0' }, cols);
   const rejectedBox = h('div');
@@ -105,7 +105,7 @@ export default async function render(ctx) {
   /* --- kolumny --- */
   function drawCols() {
     if (!stages.length) {
-      cols.replaceChildren(emptyState({ icon: 'briefcase', title: 'To stanowisko nie ma etapów', text: 'Dodaj etapy lejka w ustawieniach stanowiska, a kandydaci pojawią się w kolumnach.' }));
+      cols.replaceChildren(emptyState({ icon: 'briefcase', title: 'To stanowisko nie ma etapów', text: 'Dodaj etapy kanbanu w ustawieniach stanowiska, a kandydaci pojawią się w kolumnach.' }));
       return;
     }
     cols.replaceChildren(...stages.map((s, idx) => {

@@ -39,7 +39,7 @@ export const SEED = {
           minutes: 15,
           anchors: {
             1: 'Nie potrafi wskazać wąskiego gardła ani uzasadnić decyzji; opisuje cudze rozwiązania bez zrozumienia.',
-            2: 'Zna podstawowe wzorce (cache, kolejka), ale nie umie powiązać ich z konkretnym problemem ani ocenić kosztów.',
+            2: 'Zna podstawowe wzorce (cache, kokanbanu), ale nie umie powiązać ich z konkretnym problemem ani ocenić kosztów.',
             3: 'Opisuje jedno rozwiązanie z konkretnymi liczbami i uzasadnia wybór; nie rozważa alternatyw.',
             4: 'Porównuje co najmniej dwa podejścia, podaje wyniki (np. p95, przepustowość) i mówi, co by zrobił inaczej.',
             5: 'Prowadzi od obserwacji do rozwiązania z pomiarami, zna kompromisy (spójność, koszt, złożoność) i uczy innych.',

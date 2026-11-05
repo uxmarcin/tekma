@@ -41,7 +41,7 @@ export function createStore(adapter) {
       title = str(title);
       if (title.length < 2) throw new Error('Podaj nazwę stanowiska.');
       const st = Array.isArray(stages) && stages.length ? stages.map(str).filter(Boolean) : DEFAULT_STAGES;
-      if (st.length < 2) throw new Error('Lejek musi mieć co najmniej 2 etapy.');
+      if (st.length < 2) throw new Error('Kanban musi mieć co najmniej 2 etapy.');
       return adapter.positions.create({
         title, department: str(department), location: str(location),
         status: status === 'closed' ? 'closed' : 'open',
@@ -51,7 +51,7 @@ export function createStore(adapter) {
     async update(id, patch = {}) {
       const p = { ...patch };
       if ('title' in p && str(p.title).length < 2) throw new Error('Podaj nazwę stanowiska.');
-      if ('stages' in p && (!Array.isArray(p.stages) || p.stages.length < 2)) throw new Error('Lejek musi mieć co najmniej 2 etapy.');
+      if ('stages' in p && (!Array.isArray(p.stages) || p.stages.length < 2)) throw new Error('Kanban musi mieć co najmniej 2 etapy.');
       if ('status' in p && !['open', 'closed'].includes(p.status)) throw new Error('Status stanowiska musi być „open” albo „closed”.');
       return adapter.positions.update(id, p);
     },
@@ -69,7 +69,7 @@ export function createStore(adapter) {
       const pos = await adapter.positions.get(position_id);
       if (!pos) throw new Error('Nie znaleziono stanowiska. Odśwież listę i spróbuj ponownie.');
       const firstStage = (pos.stages && pos.stages[0]) || DEFAULT_STAGES[0];
-      if (stage && !(pos.stages || []).includes(stage)) throw new Error('Ten etap nie istnieje w lejku stanowiska.');
+      if (stage && !(pos.stages || []).includes(stage)) throw new Error('Ten etap nie istnieje w kanbanie stanowiska.');
       return adapter.candidates.create({
         position_id, full_name, email, source: str(source) || 'Inne',
         stage: stage || firstStage,
@@ -82,7 +82,7 @@ export function createStore(adapter) {
       const c = await adapter.candidates.get(id);
       if (!c) throw new Error('Nie znaleziono kandydata.');
       const pos = await adapter.positions.get(c.position_id);
-      if (pos && !(pos.stages || []).includes(stage)) throw new Error('Ten etap nie istnieje w lejku stanowiska.');
+      if (pos && !(pos.stages || []).includes(stage)) throw new Error('Ten etap nie istnieje w kanbanie stanowiska.');
       return adapter.candidates.update(id, { stage });
     },
     async reject(id, reason) {

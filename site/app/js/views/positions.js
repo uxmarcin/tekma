@@ -1,9 +1,9 @@
 /**
  * views/positions.js — lista stanowisk + okno „Nowe stanowisko”.
- *   #/positions            lista (filtr: otwarte / zamknięte), każdy wiersz → #/positions/:id (lejek)
+ *   #/positions            lista (filtr: otwarte / zamknięte), każdy wiersz → #/positions/:id (kanban)
  *   #/positions?new=1      od razu otwiera okno „Nowe stanowisko” (używa go pulpit)
  * Dane: store.positions.list(), store.candidates.list(), store.rubrics.list().
- * Okno: tytuł (wymagany), dział, lokalizacja, rubryka z listy, etapy lejka (domyślne z seed.js)
+ * Okno: tytuł (wymagany), dział, lokalizacja, rubryka z listy, etapy kanbanu (domyślne z seed.js)
  *   → store.positions.create → przejście do #/positions/:id.
  * Stany: skeleton podczas ładowania, błąd z „Spróbuj ponownie”, pusty z jedną akcją główną.
  * Tytuł i akcja „Dodaj stanowisko” żyją w pasku górnym routera (ctx.setHeader) — także na mobile.
@@ -66,7 +66,7 @@ export default async function render(ctx) {
       root.replaceChildren(ctx.ui.emptyState({
         icon: 'briefcase',
         title: 'Nie masz jeszcze stanowisk',
-        text: 'Stanowisko to lejek etapów, kandydaci i rubryka ocen. Zacznij od pierwszego.',
+        text: 'Stanowisko to kanban etapów, kandydaci i rubryka ocen. Zacznij od pierwszego.',
         action: { label: 'Dodaj stanowisko', icon: 'plus', onClick: () => openNewPosition(ctx, { onCreated: reload }) },
       }));
       return;
@@ -85,7 +85,7 @@ export default async function render(ctx) {
       : ctx.ui.emptyState({
         icon: 'briefcase',
         title: filter === 'open' ? 'Brak otwartych stanowisk' : 'Brak zamkniętych stanowisk',
-        text: filter === 'open' ? 'Wszystkie stanowiska są zamknięte. Dodaj nowe albo otwórz jedno z zamkniętych.' : 'Zamknięte stanowiska pojawią się tutaj. Zamykasz je w widoku lejka.',
+        text: filter === 'open' ? 'Wszystkie stanowiska są zamknięte. Dodaj nowe albo otwórz jedno z zamkniętych.' : 'Zamknięte stanowiska pojawią się tutaj. Zamykasz je w widoku kanbanu.',
         action: filter === 'open' ? { label: 'Dodaj stanowisko', icon: 'plus', onClick: () => openNewPosition(ctx, { onCreated: reload }) } : null,
       });
 
@@ -144,7 +144,7 @@ function positionRow(ctx, p, candidates) {
 }
 
 /**
- * Mini-lejek: słupek na etap, wysokość ∝ liczbie aktywnych kandydatów na tym etapie.
+ * Mini-kanban: słupek na etap, wysokość ∝ liczbie aktywnych kandydatów na tym etapie.
  * Czarno-biały; etap bez kandydatów to jasny słupek-podstawa.
  */
 export function miniFunnel(ctx, position, activeCandidates) {
@@ -154,7 +154,7 @@ export function miniFunnel(ctx, position, activeCandidates) {
   const max = Math.max(1, ...counts);
   const label = stages.map((s, i) => `${s}: ${counts[i]}`).join(', ');
   const empty = counts.every((n) => n === 0);
-  return h('div', { class: `mf${empty ? ' is-empty' : ''}`, role: 'img', 'aria-label': `Lejek: ${label}`, title: label },
+  return h('div', { class: `mf${empty ? ' is-empty' : ''}`, role: 'img', 'aria-label': `Kanban: ${label}`, title: label },
     stages.map((s, i) => h('i', { class: counts[i] ? 'on' : '', style: `--v:${counts[i] / max}` })),
   );
 }
@@ -166,7 +166,7 @@ export function openNewPosition(ctx, { onCreated } = {}) {
   const department = field({ label: 'Dział', name: 'department', placeholder: 'np. Inżynieria', autocomplete: 'organization-title' });
   const location = field({ label: 'Lokalizacja', name: 'location', placeholder: 'np. Warszawa / zdalnie', autocomplete: 'off' });
   const rubric = field({ label: 'Rubryka ocen', name: 'rubric_id', type: 'select', options: [{ value: '', label: 'Ładowanie rubryk…' }], disabled: true, hint: 'Rubryka sprawia, że oceny rozmówców są porównywalne. Możesz ją przypisać później.' });
-  const stages = field({ label: 'Etapy lejka', name: 'stages', type: 'textarea', rows: 5, value: DEFAULT_STAGES.join('\n'), hint: 'Jeden etap w wierszu, w kolejności. Co najmniej 2 etapy. Pierwszy etap to ten, na który trafia nowy kandydat.' });
+  const stages = field({ label: 'Etapy kanbanu', name: 'stages', type: 'textarea', rows: 5, value: DEFAULT_STAGES.join('\n'), hint: 'Jeden etap w wierszu, w kolejności. Co najmniej 2 etapy. Pierwszy etap to ten, na który trafia nowy kandydat.' });
   stages.input.setAttribute('spellcheck', 'false');
 
   const errorSlot = h('div');
@@ -208,9 +208,9 @@ export function openNewPosition(ctx, { onCreated } = {}) {
     let firstBad = null;
     if (t.length < 2) { title.setError('Podaj nazwę stanowiska (co najmniej 2 znaki).'); firstBad = firstBad || title; }
     if (t.length > 120) { title.setError('Nazwa jest za długa (maksymalnie 120 znaków).'); firstBad = firstBad || title; }
-    if (stageList.list.length < 2) { stages.setError('Lejek potrzebuje co najmniej 2 etapów — po jednym w wierszu.'); firstBad = firstBad || stages; }
+    if (stageList.list.length < 2) { stages.setError('Kanban potrzebuje co najmniej 2 etapów — po jednym w wierszu.'); firstBad = firstBad || stages; }
     else if (stageList.duplicate) { stages.setError(`Etap „${stageList.duplicate}” powtarza się. Każdy etap musi mieć inną nazwę.`); firstBad = firstBad || stages; }
-    else if (stageList.list.length > 12) { stages.setError('Za dużo etapów (maksymalnie 12). Krótszy lejek jest czytelniejszy.'); firstBad = firstBad || stages; }
+    else if (stageList.list.length > 12) { stages.setError('Za dużo etapów (maksymalnie 12). Krótszy kanban jest czytelniejszy.'); firstBad = firstBad || stages; }
     if (firstBad) { firstBad.input.focus(); return; }
 
     submit.setBusy(true); cancel.disabled = true;

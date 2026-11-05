@@ -1,7 +1,7 @@
 /**
  * views/dashboard.js — pulpit (#/). Ekran startowy jak w ChatGPT: powitanie z imieniem,
  * cztery liczniki, lista „Wymaga uwagi” (store.stats.dashboard().attention) i „Stanowiska w skrócie”
- * z mini-lejkiem. Konto bez stanowisk → jeden ekran z jedną akcją główną.
+ * z mini-kanbanem. Konto bez stanowisk → jeden ekran z jedną akcją główną.
  * Dane: store.stats.dashboard(), store.positions.list(), store.candidates.list().
  * Stany: skeleton, błąd z „Spróbuj ponownie”, puste listy z jedną akcją.
  * Akcja „Dodaj stanowisko” żyje w pasku górnym routera (ctx.setHeader) — także na mobile.
@@ -68,7 +68,7 @@ export default async function render(ctx) {
     if (!positions.length) {
       root.replaceChildren(ctx.ui.heroState({
         title: `${greeting()}${name ? `, ${name}` : ''}`,
-        text: 'Zacznij od pierwszego stanowiska. Dodasz do niego kandydatów i rubrykę, a Tekma pokaże lejek i podpowie, gdzie oceny się rozjeżdżają.',
+        text: 'Zacznij od pierwszego stanowiska. Dodasz do niego kandydatów i rubrykę, a Tekma pokaże kanban i podpowie, gdzie oceny się rozjeżdżają.',
         action: { label: 'Dodaj stanowisko', icon: 'plus', onClick: () => ctx.navigate('#/positions?new=1') },
       }));
       return;

@@ -3,7 +3,7 @@
  *
  *   export default async function render(ctx) -> HTMLElement
  *   export function openAddCandidateModal(ctx, { positions?, positionId?, onCreated? }) -> {close}
- *       (używa go też widok lejka: views/pipeline.js)
+ *       (używa go też widok kanbanu: views/pipeline.js)
  *   export function discrepancyIds(scorecards) -> Set<candidate_id>
  *       kandydaci, u których dwie oceny tego samego pytania różnią się o ≥ 2 pkt (ta sama reguła, co store.stats)
  *
@@ -179,8 +179,8 @@ export default async function render(ctx) {
 
     if (total === 0) {
       body.replaceChildren(positions.length
-        ? emptyState({ icon: 'users', title: 'Baza kandydatów jest pusta', text: 'Dodaj pierwszą osobę. Trafi na pierwszy etap lejka wybranego stanowiska.', action: { label: 'Dodaj kandydata', icon: 'plus', onClick: () => openAdd() } })
-        : emptyState({ icon: 'briefcase', title: 'Zacznij od stanowiska', text: 'Kandydat zawsze należy do stanowiska i jego lejka. Najpierw dodaj stanowisko.', action: { label: 'Przejdź do stanowisk', onClick: () => ctx.navigate('#/positions') } }));
+        ? emptyState({ icon: 'users', title: 'Baza kandydatów jest pusta', text: 'Dodaj pierwszą osobę. Trafi na pierwszy etap kanbanu wybranego stanowiska.', action: { label: 'Dodaj kandydata', icon: 'plus', onClick: () => openAdd() } })
+        : emptyState({ icon: 'briefcase', title: 'Zacznij od stanowiska', text: 'Kandydat zawsze należy do stanowiska i jego kanbanu. Najpierw dodaj stanowisko.', action: { label: 'Przejdź do stanowisk', onClick: () => ctx.navigate('#/positions') } }));
       return;
     }
     if (!rows.length) {
@@ -345,7 +345,7 @@ export function openAddCandidateModal(ctx, { positions, positionId, onCreated } 
       h('div', { class: 'form-row' }, fName, fEmail),
       fSource,
       aiBox,
-      h('p', { class: 'cd-note' }, icon('info', 12), ' Kandydat trafi na pierwszy etap lejka tego stanowiska.'),
+      h('p', { class: 'cd-note' }, icon('info', 12), ' Kandydat trafi na pierwszy etap kanbanu tego stanowiska.'),
     );
     submit.addEventListener('click', () => form.requestSubmit());
     body.replaceChildren(form);
