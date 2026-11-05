@@ -3,7 +3,7 @@
 Uruchom: python3 tools/build-pages.py   (z katalogu site/)."""
 import os, re, json
 
-V = "light8"
+V = "light9"
 SITE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ICONS = {
@@ -155,7 +155,7 @@ def hero(ey, h1, lede, cta2=None, cta2href='#'):
 '''
 
 def shot(name, w, h, alt, url, lazy=True):
-    return f'''<div class="browser reveal" data-delay="2"><div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">{url}</span></div><picture><source media="(max-width:720px)" srcset="assets/landing/{name}-m.webp?v=3"><img src="assets/landing/{name}.webp?v=3" srcset="assets/landing/{name}-1x.webp?v=3 {w}w, assets/landing/{name}.webp?v=3 {w*2}w" sizes="(max-width:1200px) 100vw, 1120px" width="{w}" height="{h}" alt="{alt}"{' loading="lazy"' if lazy else ''}></picture></div>'''
+    return f'''<div class="browser reveal" data-delay="2"><div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">{url}</span></div><img src="assets/landing/{name}.webp?v=3" srcset="assets/landing/{name}-1x.webp?v=3 {w}w, assets/landing/{name}.webp?v=3 {w*2}w" sizes="(max-width:1200px) 100vw, 1120px" width="{w}" height="{h}" alt="{alt}"{' loading="lazy"' if lazy else ''}></div>'''
 
 def phone(name, w, h, alt):
     return f'''<div class="phone reveal" data-delay="2"><img src="assets/landing/{name}.webp?v=3" srcset="assets/landing/{name}-1x.webp?v=3 {w}w, assets/landing/{name}.webp?v=3 {w*2}w" sizes="320px" width="{w}" height="{h}" alt="{alt}" loading="lazy"></div>'''
