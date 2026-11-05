@@ -327,10 +327,21 @@ export function confirm({ title = 'Na pewno?', text = '', confirmLabel = 'Potwie
 }
 
 /* ---------------------------------------------------------------- stany */
+/* Zestawy trzech kafelków (lewy, środkowy, prawy) dla pustych stanów — wg projektu „Responses · empty” z Figmy.
+   Zamiast zdjęć osób: kafelki z ikonami Lucide na pastelowych tłach (żadnych cudzych zdjęć w aplikacji). */
+const EMPTY_TILES = {
+  briefcase: ['users', 'briefcase', 'rubric'], users: ['user', 'users', 'briefcase'], user: ['calendar', 'user', 'target'],
+  message: ['star', 'message', 'check'], search: ['briefcase', 'search', 'users'], inbox: ['mail', 'inbox', 'calendar'],
+  alert: ['info', 'alert', 'clock'], plus: ['briefcase', 'plus', 'users'], target: ['flag', 'target', 'check'],
+};
+const TILE_TONES = ['blue', 'green', 'amber'];
 export function emptyState({ title, text, action, icon: iconName = 'inbox' } = {}) {
-  const actions = action ? (Array.isArray(action) ? action : [action]).map((a) => (a instanceof Node ? a : button({ variant: 'primary', ...a }))) : [];
+  const actions = action ? (Array.isArray(action) ? action : [action]).map((a) => (a instanceof Node ? a : button({ variant: 'secondary', size: 'sm', ...a }))) : [];
+  const set = EMPTY_TILES[iconName] || ['clock', iconName, 'check'];
+  const tiles = h('div', { class: 'empty-tiles', 'aria-hidden': 'true' },
+    set.map((n, i) => h('span', { class: `empty-tile t${i} ${TILE_TONES[i]}` }, icon(n, 24))));
   return h('div', { class: 'empty' },
-    icon(iconName, 28),
+    tiles,
     title ? h('h3', null, title) : null,
     text ? h('p', null, text) : null,
     actions.length ? h('div', { class: 'actions' }, actions) : null,
