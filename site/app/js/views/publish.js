@@ -25,6 +25,8 @@ export default async function render(ctx) {
   let cur = positions.find((p) => p.id === ctx.query?.id) || positions[0];
   let tab = 'page';
   const FREE_TPL = ['mesh', 'swiss', 'pastel']; const isPro = ctx.org && ['pro', 'business'].includes(ctx.org.plan);
+  const PV = 'tekma_preview_pro'; let preview = false; try { preview = localStorage.getItem(PV) === '1'; } catch { /* brak storage */ }
+  const setPreview = (v) => { preview = v; try { localStorage.setItem(PV, v ? '1' : '0'); } catch { /* brak storage */ } };
   const gfx = { template: 'mesh', format: 'li', palette: 'tekma', seed: 7, headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
   const pub = readPub(ctx.org);
   const root = h('div', { class: 'pb' });
@@ -90,12 +92,13 @@ export default async function render(ctx) {
     const nameLbl = h('b', null, '');
     const seedLbl = h('span', { class: 'gx-seed muted' }, '');
     const gallery = h('div', { class: 'gx-gal', role: 'listbox', 'aria-label': 'Szablony' });
-    const locked = (t) => !isPro && !FREE_TPL.includes(t.id);
-    const nLocked = TEMPLATES.filter(locked).length;
+    const locked = (t) => !isPro && !preview && !FREE_TPL.includes(t.id);
+    const proOnly = (t) => !isPro && !FREE_TPL.includes(t.id);
+    const nLocked = TEMPLATES.filter(proOnly).length;
     const upsell = () => ctx.ui.modal({ title: `Odblokuj ${nLocked} stylów w Pro`, body: h('div', { class: 'gx-up' },
       h('p', null, `Free ma ${TEMPLATES.length - nLocked} style. Pro odblokowuje wszystkie ${TEMPLATES.length}: jasne, nocne, żywe i papierowe, w każdym formacie — LinkedIn, Instagram, Story i Facebook — oraz wyłączenie znaku Tekma.`),
       h('p', { class: 'muted' }, 'Nowe style dochodzą co miesiąc.')),
-      actions: [{ label: 'Zobacz plan Pro', variant: 'primary', icon: 'crown', onClick: () => { location.hash = '#/settings/plan'; document.querySelector('.modal .close')?.click(); } }] });
+      actions: [{ label: 'Podejrzyj wszystkie style', variant: 'secondary', icon: 'eye', onClick: () => { setPreview(true); document.querySelector('.modal .close')?.click(); paint(); } }, { label: 'Zobacz plan Pro', variant: 'primary', icon: 'crown', onClick: () => { location.hash = '#/settings/plan'; document.querySelector('.modal .close')?.click(); } }] });
     const TONE_LBL = { light: 'Jasne', dark: 'Nocne', vivid: 'Żywe', paper: 'Papier' };
     let filter = 'all';
     const queue = { busy: false, items: [] };
@@ -105,12 +108,12 @@ export default async function render(ctx) {
     const thumbs = TEMPLATES.map((t) => {
       const lk = locked(t); const c = h('canvas', { class: 'gx-th' });
       const b = h('button', { type: 'button', class: `gx-card${lk ? ' is-locked' : ''}`, role: 'option', 'aria-selected': 'false', 'data-id': t.id, 'aria-label': lk ? `${t.name} — styl Pro` : t.name, title: t.hint, on: { click: () => { if (lk) { upsell(); return; } gfx.template = t.id; draw(); } } },
-        h('span', { class: 'gx-thw' }, c, lk ? h('span', { class: 'gx-lk' }, icon('crown'), 'Pro') : h('span', { class: 'gx-fr' }, 'Free'), lk ? h('span', { class: 'gx-unl' }, icon('lock'), 'Odblokuj') : null), h('b', null, t.name));
+        h('span', { class: 'gx-thw' }, c, proOnly(t) ? h('span', { class: 'gx-lk' }, icon('crown'), 'Pro') : h('span', { class: 'gx-fr' }, 'Free'), lk ? h('span', { class: 'gx-unl' }, icon('lock'), 'Odblokuj') : null), h('b', null, t.name));
       b._c = c; b._t = t; io.observe(b); return b;
     });
     const chips = [['all', `Wszystkie · ${TEMPLATES.length}`], ['free', `Free · ${TEMPLATES.length - nLocked}`], ['pro', `Pro · ${nLocked}`], ...Object.entries(TONE_LBL)];
     const chipBar = h('div', { class: 'gx-chips', role: 'group', 'aria-label': 'Filtr stylów' }, chips.map(([k, l]) => h('button', { type: 'button', class: 'gx-chip', 'aria-pressed': String(filter === k), 'data-k': k, on: { click: () => { filter = k; chipBar.querySelectorAll('button').forEach((q) => q.setAttribute('aria-pressed', String(q.dataset.k === k))); applyFilter(); } } }, l)));
-    function applyFilter() { thumbs.forEach((b) => { const t = b._t; const ok = filter === 'all' || (filter === 'free' && !locked(t)) || (filter === 'pro' && locked(t)) || t.tone === filter; b.hidden = !ok; }); gallery.dataset.empty = String(thumbs.every((b) => b.hidden)); }
+    function applyFilter() { thumbs.forEach((b) => { const t = b._t; const ok = filter === 'all' || (filter === 'free' && !proOnly(t)) || (filter === 'pro' && proOnly(t)) || t.tone === filter; b.hidden = !ok; }); gallery.dataset.empty = String(thumbs.every((b) => b.hidden)); }
     thumbs.forEach((b) => gallery.append(b));
     function paintThumbs() { rev++; thumbs.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.id === gfx.template))); thumbs.filter((b) => b._vis && !b.hidden).forEach(want); }
 
@@ -139,13 +142,16 @@ export default async function render(ctx) {
         h('label', { class: 'gx-l' }, 'Nagłówek', head), h('label', { class: 'gx-l' }, 'Przycisk', cta),
         tog('showOrg', 'Firma i dział'), tog('showSalary', 'Widełki'), tog('showMeta', 'Tryb pracy i forma umowy'), tog('showCta', 'Przycisk'), tog('showMark', 'Znak Tekma'),
         noSal ? h('div', { class: 'pb-note', style: 'margin-top:8px' }, h('p', { style: 'margin:0 0 8px' }, tag('Brak widełek', 'warn'), ' Design bez widełek nie spełnia zasad jawności wynagrodzeń.'), button({ label: 'Dodaj widełki', variant: 'secondary', size: 'sm', icon: 'edit', onClick: editAd })) : null));
-    const dlOne = button({ label: 'Pobierz PNG', variant: 'primary', icon: 'arrow', onClick: () => save(big, fileName(gfx.format)) });
+    const dlOne = button({ label: 'Pobierz PNG', variant: 'primary', icon: 'arrow', onClick: () => { if (proOnly(TEMPLATES.find((t) => t.id === gfx.template))) { upsell(); return; } save(big, fileName(gfx.format)); } });
     const dlAll = button({ label: 'Pobierz wszystkie formaty', variant: 'secondary', onClick: async () => {
+      if (proOnly(TEMPLATES.find((t) => t.id === gfx.template))) { upsell(); return; }
       const keep = gfx.format; const c = document.createElement('canvas');
       for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
       gfx.format = keep; toast('Pobrano wszystkie formaty.', 'good');
     } });
     const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, nameLbl, seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Style · ${TEMPLATES.length}`), chipBar), gallery);
+    const banner = preview && !isPro ? h('div', { class: 'gx-pv' }, icon('crown'), h('span', null, h('b', null, 'Podgląd Pro. '), 'Oglądasz wszystkie style, ale pobranie stylów Pro wymaga planu Pro.'), button({ label: 'Wyłącz podgląd', variant: 'secondary', size: 'sm', onClick: () => { setPreview(false); paint(); } }), button({ label: 'Zobacz plan Pro', variant: 'primary', size: 'sm', onClick: () => { location.hash = '#/settings/plan'; } })) : null;
+    main2.prepend(...(banner ? [banner] : []));
     const wrap = h('div', { class: 'gx' }, side, main2);
     draw();
     return wrap;

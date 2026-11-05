@@ -155,3 +155,4 @@
 .gx-big{box-shadow:0 0 0 1px rgba(15,15,18,.08),0 6px 20px -8px rgba(15,15,18,.16)}
 .gx-th{background:#fbfbfb}
 .gx-card .gx-thw{border-radius:8px;box-shadow:0 0 0 1px rgba(15,15,18,.06)}
+.gx-pv{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;border-radius:var(--r-md);background:#fbfbfb;box-shadow:0 0 0 1px var(--border);font-size:var(--fs-sm)}.gx-pv svg{width:16px;height:16px;color:var(--accent)}.gx-pv span{flex:1;min-width:200px}
