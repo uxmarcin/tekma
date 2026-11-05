@@ -310,7 +310,22 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
     };
   }
 
-  const positions = table('positions');
+  const positionsBase = table('positions');
+  // work_mode / contract_types wymagają migracji 1.7 — bez niej zapisujemy stanowisko bez tych pól
+  const WORK_KEYS = ['work_mode', 'contract_types'];
+  const stripWork = (d) => Object.fromEntries(Object.entries(d || {}).filter(([k]) => !WORK_KEYS.includes(k)));
+  const hasWork = (d) => WORK_KEYS.some((k) => d && k in d);
+  const positions = {
+    ...positionsBase,
+    async create(data) {
+      try { return await positionsBase.create(data); }
+      catch (err) { if (!hasWork(data)) throw err; const row = await positionsBase.create(stripWork(data)); row._workSkipped = true; return row; }
+    },
+    async update(id, patch) {
+      try { return await positionsBase.update(id, patch); }
+      catch (err) { if (!hasWork(patch)) throw err; const row = await positionsBase.update(id, stripWork(patch)); row._workSkipped = true; return row; }
+    },
+  };
   const candidates = table('candidates', { order: 'applied_at.desc' });
   const rubrics = table('rubrics', { order: 'updated_at.desc' });
   // moduły Ludzie i Cele — wymagają migracji db/migrations/1.5-people-goals.sql

@@ -10,7 +10,10 @@
  * export default async function render(ctx) -> HTMLElement
  */
 
-import { buildCatalog, filterCatalog, uniqueValues } from '../position-catalog.js';
+import { CATEGORIES, searchRoles, categoryOf } from '../positions-db.js';
+import { WORK_MODES, CONTRACTS } from '../store.js';
+const norm = (x) => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l').trim();
+const uniqueValues = (list, key) => { const seen = new Set(); const out = []; for (const p of list) { const v = String(p[key] || '').trim(); if (v && !seen.has(v.toLowerCase())) { seen.add(v.toLowerCase()); out.push(v); } } return out; };
 import { DEFAULT_STAGES } from '../seed.js';
 import { chipsField } from '../chips.js';
 
@@ -128,10 +131,13 @@ function positionRow(ctx, p, candidates) {
   const { h, tag, icon, plural, formatDate } = ctx.ui;
   const mine = candidates.filter((c) => c.position_id === p.id);
   const active = mine.filter((c) => c.status === 'active');
-  const meta = [p.department, p.location].filter(Boolean).join(' · ');
+  const wm = (WORK_MODES.find((m) => m.key === p.work_mode) || {}).label;
+  const meta = [p.department, p.location, wm].filter(Boolean).join(' · ');
   const open = p.status === 'open';
+  const cat = categoryOf(p.title);
   return h('li', null,
     h('a', { class: 'pos-row', href: `#/positions/${encodeURIComponent(p.id)}`, 'aria-label': `${p.title}${meta ? ', ' + meta : ''}, ${open ? 'otwarte' : 'zamknięte'}, ${plural(active.length, 'kandydat w procesie', 'kandydatów w procesie', 'kandydatów w procesie')}` },
+      h('span', { class: 'pos-ic', title: cat ? cat.name : 'Stanowisko', 'aria-hidden': 'true' }, icon(cat ? cat.icon : 'briefcase', 20)),
       h('div', { class: 'pos-main' },
         h('b', null, p.title),
         h('small', null, meta || 'Bez działu i lokalizacji', p.created_at ? h('span', { class: 'pos-date' }, ` · od ${formatDate(p.created_at)}`) : null),
@@ -171,45 +177,99 @@ export function openNewPosition(ctx, { onCreated } = {}) {
   const stages = chipsField({ label: 'Etapy kanbanu', name: 'stages', items: DEFAULT_STAGES, defaults: DEFAULT_STAGES, max: 12, hint: 'Kolejność ma znaczenie: pierwszy etap to ten, na który trafia nowy kandydat. Kliknij etap, aby zmienić nazwę, przeciągnij, aby zmienić kolejność. Co najmniej 2 etapy.' });
 
   const errorSlot = h('div');
-  // Podpowiedzi nazw: własne stanowiska + katalog wbudowany. Wybór własnego uzupełnia dział, lokalizację, etapy i rubrykę.
-  const sugBox = h('div', { class: 'pos-sug', role: 'group', 'aria-label': 'Podpowiedzi nazw stanowisk' });
-  title.appendChild(sugBox);
-  let catalog = buildCatalog([]);
+  // --- wyszukiwarka stanowisk (katalog ~780 pozycji + stanowiska z tej firmy) ---
+  const { icon } = ctx.ui;
+  let orgPositions = [];
+  let activeCat = null;
   let touched = { department: false, location: false };
   department.input.addEventListener('input', () => { touched.department = true; });
   location.input.addEventListener('input', () => { touched.location = true; });
-  function renderSug() {
-    const items = filterCatalog(catalog, title.value, 6);
-    sugBox.replaceChildren(...items.map((c) => h('button', {
-      type: 'button', class: `sug${c.source === 'org' ? ' own' : ''}`,
-      title: c.source === 'org' ? 'Twoje stanowisko — uzupełni dział, lokalizację i etapy' : 'Z katalogu',
-      on: { click: () => pick(c) },
-    }, c.title)));
-    sugBox.hidden = !items.length;
+
+  const listId = 'pos-title-list';
+  title.input.setAttribute('role', 'combobox');
+  title.input.setAttribute('aria-expanded', 'false');
+  title.input.setAttribute('aria-controls', listId);
+  title.input.setAttribute('aria-autocomplete', 'list');
+  title.input.setAttribute('placeholder', 'Szukaj lub wpisz, np. Backend, tester, product…');
+  const catBar = h('div', { class: 'pos-cats', role: 'group', 'aria-label': 'Kategorie stanowisk' });
+  const listBox = h('div', { class: 'pos-combo', id: listId, role: 'listbox', 'aria-label': 'Podpowiedzi stanowisk', hidden: true });
+  title.append(catBar, listBox);
+  let items = []; let hi = -1;
+
+  function tile(iconName, own) { return h('span', { class: `pos-ic${own ? ' own' : ''}`, 'aria-hidden': 'true' }, icon(iconName, 18)); }
+  function renderCats() {
+    catBar.replaceChildren(
+      h('button', { type: 'button', class: `pos-cat${activeCat ? '' : ' on'}`, 'aria-pressed': String(!activeCat), on: { click: () => { activeCat = null; renderCats(); renderList(true); } } }, 'Wszystkie'),
+      ...CATEGORIES.map((c) => h('button', { type: 'button', class: `pos-cat${activeCat === c.id ? ' on' : ''}`, 'aria-pressed': String(activeCat === c.id), on: { click: () => { activeCat = activeCat === c.id ? null : c.id; renderCats(); renderList(true); title.input.focus(); } } }, icon(c.icon, 16), c.name)),
+    );
   }
-  function pick(c) {
-    title.input.value = c.title;
-    const p = c.position;
+  function build() {
+    const q = title.value.trim();
+    const own = orgPositions.filter((p) => (!q || norm(p.title).includes(norm(q))) && (!activeCat || (categoryOf(p.title) || {}).id === activeCat))
+      .filter((p, i, a) => a.findIndex((x) => norm(x.title) === norm(p.title)) === i).slice(0, 4)
+      .map((p) => ({ title: p.title, icon: (categoryOf(p.title) || {}).icon || 'briefcase', sub: 'Twoje stanowisko · uzupełni dział i etapy', own: true, position: p }));
+    const ownKeys = new Set(own.map((o) => norm(o.title)));
+    const cat = searchRoles(q, { cat: activeCat, limit: q ? 30 : 12 }).filter((r) => !ownKeys.has(r.key)).map((r) => ({ title: r.title, icon: r.icon, sub: r.catName }));
+    const out = [...own, ...cat];
+    if (q.length >= 2 && !out.some((o) => norm(o.title) === norm(q))) out.push({ title: q, icon: 'plus', sub: 'Dodaj jako własną nazwę', custom: true });
+    return out;
+  }
+  function renderList(forceOpen) {
+    items = build(); hi = items.length && forceOpen !== 'noselect' ? -1 : -1;
+    const open = items.length > 0 && (forceOpen === true || document.activeElement === title.input);
+    listBox.hidden = !open; title.input.setAttribute('aria-expanded', String(open));
+    listBox.replaceChildren(...items.map((it, i) => h('div', { class: 'pos-opt', role: 'option', id: `pos-opt-${i}`, 'aria-selected': 'false', on: { mousedown: (e) => { e.preventDefault(); choose(i); } } },
+      tile(it.icon, it.own), h('span', { class: 'pos-opt-t' }, h('b', null, it.custom ? `„${it.title}”` : it.title), h('small', null, it.sub)))));
+  }
+  function mark(i) {
+    hi = i;
+    [...listBox.children].forEach((el, k) => { el.setAttribute('aria-selected', String(k === i)); el.classList.toggle('hi', k === i); });
+    if (i >= 0) { title.input.setAttribute('aria-activedescendant', `pos-opt-${i}`); listBox.children[i].scrollIntoView({ block: 'nearest' }); } else title.input.removeAttribute('aria-activedescendant');
+  }
+  function choose(i) {
+    const it = items[i]; if (!it) return;
+    title.input.value = it.title;
+    const p = it.position;
     if (p) {
       if (!touched.department && p.department) department.input.value = p.department;
       if (!touched.location && p.location) location.input.value = p.location;
       if (Array.isArray(p.stages) && p.stages.length >= 2 && stages.setItems) stages.setItems(p.stages);
       if (p.rubric_id) rubric.input.value = p.rubric_id;
+      if (p.work_mode) setMode(p.work_mode);
+      if (Array.isArray(p.contract_types)) setContracts(p.contract_types);
     }
-    renderSug();
-    title.input.focus();
+    listBox.hidden = true; title.input.setAttribute('aria-expanded', 'false'); title.input.removeAttribute('aria-activedescendant');
+    (department.input.value ? location.input : department.input).focus();
   }
-  title.input.addEventListener('input', renderSug);
-  renderSug();
+  title.input.addEventListener('input', () => renderList(true));
+  title.input.addEventListener('focus', () => renderList(true));
+  title.input.addEventListener('blur', () => { listBox.hidden = true; title.input.setAttribute('aria-expanded', 'false'); });
+  title.input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (listBox.hidden) renderList(true); mark(Math.min(items.length - 1, hi + 1)); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); mark(Math.max(0, hi - 1)); }
+    else if (e.key === 'Enter' && !listBox.hidden && hi >= 0) { e.preventDefault(); choose(hi); }
+    else if (e.key === 'Escape' && !listBox.hidden) { e.stopPropagation(); listBox.hidden = true; title.input.setAttribute('aria-expanded', 'false'); }
+  });
+  renderCats();
   ctx.store.positions.list().then((list) => {
-    catalog = buildCatalog(list);
-    renderSug();
-    for (const [id, key, field_] of [['pos-dep-list', 'department', department], ['pos-loc-list', 'location', location]]) {
-      const dl = h('datalist', { id }, uniqueValues(list, key).map((v) => h('option', { value: v })));
-      field_.appendChild(dl);
-      field_.input.setAttribute('list', id);
+    orgPositions = list;
+    const sorted = [...list].sort((x, y) => String(y.created_at || '').localeCompare(String(x.created_at || '')));
+    orgPositions = sorted;
+    for (const [id, key, f] of [['pos-dep-list', 'department', department], ['pos-loc-list', 'location', location]]) {
+      f.appendChild(h('datalist', { id }, uniqueValues(list, key).map((v) => h('option', { value: v }))));
+      f.input.setAttribute('list', id);
     }
-  }).catch(() => { /* podpowiedzi są dodatkiem — bez nich formularz działa */ });
+  }).catch(() => { /* podpowiedzi własnych stanowisk są dodatkiem */ });
+
+  // --- tryb pracy i forma współpracy ---
+  let mode = '';
+  const modeBtns = WORK_MODES.map((m) => h('button', { type: 'button', class: 'pos-seg-b', role: 'radio', 'aria-checked': 'false', dataset: { v: m.key }, on: { click: () => setMode(mode === m.key ? '' : m.key) } }, icon(m.key === 'remote' ? 'house' : m.key === 'hybrid' ? 'workflow' : 'building', 18), m.label));
+  function setMode(v) { mode = v; modeBtns.forEach((b) => { const on = b.dataset.v === v; b.setAttribute('aria-checked', String(on)); b.classList.toggle('on', on); }); }
+  const modeField = h('div', { class: 'field' }, h('span', { class: 'lbl', id: 'pos-mode-l' }, 'Tryb pracy'), h('div', { class: 'pos-seg', role: 'radiogroup', 'aria-labelledby': 'pos-mode-l' }, modeBtns));
+  let contracts = new Set();
+  const conBtns = CONTRACTS.map((c) => h('button', { type: 'button', class: 'pos-con', 'aria-pressed': 'false', dataset: { v: c.key }, on: { click: () => { contracts.has(c.key) ? contracts.delete(c.key) : contracts.add(c.key); setContracts([...contracts]); } } }, c.label));
+  function setContracts(arr) { contracts = new Set(arr); conBtns.forEach((b) => { const on = contracts.has(b.dataset.v); b.setAttribute('aria-pressed', String(on)); b.classList.toggle('on', on); }); }
+  const conField = h('div', { class: 'field' }, h('span', { class: 'lbl', id: 'pos-con-l' }, 'Forma współpracy'), h('div', { class: 'pos-cons', role: 'group', 'aria-labelledby': 'pos-con-l' }, conBtns), h('p', { class: 'hint' }, 'Zaznacz wszystkie, które możesz zaproponować. Pole opcjonalne.'));
 
   const submit = button({ label: 'Dodaj stanowisko', variant: 'primary', type: 'submit' });
   const cancel = button({ label: 'Anuluj', variant: 'secondary' });
@@ -218,6 +278,8 @@ export function openNewPosition(ctx, { onCreated } = {}) {
     errorSlot,
     title,
     h('div', { class: 'form-row' }, department, location),
+    modeField,
+    conField,
     rubric,
     stages,
   );
@@ -259,7 +321,9 @@ export function openNewPosition(ctx, { onCreated } = {}) {
       const created = await ctx.store.positions.create({
         title: t, department: department.value, location: location.value,
         stages: stageList.list, rubric_id: rubric.value || null,
+        work_mode: mode || null, contract_types: [...contracts],
       });
+      if (created._workSkipped) toast('Tryb pracy i forma współpracy zapiszą się po aktualizacji bazy (migracja 1.7).', 'info');
       toast(`Stanowisko „${created.title}” dodane.`, 'good');
       m.close();
       if (onCreated) { try { await onCreated(created); } catch { /* lista odświeży się po nawigacji */ } }

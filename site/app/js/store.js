@@ -43,11 +43,20 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const now = () => new Date().toISOString();
 const str = (v) => String(v ?? '').trim();
 
+export const WORK_MODES = [{ key: 'onsite', label: 'Stacjonarnie' }, { key: 'hybrid', label: 'Hybrydowo' }, { key: 'remote', label: 'Zdalnie' }];
+export const CONTRACTS = [{ key: 'uop', label: 'Umowa o pracę' }, { key: 'b2b', label: 'B2B' }, { key: 'zlecenie', label: 'Umowa zlecenie' }, { key: 'dzielo', label: 'Umowa o dzieło' }, { key: 'staz', label: 'Staż / praktyki' }];
+function cleanWork({ work_mode, contract_types } = {}) {
+  const out = {};
+  if (work_mode !== undefined) out.work_mode = WORK_MODES.some((m) => m.key === work_mode) ? work_mode : null;
+  if (contract_types !== undefined) out.contract_types = [...new Set((contract_types || []).filter((k) => CONTRACTS.some((c) => c.key === k)))];
+  return out;
+}
+
 export function createStore(adapter) {
   const positions = {
     list: () => adapter.positions.list(),
     get: (id) => adapter.positions.get(id),
-    async create({ title, department, location, stages, rubric_id, description, status } = {}) {
+    async create({ title, department, location, stages, rubric_id, description, status, work_mode, contract_types } = {}) {
       title = str(title);
       if (title.length < 2) throw new Error('Podaj nazwę stanowiska.');
       const st = Array.isArray(stages) && stages.length ? stages.map(str).filter(Boolean) : DEFAULT_STAGES;
@@ -56,6 +65,7 @@ export function createStore(adapter) {
         title, department: str(department), location: str(location),
         status: status === 'closed' ? 'closed' : 'open',
         stages: st, rubric_id: rubric_id || null, description: str(description),
+        ...cleanWork({ work_mode, contract_types }),
       });
     },
     async update(id, patch = {}) {
@@ -63,6 +73,7 @@ export function createStore(adapter) {
       if ('title' in p && str(p.title).length < 2) throw new Error('Podaj nazwę stanowiska.');
       if ('stages' in p && (!Array.isArray(p.stages) || p.stages.length < 2)) throw new Error('Kanban musi mieć co najmniej 2 etapy.');
       if ('status' in p && !['open', 'closed'].includes(p.status)) throw new Error('Status stanowiska musi być „open” albo „closed”.');
+      if ('work_mode' in p || 'contract_types' in p) Object.assign(p, cleanWork(p));
       return adapter.positions.update(id, p);
     },
   };
