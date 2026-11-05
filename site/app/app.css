@@ -637,7 +637,8 @@ body.has-modal{overflow:hidden}
 /* przełącznik motywu w menu konta */
 .theme-row{display:flex;align-items:center;gap:8px;padding:6px 10px 8px}
 .theme-row>span{flex:1;font-size:13px;color:var(--muted)}
-.theme-seg{display:inline-flex;padding:2px;border-radius:8px;background:var(--s2)}
-.theme-seg button{height:26px;padding:0 9px;border:0;border-radius:6px;background:transparent;color:var(--muted);font:500 12.5px var(--sans);cursor:pointer;display:inline-flex;align-items:center;gap:5px}
-.theme-seg button svg{width:14px;height:14px}
+.theme-seg{display:inline-flex;flex:none;padding:2px;border-radius:8px;background:var(--s2)}
+.theme-seg button{width:32px;height:28px;padding:0;border:0;border-radius:6px;background:transparent;color:var(--muted);cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.theme-seg button:hover{color:var(--ink)}
+.theme-seg button svg{width:16px;height:16px}
 .theme-seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:var(--shadow-card)}

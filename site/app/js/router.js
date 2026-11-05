@@ -402,7 +402,7 @@ function themeRow() {
   const cur = getTheme();
   const seg = h('div', { class: 'theme-seg', role: 'radiogroup', 'aria-label': 'Motyw' });
   for (const [val, label, ic] of [['light', 'Jasny', 'sun'], ['dark', 'Ciemny', 'moon'], ['system', 'System', 'monitor']]) {
-    const b = h('button', { type: 'button', role: 'radio', 'aria-pressed': String(cur === val), 'aria-checked': String(cur === val), title: label }, icon(ic), label);
+    const b = h('button', { type: 'button', role: 'radio', 'aria-pressed': String(cur === val), 'aria-checked': String(cur === val), 'aria-label': label, title: label }, icon(ic, 16));
     b.addEventListener('click', () => { applyTheme(val); seg.querySelectorAll('button').forEach(x => { const on = x === b; x.setAttribute('aria-pressed', String(on)); x.setAttribute('aria-checked', String(on)); }); });
     seg.appendChild(b);
   }
