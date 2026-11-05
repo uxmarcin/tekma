@@ -95,8 +95,8 @@ export default async function render(ctx) {
       actions: [{ label: 'Zobacz plan Pro', variant: 'primary', icon: 'crown', onClick: () => { location.hash = '#/settings/plan'; document.querySelector('.modal .close')?.click(); } }] });
     const thumbs = TEMPLATES.map((t) => {
       const lk = locked(t); const c = h('canvas', { class: 'gx-th' });
-      const b = h('button', { type: 'button', class: `gx-card${lk ? ' is-locked' : ''}`, role: 'option', 'aria-selected': 'false', 'data-id': t.id, 'aria-label': lk ? `${t.name} — szablon Pro` : t.name, on: { click: () => { if (lk) { upsell(); return; } gfx.template = t.id; draw(); } } },
-        h('span', { class: 'gx-thw' }, c, lk ? h('span', { class: 'gx-lk' }, icon('lock'), 'Pro') : null), h('b', null, t.name), h('small', { class: 'muted' }, t.hint));
+      const b = h('button', { type: 'button', class: `gx-card${lk ? ' is-locked' : ''}`, role: 'option', 'aria-selected': 'false', 'data-id': t.id, 'aria-label': lk ? `${t.name} — szablon Pro` : t.name, title: t.hint, on: { click: () => { if (lk) { upsell(); return; } gfx.template = t.id; draw(); } } },
+        h('span', { class: 'gx-thw' }, c, lk ? h('span', { class: 'gx-lk' }, icon('crown'), 'Pro') : null), h('b', null, t.name), h('small', { class: 'muted' }, t.hint));
       b._c = c; gallery.append(b); return b;
     });
     if (nLocked) gallery.append(h('div', { class: 'gx-more' }, h('b', null, `+${nLocked} szablonów w Pro`), h('p', { class: 'muted' }, 'Wszystkie style, nowe co miesiąc. Free zostaje z 3 szablonami na zawsze.'), button({ label: 'Odblokuj Pro', variant: 'primary', size: 'sm', icon: 'crown', onClick: upsell })));
@@ -133,7 +133,7 @@ export default async function render(ctx) {
       for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
       gfx.format = keep; toast('Pobrano wszystkie formaty.', 'good');
     } });
-    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, h('b', null, TEMPLATES.find((t) => t.id === gfx.template).name), seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('h2', { class: 'st-h', style: 'margin:18px 0 10px' }, '12 szablonów'), gallery);
+    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, h('b', null, TEMPLATES.find((t) => t.id === gfx.template).name), seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Szablony · ${TEMPLATES.length}`), h('span', { class: 'muted', style: 'font-size:var(--fs-xs)' }, nLocked ? `${TEMPLATES.length - nLocked} w Free, ${nLocked} w Pro` : '')), gallery);
     const wrap = h('div', { class: 'gx' }, side, main2);
     draw();
     return wrap;
@@ -144,7 +144,10 @@ export default async function render(ctx) {
     const edit = button({ label: 'Edytuj ogłoszenie', variant: 'secondary', icon: 'edit', onClick: editAd });
     const seg = h('div', { class: 'segment pb-tabs', role: 'group', 'aria-label': 'Widok' },
       [['page', 'Strona ogłoszenia'], ['gfx', 'Design'], ['post', 'Post na LinkedIn']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(tab === k), on: { click: () => { tab = k; paint(); } } }, l)));
-    main.replaceChildren(h('div', { class: 'pb-row', style: 'justify-content:space-between;margin:0' }, seg, edit), tab === 'page' ? pageTab() : (tab === 'gfx' ? gfxTab() : postTab()));
+    root.classList.toggle('pb-solo', tab === 'gfx');
+    const pick = h('select', { class: 'input pb-pick', 'aria-label': 'Stanowisko' }, positions.map((p) => h('option', { value: p.id, selected: p.id === cur.id }, p.title)));
+    pick.addEventListener('change', () => { cur = positions.find((p) => p.id === pick.value) || cur; paint(); });
+    main.replaceChildren(h('div', { class: 'pb-row', style: 'justify-content:space-between;margin:0' }, seg, h('span', { class: 'pb-row', style: 'margin:0' }, tab === 'gfx' ? pick : null, edit)), tab === 'page' ? pageTab() : (tab === 'gfx' ? gfxTab() : postTab()));
   }
   paint();
   return root;
