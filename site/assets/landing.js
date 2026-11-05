@@ -50,3 +50,12 @@
   const glow = document.querySelector('.hero-glow');
   if (glow && !reduce) addEventListener('scroll', () => { glow.style.transform = `translateY(${120 + scrollY * .15}px)`; }, { passive: true });
 })();
+
+// Karuzela: przeciąganie myszą (mobbin-style)
+document.querySelectorAll('[data-car]').forEach(t => {
+  let down = false, sx = 0, sl = 0;
+  t.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = t.scrollLeft; t.classList.add('dragging'); });
+  addEventListener('pointermove', e => { if (!down) return; t.scrollLeft = sl - (e.clientX - sx); });
+  addEventListener('pointerup', () => { if (!down) return; down = false; t.classList.remove('dragging'); });
+  t.addEventListener('click', e => { if (Math.abs(t.scrollLeft - sl) > 5) e.preventDefault(); }, true);
+});

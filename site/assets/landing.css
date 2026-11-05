@@ -246,7 +246,8 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
   .burger{display:block}
   .sec{padding:72px 0}
   h2{font-size:32px}
-  .hero{padding:56px 0 72px}
+  .hero{padding:40px 0 64px}
+  .car-h br,.car-lede br{display:none}
   .hero-lede{font-size:17px}
   .proof{gap:16px 24px}
   .hero-shot{margin-top:40px}
@@ -278,4 +279,79 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
   *,*::before,*::after{animation-duration:.001s!important;animation-delay:0s!important;transition-duration:.001s!important}
   .js .reveal{opacity:1;transform:none}
   h1 .w,.fade,.hero-shot .browser{opacity:1;transform:none}
+}
+
+/* ---------- podstrony ---------- */
+.hero.sub{padding-bottom:64px}
+.hero .eyebrow.fade{margin-bottom:0}
+.hero.sub .eyebrow{margin-bottom:0}
+.h2-sm{font-size:36px}
+.splits{display:grid;gap:96px}
+.split{display:grid;grid-template-columns:440px 1fr;gap:64px;align-items:center}
+.split.flip{grid-template-columns:1fr 440px}
+.split-text{display:grid;gap:18px}
+.split-text .lede{font-size:16px}
+.split-media .browser{transform:none}
+.split-media.is-phone{display:flex;justify-content:center}
+.phone{width:320px;border-radius:32px;overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow-float);background:#fff}
+.phone img{width:100%;height:auto;display:block}
+.igrid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.icard{background:#fff;border-radius:20px;padding:24px;display:grid;gap:14px;transition:transform .3s var(--ease),box-shadow .3s var(--ease)}
+.icard:hover{transform:translateY(-3px);box-shadow:0 24px 48px -24px rgba(15,15,25,.18)}
+.icard-top{display:flex;align-items:center;justify-content:space-between}
+.ilogo{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:#fff;display:grid;place-items:center}
+.ilogo svg{width:24px;height:24px}
+.chip{padding:4px 10px;border-radius:999px;font-size:12px;font-weight:500;background:var(--blue-soft);color:var(--blue-ink)}
+.chip.on{background:#d1fae5;color:var(--green)}
+.icard b{font-size:17px;font-weight:600;letter-spacing:-.01em}
+.icard p{font-size:14px;line-height:1.5;color:var(--sub)}
+.chat{background:#fff;border:1px solid var(--line);border-radius:20px;padding:28px;display:grid;gap:16px}
+.chat-q{display:flex;justify-content:flex-end}
+.chat-q span{max-width:520px;padding:12px 16px;border-radius:16px;background:#f1f1f3;font-size:15px;line-height:1.5}
+.chat-a{display:flex;gap:12px;align-items:flex-start}
+.chat-av{flex:none;width:28px;height:28px;border-radius:8px;background:#D97757;color:#fff;font-weight:600;font-size:13px;display:grid;place-items:center}
+.chat-a>div{display:grid;gap:10px;font-size:15px;line-height:1.5}
+.chat-a ul{list-style:none;display:grid;gap:8px}
+.chat-a li{display:grid;gap:2px;padding-left:16px;position:relative}
+.chat-a li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:#f97316}
+.chat-a li b{font-size:14px;font-weight:600}
+.chat-a li small{font-size:13px;color:var(--sub)}
+.chat-src{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+.chat-src svg{width:14px;height:14px;stroke:var(--muted);fill:none;stroke-width:2}
+.faq{background:#fff;border-radius:20px;padding:0 32px;margin-top:40px}
+.faq details{padding:22px 0;border-bottom:1px solid var(--line)}
+.faq details:last-child{border-bottom:0}
+.faq summary{list-style:none;cursor:pointer;font-size:17px;font-weight:600;letter-spacing:-.01em;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font-size:22px;font-weight:400;color:var(--muted);transition:transform .25s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{margin-top:10px;font-size:15px;line-height:1.5;color:var(--sub);max-width:70ch}
+.trust .browser{box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+/* carousel (mobbin) */
+.carousel{overflow:hidden;padding-bottom:96px}
+.car-h{font-size:44px;letter-spacing:-.025em;line-height:1.12}
+.car-lede{margin-top:32px;font-family:var(--display);font-weight:500;font-size:32px;line-height:1.25;letter-spacing:-.015em;color:#6b6b75}
+.car-label{margin-top:56px;display:flex;align-items:center;gap:14px;font-family:var(--display);font-weight:600;font-size:34px;letter-spacing:-.02em}
+.car-label svg{width:30px;height:30px;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.car-track{margin-top:40px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
+.car-track::-webkit-scrollbar{display:none}
+.car-track.dragging{cursor:grabbing;scroll-snap-type:none}
+.car-strip{display:flex;gap:16px;padding-left:max(var(--gutter),calc((100vw - var(--wrap))/2));padding-right:var(--gutter);width:max-content}
+.car-card{position:relative;flex:none;height:420px;border-radius:24px;background:#f1f1f3;overflow:hidden;scroll-snap-align:start}
+.car-card.wide{width:780px}
+.car-card.tall{width:300px}
+.car-card img{position:absolute;left:40px;top:44px;width:calc(100% - 40px);height:auto;border-radius:12px;box-shadow:0 12px 32px -8px rgba(15,15,25,.12);transition:transform .6s var(--ease)}
+.car-card.tall img{left:42px;width:calc(100% - 42px)}
+.car-card:hover img{transform:translateY(-10px)}
+.car-card .badge{position:absolute;z-index:2;left:24px;top:24px;width:64px;height:64px;border-radius:16px;background:#fff;display:grid;place-items:center;box-shadow:0 8px 24px -4px rgba(15,15,25,.18)}
+.car-card .badge svg{width:32px;height:32px}
+@media (max-width:1100px){.split,.split.flip{grid-template-columns:1fr}.split.flip .split-media{order:-1}.igrid{grid-template-columns:1fr 1fr}}
+@media (max-width:860px){
+  .h2-sm{font-size:28px}.splits{gap:64px}.igrid{grid-template-columns:1fr}
+  .car-h{font-size:30px}.car-lede{font-size:21px;margin-top:20px}.car-label{font-size:24px;margin-top:32px}.car-label svg{width:22px;height:22px}
+  .car-card{height:300px}.car-card.wide{width:min(560px,86vw)}.car-card.tall{width:220px}.car-card img{left:24px;top:28px;width:calc(100% - 24px)}.car-card .badge{width:48px;height:48px;left:16px;top:16px;border-radius:12px}.car-card .badge svg{width:24px;height:24px}
+  .chat{padding:20px}.chat-q span{max-width:100%}
+  /* mobile: focus crop instead of horizontal pan */
+  .browser{overflow:hidden}.browser img{min-width:0;width:100%}
+  .phone{width:min(300px,80vw)}
 }
