@@ -100,6 +100,7 @@ export function chipsField({ label, items = [], defaults = null, min = 0, max = 
 
   el.setError = (msg) => { errEl.textContent = msg || ''; el.classList.toggle('has-error', Boolean(msg)); };
   el.items = () => [...list];
+  el.setItems = (arr) => { list = arr.map(norm).filter(Boolean); editing = -1; el.setError(''); paint(); };
   el.input = add;
   Object.defineProperty(el, 'value', { get: () => list.join('\n') });
   el.min = min;

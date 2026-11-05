@@ -10,6 +10,7 @@
  * export default async function render(ctx) -> HTMLElement
  */
 
+import { buildCatalog, filterCatalog, uniqueValues } from '../position-catalog.js';
 import { DEFAULT_STAGES } from '../seed.js';
 import { chipsField } from '../chips.js';
 
@@ -170,6 +171,46 @@ export function openNewPosition(ctx, { onCreated } = {}) {
   const stages = chipsField({ label: 'Etapy kanbanu', name: 'stages', items: DEFAULT_STAGES, defaults: DEFAULT_STAGES, max: 12, hint: 'Kolejność ma znaczenie: pierwszy etap to ten, na który trafia nowy kandydat. Kliknij etap, aby zmienić nazwę, przeciągnij, aby zmienić kolejność. Co najmniej 2 etapy.' });
 
   const errorSlot = h('div');
+  // Podpowiedzi nazw: własne stanowiska + katalog wbudowany. Wybór własnego uzupełnia dział, lokalizację, etapy i rubrykę.
+  const sugBox = h('div', { class: 'pos-sug', role: 'group', 'aria-label': 'Podpowiedzi nazw stanowisk' });
+  title.appendChild(sugBox);
+  let catalog = buildCatalog([]);
+  let touched = { department: false, location: false };
+  department.input.addEventListener('input', () => { touched.department = true; });
+  location.input.addEventListener('input', () => { touched.location = true; });
+  function renderSug() {
+    const items = filterCatalog(catalog, title.value, 6);
+    sugBox.replaceChildren(...items.map((c) => h('button', {
+      type: 'button', class: `sug${c.source === 'org' ? ' own' : ''}`,
+      title: c.source === 'org' ? 'Twoje stanowisko — uzupełni dział, lokalizację i etapy' : 'Z katalogu',
+      on: { click: () => pick(c) },
+    }, c.title)));
+    sugBox.hidden = !items.length;
+  }
+  function pick(c) {
+    title.input.value = c.title;
+    const p = c.position;
+    if (p) {
+      if (!touched.department && p.department) department.input.value = p.department;
+      if (!touched.location && p.location) location.input.value = p.location;
+      if (Array.isArray(p.stages) && p.stages.length >= 2 && stages.setItems) stages.setItems(p.stages);
+      if (p.rubric_id) rubric.input.value = p.rubric_id;
+    }
+    renderSug();
+    title.input.focus();
+  }
+  title.input.addEventListener('input', renderSug);
+  renderSug();
+  ctx.store.positions.list().then((list) => {
+    catalog = buildCatalog(list);
+    renderSug();
+    for (const [id, key, field_] of [['pos-dep-list', 'department', department], ['pos-loc-list', 'location', location]]) {
+      const dl = h('datalist', { id }, uniqueValues(list, key).map((v) => h('option', { value: v })));
+      field_.appendChild(dl);
+      field_.input.setAttribute('list', id);
+    }
+  }).catch(() => { /* podpowiedzi są dodatkiem — bez nich formularz działa */ });
+
   const submit = button({ label: 'Dodaj stanowisko', variant: 'primary', type: 'submit' });
   const cancel = button({ label: 'Anuluj', variant: 'secondary' });
 

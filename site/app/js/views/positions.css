@@ -84,3 +84,11 @@
 .field .chips-box input.chip-edit{width:150px;height:24px;padding:0 6px;border:1px solid var(--accent);border-radius:6px;font-size:13.5px;box-shadow:none}
 .chip.is-editing{padding-right:8px;cursor:default}
 @media (max-width:480px){.chip-x{width:26px;height:26px}.chip{height:36px}}
+
+/* podpowiedzi nazw stanowisk */
+.pos-sug { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.pos-sug[hidden] { display: none; }
+.pos-sug .sug { font: inherit; font-size: 13px; padding: 6px 12px; min-height: 32px; border-radius: 999px; border: 1px solid var(--line, #e4e4e7); background: transparent; color: var(--ink-2, inherit); cursor: pointer; }
+.pos-sug .sug.own { border-color: var(--accent, #2d68ff); color: var(--accent, #2d68ff); }
+.pos-sug .sug:hover { background: var(--bg-soft, rgba(127,127,127,.1)); }
+.pos-sug .sug:focus-visible { outline: 2px solid var(--accent, #2d68ff); outline-offset: 2px; }
