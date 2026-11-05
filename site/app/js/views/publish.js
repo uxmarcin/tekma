@@ -24,6 +24,7 @@ export default async function render(ctx) {
 
   let cur = positions.find((p) => p.id === ctx.query?.id) || positions[0];
   let tab = 'page';
+  const FREE_TPL = ['mesh', 'swiss', 'pastel']; const isPro = ctx.org && ['pro', 'business'].includes(ctx.org.plan);
   const gfx = { template: 'mesh', format: 'li', palette: 'tekma', seed: 7, headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
   const pub = readPub(ctx.org);
   const root = h('div', { class: 'pb' });
@@ -86,11 +87,19 @@ export default async function render(ctx) {
     const big = h('canvas', { class: 'gx-big', 'aria-label': 'Podgląd grafiki' });
     const bigWrap = h('div', { class: 'gx-stage' }, big);
     const gallery = h('div', { class: 'gx-gal', role: 'listbox', 'aria-label': 'Szablony' });
+    const locked = (t) => !isPro && !FREE_TPL.includes(t.id);
+    const nLocked = TEMPLATES.filter(locked).length;
+    const upsell = () => ctx.ui.modal({ title: `Odblokuj ${nLocked} szablonów w Pro`, body: h('div', { class: 'gx-up' },
+      h('p', null, `Free ma ${TEMPLATES.length - nLocked} szablony. Pro odblokowuje wszystkie ${TEMPLATES.length} — od Noir i Aurory po Brutal i Blueprint — w każdym formacie: LinkedIn, Instagram, Story, Facebook.`),
+      h('ul', null, ...TEMPLATES.filter(locked).map((t) => h('li', null, h('b', null, t.name), ' — ', t.hint)))),
+      actions: [{ label: 'Zobacz plan Pro', variant: 'primary', icon: 'crown', onClick: () => { location.hash = '#/settings/plan'; document.querySelector('.modal .close')?.click(); } }] });
     const thumbs = TEMPLATES.map((t) => {
-      const c = h('canvas', { class: 'gx-th' });
-      const b = h('button', { type: 'button', class: 'gx-card', role: 'option', 'aria-selected': 'false', 'data-id': t.id, on: { click: () => { gfx.template = t.id; draw(); } } }, c, h('b', null, t.name), h('small', { class: 'muted' }, t.hint));
+      const lk = locked(t); const c = h('canvas', { class: 'gx-th' });
+      const b = h('button', { type: 'button', class: `gx-card${lk ? ' is-locked' : ''}`, role: 'option', 'aria-selected': 'false', 'data-id': t.id, 'aria-label': lk ? `${t.name} — szablon Pro` : t.name, on: { click: () => { if (lk) { upsell(); return; } gfx.template = t.id; draw(); } } },
+        h('span', { class: 'gx-thw' }, c, lk ? h('span', { class: 'gx-lk' }, icon('lock'), 'Pro') : null), h('b', null, t.name), h('small', { class: 'muted' }, t.hint));
       b._c = c; gallery.append(b); return b;
     });
+    if (nLocked) gallery.append(h('div', { class: 'gx-more' }, h('b', null, `+${nLocked} szablonów w Pro`), h('p', { class: 'muted' }, 'Wszystkie style, nowe co miesiąc. Free zostaje z 3 szablonami na zawsze.'), button({ label: 'Odblokuj Pro', variant: 'primary', size: 'sm', icon: 'crown', onClick: upsell })));
 
     const seedLbl = h('span', { class: 'gx-seed muted' }, '');
     async function draw() {
