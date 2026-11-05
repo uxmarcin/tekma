@@ -222,7 +222,7 @@ const onPhoto = (st) => ({ ...st, ink: '#ffffff', sub: 'rgba(255,255,255,.88)', 
 export async function renderGraphic(canvas, { template, format, palette, data, opts, seed = 7, scale = 1, photo = null }) {
   const t = TEMPLATES.find((q) => q.id === template) || TEMPLATES[0];
   const f = FORMATS.find((q) => q.id === format) || FORMATS[0];
-  const P = PALETTES.find((q) => q.id === palette) || PALETTES[0];
+  const P = (palette && typeof palette === 'object') ? { id: 'custom', name: 'Własna', ...palette } : (PALETTES.find((q) => q.id === palette) || PALETTES[0]);
   try { await Promise.all(['500', '600', '700', '800'].map((w) => document.fonts.load(`${w} 40px Inter`))); } catch { /* czcionka systemowa */ }
   canvas.width = Math.round(f.w * scale); canvas.height = Math.round(f.h * scale);
   const x = canvas.getContext('2d'); const r = rng(seed);
@@ -242,6 +242,14 @@ export async function renderGraphic(canvas, { template, format, palette, data, o
 }
 
 /** Kontrola kontrastu: dla każdego szablonu × palety sprawdza kolory tekstu i akcentu względem tła bazowego. Zwraca listę problemów. */
+/** Własna paleta: jeden kolor (odcienie wyprowadzone automatycznie) lub gradient z 2–3 kolorów. */
+export function customPalette({ mode = 'solid', c1 = '#2d68ff', c2 = '#c084fc', c3 = '' } = {}) {
+  const ok = (v, d) => (/^#[0-9a-f]{6}$/i.test(v || '') ? v.toLowerCase() : d);
+  const a = ok(c1, '#2d68ff');
+  if (mode === 'solid') return { a, b: mix(a, '#ffffff', 0.32), c: mix(a, '#000000', 0.28) };
+  const b = ok(c2, '#c084fc'); return { a, b, c: ok(c3, '') || mix(a, b, 0.5) };
+}
+
 export function auditContrast() {
   const bad = [];
   const BASE = { mesh: '#fafafa', noir: '#09090b', swiss: '#f7f6f2', editorial: '#f3efe6', outline: '#0b0b0b', pastel: null, brutal: '#fff6dc', terminal: '#07100a' };

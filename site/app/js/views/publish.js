@@ -5,7 +5,7 @@
  */
 import { renderAdPage, postText, drawShareCard, workLabel, contractLabel } from '../ad-page.js';
 import { salaryLabel } from '../ad-check.js';
-import { renderGraphic, TEMPLATES, FORMATS, PALETTES } from '../ad-gfx.js';
+import { customPalette, renderGraphic, TEMPLATES, FORMATS, PALETTES } from '../ad-gfx.js';
 import { adCheck } from '../ad-check.js';
 import { openAdEditor } from './ad.js';
 import { setHeader } from './positions.js';
@@ -28,6 +28,8 @@ export default async function render(ctx) {
   const PV = 'tekma_preview_pro'; let preview = false; try { preview = localStorage.getItem(PV) === '1'; } catch { /* brak storage */ }
   const setPreview = (v) => { preview = v; try { localStorage.setItem(PV, v ? '1' : '0'); } catch { /* brak storage */ } };
   const uploads = [];
+  const custom = { mode: 'gradient', c1: '#2d68ff', c2: '#c084fc', c3: '#34d399', use3: false };
+  const palArg = () => (gfx.palette === 'custom' ? customPalette({ mode: custom.mode, c1: custom.c1, c2: custom.c2, c3: custom.use3 ? custom.c3 : '' }) : gfx.palette);
   const gfx = { photo: null, template: 'mesh', format: 'li', palette: 'tekma', seed: 7, headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
   const pub = readPub(ctx.org);
   const root = h('div', { class: 'pb' });
@@ -107,7 +109,7 @@ export default async function render(ctx) {
     const TONE_LBL = { light: 'Jasne', dark: 'Nocne', vivid: 'Żywe', paper: 'Papier' };
     let filter = 'all';
     const queue = { busy: false, items: [] };
-    const pump = async () => { if (queue.busy) return; queue.busy = true; while (queue.items.length) { const b = queue.items.shift(); if (!b.isConnected || b._rev === rev) continue; b._rev = rev; const f = FORMATS.find((q) => q.id === gfx.format); await renderGraphic(b._c, { template: b.dataset.id, format: gfx.format, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed, photo: gfx.photo, scale: Math.min(1, 360 / f.w) }); } queue.busy = false; };
+    const pump = async () => { if (queue.busy) return; queue.busy = true; while (queue.items.length) { const b = queue.items.shift(); if (!b.isConnected || b._rev === rev) continue; b._rev = rev; const f = FORMATS.find((q) => q.id === gfx.format); await renderGraphic(b._c, { template: b.dataset.id, format: gfx.format, palette: palArg(), data: gfxData(), opts: gfxOpts(), seed: gfx.seed, photo: gfx.photo, scale: Math.min(1, 360 / f.w) }); } queue.busy = false; };
     const want = (b) => { if (b._rev !== rev && !queue.items.includes(b)) { queue.items.push(b); pump(); } };
     const io = new IntersectionObserver((es) => es.forEach((e) => { e.target._vis = e.isIntersecting; if (e.isIntersecting) want(e.target); }), { rootMargin: '300px' });
     const thumbs = TEMPLATES.map((t) => {
@@ -125,7 +127,7 @@ export default async function render(ctx) {
     async function draw() {
       seedLbl.textContent = gfx.seed === 7 ? 'Układ domyślny' : `Układ nr ${gfx.seed}`;
       const data = gfxData(); const o = gfxOpts();
-      await renderGraphic(big, { template: gfx.template, format: gfx.format, palette: gfx.palette, data, opts: o, seed: gfx.seed, photo: gfx.photo });
+      await renderGraphic(big, { template: gfx.template, format: gfx.format, palette: palArg(), data, opts: o, seed: gfx.seed, photo: gfx.photo });
       const f = FORMATS.find((q) => q.id === gfx.format); bigWrap.style.setProperty('--ar', `${f.w} / ${f.h}`); bigWrap.dataset.fmt = gfx.format;
       nameLbl.textContent = TEMPLATES.find((t) => t.id === gfx.template).name;
       paintThumbs();
@@ -165,7 +167,25 @@ export default async function render(ctx) {
 
     const PLAT = { li: ['linkedin', 'LinkedIn'], ig: ['instagram', 'Instagram'], sq: ['square', 'Instagram · FB'], st: ['smartphone', 'Stories · Reels'], fb: ['facebook', 'Facebook'] };
     const fmts = h('div', { class: 'gx-fmts', role: 'group', 'aria-label': 'Format' }, FORMATS.map((f) => { const [ic, cap] = PLAT[f.id] || ['square', '']; return h('button', { type: 'button', class: 'gx-fmt', 'aria-pressed': String(gfx.format === f.id), 'data-f': f.id, on: { click: () => { gfx.format = f.id; fmts.querySelectorAll('button').forEach((q) => q.setAttribute('aria-pressed', String(q.dataset.f === f.id))); draw(); } } }, h('span', { class: 'gx-fi' }, icon(ic)), h('span', { class: 'gx-ft' }, h('b', null, f.label), h('small', { class: 'muted' }, cap)), h('em', { class: 'gx-fs' }, f.note)); }));
-    const sw = h('div', { class: 'gx-sw', role: 'radiogroup', 'aria-label': 'Paleta' }, PALETTES.map((P) => h('button', { type: 'button', class: 'gx-swb', role: 'radio', title: P.name, 'aria-checked': String(gfx.palette === P.id), style: `background:linear-gradient(135deg,${P.a},${P.b} 55%,${P.c})`, on: { click: () => { gfx.palette = P.id; sw.querySelectorAll('button').forEach((q, i) => q.setAttribute('aria-checked', String(PALETTES[i].id === P.id))); draw(); } } })));
+    const customBox = h('div', { class: 'gx-cu' });
+    const colorIn = (key, label) => { const c = h('input', { type: 'color', class: 'gx-ci', value: custom[key], 'aria-label': label }); const t = h('input', { type: 'text', class: 'gx-ch', value: custom[key], maxlength: '7', 'aria-label': `${label} (HEX)`, spellcheck: 'false' });
+      const set = (v) => { if (!/^#[0-9a-f]{6}$/i.test(v)) return; custom[key] = v.toLowerCase(); c.value = custom[key]; if (document.activeElement !== t) t.value = custom[key]; gfx.palette = 'custom'; syncSw(); later(); };
+      c.addEventListener('input', () => { t.value = c.value; set(c.value); }); t.addEventListener('input', () => set(t.value.startsWith('#') ? t.value : `#${t.value}`));
+      return h('label', { class: 'gx-cl' }, c, t); };
+    function paintCustom() {
+      customBox.replaceChildren(...[
+        h('div', { class: 'segment gx-cm', role: 'group', 'aria-label': 'Rodzaj koloru' }, [['solid', 'Jednolity'], ['gradient', 'Gradient']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(custom.mode === k), on: { click: () => { custom.mode = k; gfx.palette = 'custom'; paintCustom(); markSw(); draw(); } } }, l))),
+        h('div', { class: 'gx-cr' }, colorIn('c1', custom.mode === 'solid' ? 'Kolor' : 'Kolor 1'), ...(custom.mode === 'gradient' ? [colorIn('c2', 'Kolor 2'), ...(custom.use3 ? [colorIn('c3', 'Kolor 3')] : [])] : [])),
+        custom.mode === 'gradient' ? button({ label: custom.use3 ? 'Usuń trzeci kolor' : 'Dodaj trzeci kolor', variant: 'secondary', size: 'sm', icon: custom.use3 ? null : 'plus', onClick: () => { custom.use3 = !custom.use3; paintCustom(); draw(); } }) : null].filter(Boolean));
+      customBox.hidden = gfx.palette !== 'custom';
+    }
+    const swPreview = () => { const P = customPalette({ mode: custom.mode, c1: custom.c1, c2: custom.c2, c3: custom.use3 ? custom.c3 : '' }); return `linear-gradient(135deg,${P.a},${P.b} 55%,${P.c})`; };
+    const swBtns = [...PALETTES.map((P) => h('button', { type: 'button', class: 'gx-swb', role: 'radio', title: P.name, 'data-p': P.id, 'aria-checked': String(gfx.palette === P.id), style: `background:linear-gradient(135deg,${P.a},${P.b} 55%,${P.c})`, on: { click: () => { gfx.palette = P.id; markSw(); draw(); } } })),
+      h('button', { type: 'button', class: 'gx-swb gx-swc', role: 'radio', title: 'Własny kolor lub gradient', 'data-p': 'custom', 'aria-checked': String(gfx.palette === 'custom'), on: { click: () => { gfx.palette = 'custom'; markSw(); draw(); } } }, icon('plus'))];
+    const sw = h('div', { class: 'gx-sw', role: 'radiogroup', 'aria-label': 'Paleta' }, swBtns);
+    function syncSw() { swBtns.forEach((b) => b.setAttribute('aria-checked', String(b.dataset.p === gfx.palette))); swBtns[swBtns.length - 1].style.background = gfx.palette === 'custom' ? swPreview() : ''; }
+    function markSw() { syncSw(); paintCustom(); }
+    paintCustom(); markSw();
     const head = h('input', { class: 'input', type: 'text', maxlength: '80', placeholder: cur.title, 'aria-label': 'Nagłówek na grafice', value: gfx.headline });
     const cta = h('input', { class: 'input', type: 'text', maxlength: '40', 'aria-label': 'Tekst przycisku', value: gfx.cta });
     let tm; const later = () => { clearTimeout(tm); tm = setTimeout(draw, 250); };
@@ -175,7 +195,7 @@ export default async function render(ctx) {
     const gSide = h('div', { class: 'gx-side' },
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Format'), fmts),
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Tło'), phBox, fileIn),
-      h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Kolory'), sw,
+      h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Kolory'), sw, customBox,
         button({ label: 'Losuj układ tła', variant: 'secondary', size: 'sm', icon: 'spark', onClick: () => { let n; do { n = Math.floor(Math.random() * 1e6) + 1; } while (n === 7 || n === gfx.seed); gfx.seed = n; draw(); } })),
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Treść'),
         h('label', { class: 'gx-l' }, 'Nagłówek', head), h('label', { class: 'gx-l' }, 'Przycisk', cta),
@@ -185,7 +205,7 @@ export default async function render(ctx) {
     const dlAll = button({ label: 'Pobierz wszystkie formaty', variant: 'secondary', onClick: async () => {
       if (proOnly(TEMPLATES.find((t) => t.id === gfx.template))) { upsell(); return; }
       const keep = gfx.format; const c = document.createElement('canvas');
-      for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed, photo: gfx.photo }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
+      for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: palArg(), data: gfxData(), opts: gfxOpts(), seed: gfx.seed, photo: gfx.photo }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
       gfx.format = keep; toast('Pobrano wszystkie formaty.', 'good');
     } });
     const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, nameLbl, seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Style · ${TEMPLATES.length}`), chipBar), gallery);
