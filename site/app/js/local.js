@@ -34,6 +34,7 @@ const EMPTY = () => ({
   people: [],
   onboarding_tasks: [],
   goals: [],
+  feedback: [],
 });
 
 function uuid() {
@@ -304,6 +305,7 @@ export function createLocalAdapter() {
   const people = table('people', { order: 'start_date' });
   const onboarding_tasks = table('onboarding_tasks', { order: 'position', dir: 'asc' });
   const goals = table('goals');
+  const feedback = table('feedback');
   const scorecardsBase = table('scorecards', { order: 'updated_at' });
   const scorecards = {
     ...scorecardsBase,
@@ -322,7 +324,7 @@ export function createLocalAdapter() {
     save();
   }
 
-  return { mode: 'demo', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals, resetData, _db: () => db };
+  return { mode: 'demo', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals, feedback, resetData, _db: () => db };
 }
 
 export default createLocalAdapter;

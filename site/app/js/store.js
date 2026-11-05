@@ -27,6 +27,7 @@
  *   store.tasks.list(person_id?) / create({person_id,phase,title,due_day?}) / update(id,patch) / toggle(id,done) / remove(id)
  *   store.goals.list() / create({title,description?,due_date?,person_id?}) / update(id,patch) / remove(id)
  *   Ludzie i Cele w trybie Supabase wymagają migracji db/migrations/1.5-people-goals.sql (brak tabel → Error z code 'no_table').
+ *   store.feedback.list() / create({kind,rating?,message}) — opinie z aplikacji (kind: idea|bug|question|praise); page/wersja/UA dołączane automatycznie
  *   store.stats.dashboard()           -> {openPositions, activeCandidates, interviewsThisWeek:null, attention:[…]}
  *
  * attention[] = {type:'discrepancy'|'stale'|'no-rubric', tone, title, text, href}
@@ -316,6 +317,28 @@ export function createStore(adapter) {
     remove: (id) => guard(() => adapter.goals.remove(id)),
   };
 
+  /* ------------------------------------------------ Opinie */
+  const APP_VERSION = '2026.11';
+  const feedback = {
+    list: () => guard(() => adapter.feedback.list()),
+    async create({ kind, rating, message } = {}) {
+      if (!['idea', 'bug', 'question', 'praise'].includes(kind)) throw new Error('Wybierz rodzaj opinii.');
+      message = str(message);
+      if (message.length < 3) throw new Error('Napisz kilka słów, żebyśmy wiedzieli, o co chodzi.');
+      if (message.length > 4000) throw new Error('Opinia jest za długa (maksymalnie 4000 znaków).');
+      const r = rating ? Math.round(Number(rating)) : null;
+      if (r !== null && !(r >= 1 && r <= 5)) throw new Error('Ocena musi być od 1 do 5.');
+      const session = await adapter.auth.session();
+      if (!session) throw new Error('Sesja wygasła. Zaloguj się ponownie.');
+      return guard(() => adapter.feedback.create({
+        user_id: session.user.id, kind, rating: r, message,
+        page: String((typeof location !== 'undefined' && location.hash) || '').slice(0, 300),
+        app_version: APP_VERSION,
+        user_agent: String((typeof navigator !== 'undefined' && navigator.userAgent) || '').slice(0, 300),
+      }));
+    },
+  };
+
   const stats = {
     async dashboard() {
       const [pos, cands, cards] = await Promise.all([adapter.positions.list(), adapter.candidates.list(), adapter.scorecards.list()]);
@@ -390,7 +413,7 @@ export function createStore(adapter) {
     setRole: (user_id, role) => adapter.members.setRole(user_id, role),
   };
 
-  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, stats, adapter };
+  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, feedback, stats, adapter };
 }
 
 const adapter = SUPABASE_URL

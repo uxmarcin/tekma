@@ -6,7 +6,7 @@ const fold = (s) => String(s || '').toLowerCase().replace(/ł/g, 'l').normalize(
 
 const PAGES = [
   ['Pulpit', '#/', 'dashboard'], ['Stanowiska', '#/positions', 'briefcase'], ['Rubryki', '#/rubrics', 'rubric'], ['Kandydaci', '#/candidates', 'users'],
-  ['Ludzie', '#/people', 'user'], ['Cele', '#/goals', 'target'], ['Ustawienia', '#/settings', 'settings'], ['Zespół i uprawnienia', '#/settings/zespol', 'users'],
+  ['Ludzie', '#/people', 'user'], ['Cele', '#/goals', 'target'], ['Wyślij opinię', '#/feedback', 'message'], ['Ustawienia', '#/settings', 'settings'], ['Zespół i uprawnienia', '#/settings/zespol', 'users'],
   ['Integracje', '#/settings/integracje', 'settings'], ['Plan i płatności', '#/settings/plan', 'settings'], ['RODO i AI Act', '#/settings/zgodnosc', 'shield'],
 ];
 
