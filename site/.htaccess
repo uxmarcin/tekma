@@ -23,3 +23,4 @@ RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
   AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml
 </IfModule>
 AddType font/woff .woff
+AddType application/manifest+json .webmanifest

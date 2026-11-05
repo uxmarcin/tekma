@@ -699,3 +699,13 @@ body.has-modal{overflow:hidden}
 .cmdk-foot{display:flex;gap:16px;padding:10px 16px;border-top:1px solid var(--line);font-size:var(--fs-xs);color:var(--muted)}
 .cmdk-foot .kbd,.cmdk-top .kbd{font-size:11px}
 @media (max-width:899px){.cmdk-foot{display:none}.cmdk-back{padding-top:8vh}}
+
+/* iOS: pola formularzy min. 16 px, żeby Safari nie powiększał strony po dotknięciu */
+@media (max-width:899px){
+  .field input,.field select,.field textarea,.pe-new,.st-role,.field .chips-box input.chip-add,.field .chips-box input.chip-edit{font-size:16px}
+}
+/* tryb aplikacji (dodana do ekranu początkowego): bez zaznaczania i podświetlenia dotyku na elementach UI */
+@media (display-mode:standalone){
+  body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
+  .side,.main-head,.tabbar,.btn,.icon-btn{-webkit-user-select:none;user-select:none}
+}
