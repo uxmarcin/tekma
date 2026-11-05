@@ -36,9 +36,11 @@ export default async function render(ctx) {
         h('b', null, p.title), h('small', { class: 'muted' }, pub[p.id] ? 'Opublikowano na LinkedIn' : (adCheck(p).ready ? 'Gotowe do publikacji' : 'Do uzupełnienia')))))));
   }
 
+  function editAd() { openAdEditor(ctx, cur, { onSaved: (u) => { Object.assign(cur, u); paint(); } }); }
+
   function pageTab() {
     const rub = rubrics.find((r) => r.id === cur.rubric_id);
-    return h('div', null, renderAdPage({ position: cur, rubric: rub, org: ctx.org, h }));
+    return h('div', null, renderAdPage({ position: cur, rubric: rub, org: ctx.org, h, onEdit: editAd }));
   }
 
   function postTab() {
@@ -63,13 +65,13 @@ export default async function render(ctx) {
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Treść posta'), area, h('div', { class: 'pb-row' }, count), h('div', { class: 'pb-row' }, share, copy)),
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Karta do posta'), canvas,
         h('div', { class: 'pb-row' }, dl, mark),
-        chk.ready ? null : h('p', { class: 'pb-note', style: 'margin-top:10px' }, tag('Do poprawy', 'warn'), ' Ogłoszenie nie przechodzi kontroli jawności wynagrodzeń — uzupełnij widełki przed publikacją.'),
+        chk.ready ? null : h('div', { class: 'pb-note', style: 'margin-top:10px' }, h('p', { style: 'margin:0 0 8px' }, tag('Do poprawy', 'warn'), ' Ogłoszenie nie przechodzi kontroli jawności wynagrodzeń.'), button({ label: 'Uzupełnij ogłoszenie', variant: 'secondary', size: 'sm', icon: 'edit', onClick: editAd })),
         h('p', { class: 'muted pb-note', style: 'margin-top:10px' }, 'Automatyczne publikowanie bez Twojego kliknięcia wymaga połączenia konta LinkedIn (autoryzacja OAuth) — dodamy je razem z publicznymi linkami do ogłoszeń.')));
   }
 
   function paint() {
     paintSide();
-    const edit = button({ label: 'Edytuj ogłoszenie', variant: 'secondary', icon: 'edit', onClick: () => openAdEditor(ctx, cur, { onSaved: (u) => { Object.assign(cur, u); paint(); } }) });
+    const edit = button({ label: 'Edytuj ogłoszenie', variant: 'secondary', icon: 'edit', onClick: editAd });
     const seg = h('div', { class: 'segment pb-tabs', role: 'group', 'aria-label': 'Widok' },
       [['page', 'Strona ogłoszenia'], ['post', 'Post na LinkedIn']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(tab === k), on: { click: () => { tab = k; paint(); } } }, l)));
     main.replaceChildren(h('div', { class: 'pb-row', style: 'justify-content:space-between;margin:0' }, seg, edit), tab === 'page' ? pageTab() : postTab());

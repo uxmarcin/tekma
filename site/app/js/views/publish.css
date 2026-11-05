@@ -63,3 +63,7 @@
 @keyframes apmesh-d{to{transform:translate3d(-90px,-22%,0) scale(1.25)}}
 
 @media (prefers-reduced-motion:reduce){.ap-mesh i{animation:none}.ap-mesh i{transition:none}}
+
+.ap-fix{display:inline-flex;align-items:center;height:36px;padding:0 16px;margin-top:6px;border-radius:99px;border:0;background:#0f0f12;color:#fff;font:inherit;font-weight:600;font-size:14px;text-decoration:none;cursor:pointer;align-self:flex-start;transition:background .15s}
+.ap-fix:hover{background:#2d68ff}
+.ap-sal.warn{align-items:center}.ap-sal.warn .ap-sal-l{flex-basis:auto}

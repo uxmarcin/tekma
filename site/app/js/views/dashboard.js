@@ -80,21 +80,21 @@ export default async function render(ctx) {
     );
 
     const statsEl = h('div', { class: 'dash-stats', role: 'list', 'aria-label': 'Podsumowanie' },
-      stat('Otwarte stanowiska', stats.openPositions, { href: '#/positions', sub: positions.length > stats.openPositions ? `${positions.length - stats.openPositions} zamkn.` : 'wszystkie aktywne' }),
-      stat('Kandydaci w procesie', stats.activeCandidates, { href: '#/candidates', sub: `${candidates.length} w bazie` }),
-      stat('Rozmowy w tym tygodniu', stats.interviewsThisWeek, { sub: 'po podłączeniu kalendarza' }),
-      stat('Wymaga uwagi', attention.length, { sub: attention.length ? 'sprawdź poniżej' : 'nic pilnego', tone: attention.length ? 'warn' : null }),
+      stat('Otwarte stanowiska', stats.openPositions, { icon: 'briefcase', hue: 'blue', href: '#/positions', sub: positions.length > stats.openPositions ? `${positions.length - stats.openPositions} zamkn.` : 'wszystkie aktywne' }),
+      stat('Kandydaci w procesie', stats.activeCandidates, { icon: 'users', hue: 'green', href: '#/candidates', sub: `${candidates.length} w bazie` }),
+      stat('Rozmowy w tym tygodniu', stats.interviewsThisWeek, { icon: 'calendar', hue: 'purple', href: '#/settings/integracje', sub: 'Podłącz kalendarz →' }),
+      stat('Wymaga uwagi', attention.length, { icon: 'alert', hue: 'orange', sub: attention.length ? 'sprawdź poniżej' : 'nic pilnego', tone: attention.length ? 'warn' : null }),
     );
 
     const cols = h('div', { class: 'dash-cols' }, attentionCard(attention), positionsCard(positions, candidates));
     root.replaceChildren(head, statsEl, cols);
   }
 
-  function stat(label, value, { href, sub, tone } = {}) {
-    const { h } = ctx.ui;
+  function stat(label, value, { href, sub, tone, icon: ic, hue } = {}) {
+    const { h, icon } = ctx.ui;
     const isNull = value === null || value === undefined;
     const content = [
-      h('small', null, label),
+      h('span', { class: 'dash-st-h' }, ic ? h('span', { class: `dash-ic ${hue || ''}`, 'aria-hidden': 'true' }, icon(ic, 16)) : null, h('small', null, label)),
       h('b', { class: isNull ? 'is-null' : (tone ? `tone-${tone}` : '') }, isNull ? '—' : String(value)),
       sub ? h('span', { class: 'sub' }, sub) : null,
     ];

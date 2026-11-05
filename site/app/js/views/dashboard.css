@@ -84,3 +84,12 @@
   .dash-cols{grid-template-columns:minmax(0,1fr)}
   .dash-card{padding:16px 14px 12px}
 }
+
+/* ikony w kafelkach: mała płytka z tintem, etykieta obok (wzór: Remote, Snowflake — ikona 16px, sama numeracja dominuje) */
+.dash-st-h{display:flex;align-items:center;gap:8px;margin-bottom:10px;min-width:0}
+.dash-st-h small{margin:0}
+.dash-ic{width:28px;height:28px;flex:none;border-radius:8px;display:grid;place-items:center;background:var(--s2);color:var(--ink)}
+.dash-ic.blue{background:color-mix(in srgb,#2d68ff 12%,transparent);color:#2d4fd8}
+.dash-ic.green{background:color-mix(in srgb,#10b981 14%,transparent);color:#047857}
+.dash-ic.purple{background:color-mix(in srgb,#a855f7 14%,transparent);color:#7e22ce}
+.dash-ic.orange{background:color-mix(in srgb,#f97316 15%,transparent);color:#c2410c}

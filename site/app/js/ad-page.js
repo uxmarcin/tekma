@@ -23,7 +23,8 @@ export function criteria(rubric) {
   return [...by.entries()].map(([name, w]) => ({ name, pct: Math.round((w / total) * 100) })).sort((a, b) => b.pct - a.pct).slice(0, 5);
 }
 
-export function renderAdPage({ position: p, rubric, org, h }) {
+export function renderAdPage({ position: p, rubric, org, h, onEdit }) {
+  const fix = (label) => (onEdit ? h('button', { type: 'button', class: 'ap-fix', onClick: onEdit }, label) : null);
   const sal = salaryLabel(p);
   const crit = criteria(rubric);
   const stages = Array.isArray(p.stages) ? p.stages : [];
@@ -37,18 +38,20 @@ export function renderAdPage({ position: p, rubric, org, h }) {
       h('h1', { class: 'ap-title' }, p.title),
       h('p', { class: 'ap-meta' }, [workLabel(p), contractLabel(p)].filter(Boolean).join('  ·  ')),
       sal ? h('div', { class: 'ap-sal' }, h('span', { class: 'ap-sal-l' }, 'Widełki brutto / mies.'), h('b', null, sal.replace(/\s?[A-Z]{3}$/, '')), h('span', { class: 'ap-cur' }, p.salary_currency || 'PLN'))
-        : h('div', { class: 'ap-sal warn' }, h('span', { class: 'ap-sal-l' }, 'Dodaj widełki — to pierwsza rzecz, którą kandydat chce zobaczyć'))));
+        : h('div', { class: 'ap-sal warn' }, h('span', { class: 'ap-sal-l' }, 'Widełki to pierwsza rzecz, którą kandydat chce zobaczyć.'), fix('Dodaj widełki'))));
 
   const sections = [hero];
   if (p.description && p.description.trim()) {
     sections.push(h('section', { class: 'ap-sec' }, h('h2', null, 'O roli'), ...p.description.trim().split(/\n{2,}/).map((t) => h('p', null, t))));
   }
+  else sections.push(h('section', { class: 'ap-sec' }, h('h2', null, 'O roli'), h('p', { class: 'ap-sub' }, 'Opisz rolę, zespół i etap firmy. Bez opisu ogłoszenie jest puste.'), fix('Dodaj opis roli')));
   if (crit.length) {
     sections.push(h('section', { class: 'ap-sec' }, h('h2', null, 'Oceniamy Cię za to'),
       h('p', { class: 'ap-sub' }, 'Te same kryteria dla każdej osoby. Znasz je, zanim się zgłosisz.'),
       h('ul', { class: 'ap-crit' }, crit.map((c) => h('li', null,
         h('span', { class: 'n' }, c.name), h('span', { class: 'bar', 'aria-hidden': 'true' }, h('i', { style: `width:${c.pct}%` })), h('span', { class: 'v' }, `${c.pct}%`))))));
   }
+  if (!crit.length) sections.push(h('section', { class: 'ap-sec' }, h('h2', null, 'Oceniamy Cię za to'), h('p', { class: 'ap-sub' }, 'To stanowisko nie ma rubryki, więc nie pokażemy kryteriów oceny.'), h('a', { class: 'ap-fix', href: `#/positions/${p.id}` }, 'Przypisz rubrykę')));
   if (stages.length) {
     sections.push(h('section', { class: 'ap-sec' }, h('h2', null, 'Jak wygląda proces'),
       h('p', { class: 'ap-sub' }, `${stages.length} etapów${interviewMin ? `, rozmowa merytoryczna ok. ${interviewMin} min` : ''}. Odpowiadamy w ciągu 10 dni.`),
