@@ -46,8 +46,8 @@
 .rb-q-tools .rb-up svg{transform:rotate(180deg)}
 .rb-q .field textarea{min-height:72px}
 .rb-q-grid{display:grid;grid-template-columns:minmax(0,1.4fr) auto minmax(0,.6fr);gap:16px;align-items:start}
-.rb-weight-field .segment{align-self:flex-start;height:var(--field-h);align-items:center}
-.rb-weight-field .segment button{height:34px;padding:0 14px}
+.rb-weight-field .segment{align-self:flex-start;height:auto;align-items:center;padding:4px;gap:4px}
+.rb-weight-field .segment button{height:36px;min-width:76px;padding:0 24px;display:inline-flex;align-items:center;justify-content:center;font-variant-numeric:tabular-nums}
 .rb-weight-field .hint{white-space:nowrap}
 @media (max-width:599px){
   .rb-q{padding:16px 16px 12px}
