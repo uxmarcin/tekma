@@ -795,3 +795,9 @@ svg:has(>use[href^="#si-"]),svg:has(>use[href^="#i-"]),svg:has(>use[href="#tick"
 .btn.btn-ghost{background:transparent;border:0;box-shadow:inset 0 0 0 1px rgba(255,255,255,.24);color:var(--ink)}
 .btn.btn-ghost:hover{background:rgba(255,255,255,.05);box-shadow:inset 0 0 0 1px rgba(255,255,255,.42)}
 .btn.btn-ghost:focus-visible{outline:2px solid rgba(255,255,255,.5);outline-offset:2px}
+
+/* TEST: miękki gradient w stylu Lovable, paleta Tekmy (niebieski AI #4d8dff, cyan #2fd0ff, fiolet #a78bfa) — do cofnięcia jednym revertem */
+.hero::before,.hero::after{filter:blur(90px);animation-duration:30s}
+.hero::before{width:900px;height:520px;left:50%;top:430px;margin-left:-640px;background:radial-gradient(closest-side,rgba(77,141,255,.7),rgba(167,139,250,.34) 55%,transparent 75%)}
+.hero::after{width:820px;height:480px;left:50%;right:auto;top:470px;margin-left:-60px;background:radial-gradient(closest-side,rgba(47,208,255,.5),rgba(77,141,255,.26) 55%,transparent 75%)}
+.cta-box::before{background:radial-gradient(closest-side,rgba(77,141,255,.38),rgba(167,139,250,.16) 55%,transparent 75%);filter:blur(60px)}
