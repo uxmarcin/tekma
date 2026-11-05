@@ -346,7 +346,8 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
   .car-h{font-size:30px}.car-lede{font-size:21px;margin-top:20px}.car-label{font-size:24px;margin-top:32px}.car-label svg{width:22px;height:22px}
   .car-card{height:300px}.car-card.wide{width:min(560px,86vw)}.car-card.tall{width:220px}.car-card img{left:24px;top:28px;width:calc(100% - 24px)}.car-card .badge{width:48px;height:48px;left:16px;top:16px;border-radius:12px}.car-card .badge svg{width:24px;height:24px}
   .chat{padding:20px}.chat-q span{max-width:100%}
-  .browser{overflow:hidden}.browser img{min-width:0;width:100%}
+  .browser{overflow:hidden;border-radius:10px}.browser img{min-width:0;width:100%}
+  .browser-bar{height:18px;gap:4px;padding:0 8px}.browser-bar i{width:5px;height:5px}
   .phone{width:min(300px,80vw)}
 }
 
