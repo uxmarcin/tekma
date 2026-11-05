@@ -510,7 +510,7 @@ a.row:hover::before,.row.clickable:hover::before,a.row:hover + a.row::before,.ro
 
 /* ---------- stany: pusty, startowy, ładowanie, błąd, w budowie ---------- */
 .empty{display:grid;justify-items:center;text-align:center;gap:6px;padding:48px 24px;background:var(--s1);border:1px dashed var(--border-strong);border-radius:var(--r-lg)}
-.empty svg{width:28px;height:28px;color:var(--faint);margin-bottom:8px}
+.empty > svg{width:28px;height:28px;color:var(--faint);margin-bottom:8px}
 .empty h3{font-size:var(--fs-h3)}
 .empty p{color:var(--muted);font-size:var(--fs-sm);max-width:380px}
 .empty .actions{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
