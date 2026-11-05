@@ -54,6 +54,9 @@ const ROLE_LABEL = { owner: 'Właściciel', recruiter: 'Rekruter', interviewer: 
 
 const LOGO_PATHS = '<path d="M3 6H17.5V22.5L12.5 28V12H3Z"/><path d="M20 6H29L20 12.5Z"/>';
 
+import { openSearch } from './search.js';
+import * as notif from './notifications.js';
+
 let deps = null;          // { store, ui, ai }
 let root = null;
 let shellEl = null;       // zbudowany szkielet (shell)
@@ -242,12 +245,90 @@ function authShowcase() {
   );
 }
 
+
+/* ------------------------------------------------ wyszukiwarka i powiadomienia */
+function runSearch() { if (deps && state.org) openSearch({ store: deps.store, ui: deps.ui, navigate }); }
+function iconButton(name, label, onClick) {
+  const b = deps.ui.h('button', { type: 'button', class: 'icon-btn', 'aria-label': label, title: label }, deps.ui.icon(name, 18));
+  b.addEventListener('click', onClick);
+  return b;
+}
+function searchButton() {
+  const { h, icon } = deps.ui;
+  const isMac = /Mac|iPhone|iPad/.test(navigator.platform || '');
+  const b = h('button', { type: 'button', class: 'side-search', 'aria-label': 'Szukaj (skrót ' + (isMac ? '⌘K' : 'Ctrl K') + ')' }, icon('search', 16), h('span', null, 'Szukaj'), h('kbd', { class: 'kbd' }, isMac ? '⌘K' : 'Ctrl K'));
+  b.addEventListener('click', runSearch);
+  return b;
+}
+let notifState = { items: [], seen: new Set(), orgId: null };
+function bellButton() {
+  const { h, icon } = deps.ui;
+  const b = h('button', { type: 'button', class: 'icon-btn bell', 'aria-label': 'Powiadomienia', title: 'Powiadomienia', 'aria-haspopup': 'dialog', 'aria-expanded': 'false' }, icon('bell', 18), h('span', { class: 'bell-badge', hidden: true }));
+  b.addEventListener('click', () => toggleNotifs(b));
+  return b;
+}
+function paintBadges() {
+  const n = notifState.items.filter((i) => !notifState.seen.has(i.key)).length;
+  for (const el of document.querySelectorAll('.bell-badge')) { el.hidden = !n; el.textContent = n > 9 ? '9+' : String(n); }
+  for (const b of document.querySelectorAll('.icon-btn.bell')) b.setAttribute('aria-label', n ? `Powiadomienia (${n} nowych)` : 'Powiadomienia');
+}
+let notifSeq = 0;
+async function refreshNotifs() {
+  if (!deps || !state.org) return;
+  const seq = ++notifSeq, orgId = state.org.id;
+  try {
+    const items = await notif.collect(deps.store);
+    if (seq !== notifSeq) return;
+    notifState = { items, seen: notif.readSeen(orgId), orgId };
+    paintBadges();
+    const pop = document.querySelector('.notif-pop'); if (pop) fillNotifs(pop);
+  } catch { /* powiadomienia są dodatkiem */ }
+}
+function fillNotifs(pop) {
+  const { h, icon } = deps.ui;
+  const body = pop.querySelector('.notif-body');
+  const items = notifState.items;
+  body.replaceChildren(...(items.length ? items.map((i) => {
+    const a = h('a', { class: `notif-i ${i.tone}${notifState.seen.has(i.key) ? '' : ' is-new'}`, href: i.href }, h('i', { class: 'dot', 'aria-hidden': 'true' }), h('span', null, h('b', null, i.title), i.text ? h('small', null, i.text) : null));
+    a.addEventListener('click', () => closeNotifs());
+    return a;
+  }) : [h('div', { class: 'notif-none' }, icon('check', 18), h('b', null, 'Nic pilnego'), h('small', null, 'Gdy coś będzie wymagało uwagi, zobaczysz to tutaj.'))]));
+}
+function closeNotifs() {
+  const pop = document.querySelector('.notif-pop'); if (!pop) return;
+  pop.remove(); document.removeEventListener('keydown', onNotifKey, true); document.removeEventListener('mousedown', onNotifOutside, true);
+  for (const b of document.querySelectorAll('.icon-btn.bell')) b.setAttribute('aria-expanded', 'false');
+  if (notifState.orgId) { notif.markSeen(notifState.orgId, notifState.items); notifState.seen = notif.readSeen(notifState.orgId); paintBadges(); }
+}
+const onNotifKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); const b = document.querySelector('.icon-btn.bell[aria-expanded="true"]'); closeNotifs(); if (b) b.focus(); } };
+const onNotifOutside = (e) => { if (!e.target.closest('.notif-pop, .icon-btn.bell')) closeNotifs(); };
+function toggleNotifs(btn) {
+  if (document.querySelector('.notif-pop')) { closeNotifs(); return; }
+  const { h } = deps.ui;
+  const pop = h('div', { class: 'notif-pop', role: 'dialog', 'aria-label': 'Powiadomienia' }, h('div', { class: 'notif-h' }, h('b', null, 'Powiadomienia')), h('div', { class: 'notif-body' }));
+  document.body.appendChild(pop);
+  const r = btn.getBoundingClientRect(), w = Math.min(360, window.innerWidth - 24);
+  pop.style.width = w + 'px';
+  pop.style.left = Math.max(12, Math.min(window.innerWidth - w - 12, r.left)) + 'px';
+  pop.style.top = (r.bottom + 8) + 'px';
+  btn.setAttribute('aria-expanded', 'true');
+  fillNotifs(pop);
+  document.addEventListener('keydown', onNotifKey, true); document.addEventListener('mousedown', onNotifOutside, true);
+  refreshNotifs();
+}
+if (typeof document !== 'undefined') {
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && !e.altKey && e.key.toLowerCase() === 'k') { e.preventDefault(); runSearch(); }
+  });
+}
+
 /* ------------------------------------------------ układ: shell */
 function ensureShell() {
   if (shellEl && shellEl.isConnected) return mainEl.querySelector('.main-inner');
   const { h, icon } = deps.ui;
   const side = h('aside', { class: 'side', 'aria-label': 'Nawigacja' },
-    h('div', { class: 'side-brand' }, logo()),
+    h('div', { class: 'side-brand' }, logo(), bellButton()),
+    searchButton(),
     h('nav', { class: 'side-nav', 'aria-label': 'Główna' },
       h('div', { class: 'grp' }, 'Rekrutacja'),
       NAV.main.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon), n.label)),
@@ -327,6 +408,7 @@ function syncTitleLevel() {
 
 function updateShell() {
   if (!shellEl) return;
+  refreshNotifs();
   const { h, avatar, icon } = deps.ui;
   const org = state.org, user = state.user;
   const userSlot = shellEl.querySelector('[data-slot="user"]');
@@ -344,7 +426,7 @@ function updateShell() {
     // mobile: awatar w pasku górnym (jak w aplikacji ChatGPT) otwiera to samo menu konta
     const btn = h('button', { type: 'button', class: 'head-av', 'aria-label': 'Menu konta', 'aria-haspopup': 'menu', 'aria-expanded': 'false' }, avatar(user ? user.name : ''));
     btn.addEventListener('click', () => openUserMenu(btn, userMobile));
-    userMobile.replaceChildren(btn);
+    userMobile.replaceChildren(iconButton('search', 'Szukaj', () => runSearch()), bellButton(), btn);
   }
   const active = state.route && state.route.nav;
   for (const a of shellEl.querySelectorAll('[data-nav]')) {
