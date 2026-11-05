@@ -150,3 +150,8 @@
 .gx-card.is-locked .gx-th{filter:blur(3px) saturate(.95)}
 .gx-card.is-locked:hover .gx-th{filter:blur(5px)}
 .gx-gal[data-empty=true]::after{content:'Brak stylów w tym filtrze.';grid-column:1/-1;padding:24px;color:var(--muted)}
+/* podgląd: jasne tło zamiast szarego, subtelna ramka i cień */
+.gx-stage{background:#fbfbfb;box-shadow:0 0 0 1px var(--border)}
+.gx-big{box-shadow:0 0 0 1px rgba(15,15,18,.08),0 6px 20px -8px rgba(15,15,18,.16)}
+.gx-th{background:#fbfbfb}
+.gx-card .gx-thw{border-radius:8px;box-shadow:0 0 0 1px rgba(15,15,18,.06)}
