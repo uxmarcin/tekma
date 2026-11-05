@@ -3,7 +3,9 @@
  * Udostępnianie: okno „Udostępnij” LinkedIna z gotową treścią (bez API i bez logowania w imieniu użytkownika).
  * Status „opublikowano” trzyma localStorage (per firma, ta przeglądarka). Publiczny link do ogłoszenia wymaga osobnej migracji.
  */
-import { renderAdPage, postText, drawShareCard } from '../ad-page.js';
+import { renderAdPage, postText, drawShareCard, workLabel, contractLabel } from '../ad-page.js';
+import { salaryLabel } from '../ad-check.js';
+import { renderGraphic, TEMPLATES, FORMATS, PALETTES } from '../ad-gfx.js';
 import { adCheck } from '../ad-check.js';
 import { openAdEditor } from './ad.js';
 import { setHeader } from './positions.js';
@@ -22,6 +24,7 @@ export default async function render(ctx) {
 
   let cur = positions.find((p) => p.id === ctx.query?.id) || positions[0];
   let tab = 'page';
+  const gfx = { template: 'mesh', format: 'li', palette: 'tekma', seed: 7, headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
   const pub = readPub(ctx.org);
   const root = h('div', { class: 'pb' });
   const side = h('aside', { class: 'card' });
@@ -69,12 +72,68 @@ export default async function render(ctx) {
         h('p', { class: 'muted pb-note', style: 'margin-top:10px' }, 'Automatyczne publikowanie bez Twojego kliknięcia wymaga połączenia konta LinkedIn (autoryzacja OAuth) — dodamy je razem z publicznymi linkami do ogłoszeń.')));
   }
 
+
+  function gfxData() {
+    const sal = salaryLabel(cur);
+    return { title: cur.title, org: ctx.org && ctx.org.name, dept: cur.department, salary: sal ? sal.replace(/\s?[A-Z]{3}$/, '') : '', currency: cur.salary_currency || 'PLN', meta: [workLabel(cur), contractLabel(cur)].filter(Boolean) };
+  }
+  const gfxOpts = () => ({ headline: gfx.headline, cta: gfx.cta, showSalary: gfx.showSalary, showMeta: gfx.showMeta, showCta: gfx.showCta, showOrg: gfx.showOrg, showMark: gfx.showMark });
+  const fileName = (fmt) => `${cur.title.replace(/\W+/g, '-').toLowerCase()}-${gfx.template}-${fmt}.png`;
+  function save(canvas, name) { canvas.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: name }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); }); }
+
+  function gfxTab() {
+    let token = 0;
+    const big = h('canvas', { class: 'gx-big', 'aria-label': 'Podgląd grafiki' });
+    const bigWrap = h('div', { class: 'gx-stage' }, big);
+    const gallery = h('div', { class: 'gx-gal', role: 'listbox', 'aria-label': 'Szablony' });
+    const thumbs = TEMPLATES.map((t) => {
+      const c = h('canvas', { class: 'gx-th' });
+      const b = h('button', { type: 'button', class: 'gx-card', role: 'option', 'aria-selected': 'false', 'data-id': t.id, on: { click: () => { gfx.template = t.id; draw(); } } }, c, h('b', null, t.name), h('small', { class: 'muted' }, t.hint));
+      b._c = c; gallery.append(b); return b;
+    });
+
+    async function draw() {
+      const my = ++token; const data = gfxData(); const o = gfxOpts();
+      thumbs.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.id === gfx.template)));
+      await renderGraphic(big, { template: gfx.template, format: gfx.format, palette: gfx.palette, data, opts: o, seed: gfx.seed });
+      const f = FORMATS.find((q) => q.id === gfx.format); bigWrap.style.setProperty('--ar', `${f.w} / ${f.h}`); bigWrap.dataset.fmt = gfx.format;
+      for (const b of thumbs) { if (my !== token) return; await renderGraphic(b._c, { template: b.dataset.id, format: gfx.format, palette: gfx.palette, data, opts: o, seed: gfx.seed }); }
+    }
+
+    const fmts = h('div', { class: 'gx-fmts', role: 'group', 'aria-label': 'Format' }, FORMATS.map((f) => h('button', { type: 'button', class: 'gx-fmt', 'aria-pressed': String(gfx.format === f.id), on: { click: (e) => { gfx.format = f.id; fmts.querySelectorAll('button').forEach((q, i) => q.setAttribute('aria-pressed', String(FORMATS[i].id === f.id))); draw(); } } }, h('b', null, f.label), h('small', { class: 'muted' }, f.note))));
+    const sw = h('div', { class: 'gx-sw', role: 'radiogroup', 'aria-label': 'Paleta' }, PALETTES.map((P) => h('button', { type: 'button', class: 'gx-swb', role: 'radio', title: P.name, 'aria-checked': String(gfx.palette === P.id), style: `background:linear-gradient(135deg,${P.a},${P.b} 55%,${P.c})`, on: { click: () => { gfx.palette = P.id; sw.querySelectorAll('button').forEach((q, i) => q.setAttribute('aria-checked', String(PALETTES[i].id === P.id))); draw(); } } })));
+    const head = h('input', { class: 'input', type: 'text', maxlength: '80', placeholder: cur.title, 'aria-label': 'Nagłówek na grafice', value: gfx.headline });
+    const cta = h('input', { class: 'input', type: 'text', maxlength: '40', 'aria-label': 'Tekst przycisku', value: gfx.cta });
+    let tm; const later = () => { clearTimeout(tm); tm = setTimeout(draw, 250); };
+    head.addEventListener('input', () => { gfx.headline = head.value; later(); }); cta.addEventListener('input', () => { gfx.cta = cta.value; later(); });
+    const tog = (key, label) => { const i = h('input', { type: 'checkbox', checked: gfx[key] }); i.addEventListener('change', () => { gfx[key] = i.checked; draw(); }); return h('label', { class: 'gx-tg' }, i, h('span', null, label)); };
+    const noSal = !salaryLabel(cur);
+    const side = h('div', { class: 'gx-side' },
+      h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Format'), fmts),
+      h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Kolory'), sw,
+        button({ label: 'Losuj układ tła', variant: 'secondary', size: 'sm', icon: 'spark', onClick: () => { gfx.seed = Math.floor(Math.random() * 1e6) + 1; draw(); } })),
+      h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Treść'),
+        h('label', { class: 'gx-l' }, 'Nagłówek', head), h('label', { class: 'gx-l' }, 'Przycisk', cta),
+        tog('showOrg', 'Firma i dział'), tog('showSalary', 'Widełki'), tog('showMeta', 'Tryb pracy i forma umowy'), tog('showCta', 'Przycisk'), tog('showMark', 'Znak Tekma'),
+        noSal ? h('div', { class: 'pb-note', style: 'margin-top:8px' }, h('p', { style: 'margin:0 0 8px' }, tag('Brak widełek', 'warn'), ' Grafika bez widełek nie spełnia zasad jawności wynagrodzeń.'), button({ label: 'Dodaj widełki', variant: 'secondary', size: 'sm', icon: 'edit', onClick: editAd })) : null));
+    const dlOne = button({ label: 'Pobierz PNG', variant: 'primary', icon: 'arrow', onClick: () => save(big, fileName(gfx.format)) });
+    const dlAll = button({ label: 'Pobierz wszystkie formaty', variant: 'secondary', onClick: async () => {
+      const keep = gfx.format; const c = document.createElement('canvas');
+      for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
+      gfx.format = keep; toast('Pobrano wszystkie formaty.', 'good');
+    } });
+    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, h('b', null, TEMPLATES.find((t) => t.id === gfx.template).name), h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('h2', { class: 'st-h', style: 'margin:18px 0 10px' }, '12 szablonów'), gallery);
+    const wrap = h('div', { class: 'gx' }, side, main2);
+    draw();
+    return wrap;
+  }
+
   function paint() {
     paintSide();
     const edit = button({ label: 'Edytuj ogłoszenie', variant: 'secondary', icon: 'edit', onClick: editAd });
     const seg = h('div', { class: 'segment pb-tabs', role: 'group', 'aria-label': 'Widok' },
-      [['page', 'Strona ogłoszenia'], ['post', 'Post na LinkedIn']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(tab === k), on: { click: () => { tab = k; paint(); } } }, l)));
-    main.replaceChildren(h('div', { class: 'pb-row', style: 'justify-content:space-between;margin:0' }, seg, edit), tab === 'page' ? pageTab() : postTab());
+      [['page', 'Strona ogłoszenia'], ['gfx', 'Grafiki'], ['post', 'Post na LinkedIn']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(tab === k), on: { click: () => { tab = k; paint(); } } }, l)));
+    main.replaceChildren(h('div', { class: 'pb-row', style: 'justify-content:space-between;margin:0' }, seg, edit), tab === 'page' ? pageTab() : (tab === 'gfx' ? gfxTab() : postTab()));
   }
   paint();
   return root;
