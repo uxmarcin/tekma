@@ -111,7 +111,7 @@ function logoBlock(ctx, org, owner) {
       owner ? h('div', { class: 'st-logo-act' }, change, remove, input) : null));
   if (!owner) return row;
   const help = h('p', { class: 'st-logo-help muted' },
-    h('b', null, 'Logo: '), 'najlepiej kwadrat ', h('b', null, '512 × 512 px'), ' (min. 256 × 256). Formaty: PNG, JPG, WebP, GIF, AVIF i SVG (do 8 MB).');
+    h('b', null, 'Logo: '), 'najlepiej kwadrat ', h('b', null, '512 × 512 px'), ' (min. 256 × 256). Formaty: SVG, PNG, JPG i WebP (do 8 MB).');
   // przeciągnij i upuść
   const wrap = h('div', { class: 'st-logo-wrap' }, row, help);
   for (const ev of ['dragenter', 'dragover']) wrap.addEventListener(ev, (e) => { e.preventDefault(); wrap.classList.add('is-over'); });

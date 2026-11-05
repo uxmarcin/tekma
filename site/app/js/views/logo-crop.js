@@ -1,11 +1,11 @@
 /* views/logo-crop.js — wybór, kadrowanie i zmniejszanie logo firmy.
- * Obsługa: PNG, JPG, WebP, GIF, AVIF, SVG (rasteryzowane w przeglądarce — skrypty w SVG nigdy się nie wykonują).
+ * Obsługa: SVG, PNG, JPG, WebP (rasteryzowane w przeglądarce — skrypty w SVG nigdy się nie wykonują).
  * Wynik: data-URL PNG (albo WebP, gdy PNG byłby za duży) 256×256 px. */
 
 export const LOGO_SIZE = 256;          // px, rozmiar zapisanego logo
 export const LOGO_MAX_FILE = 8 * 1024 * 1024;
 export const LOGO_MAX_DATA = 280000;   // znaków data-URL (limit w bazie: 300000)
-export const LOGO_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.avif,.svg,image/png,image/jpeg,image/webp,image/gif,image/avif,image/svg+xml';
+export const LOGO_ACCEPT = '.svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp';
 
 const STAGE = 288; // px, widoczne pole kadrowania
 
@@ -14,7 +14,7 @@ async function loadFile(file) {
   if (!file) throw new Error('Nie wybrano pliku.');
   if (file.size > LOGO_MAX_FILE) throw new Error('Plik jest za duży (max 8 MB).');
   const isSvg = file.type === 'image/svg+xml' || /\.svg$/i.test(file.name || '');
-  if (!isSvg && !/^image\/(png|jpe?g|webp|gif|avif)$/.test(file.type)) throw new Error('Obsługiwane formaty: PNG, JPG, WebP, GIF, AVIF i SVG.');
+  if (!isSvg && !/^image\/(png|jpe?g|webp)$/.test(file.type)) throw new Error('Obsługiwane formaty: SVG, PNG, JPG i WebP.');
   let blob = file;
   if (isSvg) {
     const text = await file.text();
