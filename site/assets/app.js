@@ -26,28 +26,36 @@
   }
 
 
-  /* delikatna sieć węzłów w tle hero */
+  /* kosmos w tle hero: gwiazdy z głębią (paralaksa), migotanie, rzadkie spadające gwiazdy */
   const net = $('#net');
   if (net) {
-    const ctx = net.getContext('2d'); let W = 0, H = 0, dpr = 1, pts = [], mx = -999, my = -999, vis = true, raf = 0;
-    const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = net.clientWidth; H = net.clientHeight; net.width = W * dpr; net.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const n = Math.round(Math.min(70, W * H / 16000)); pts = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.2 + .6 })); };
-    const draw = () => {
-      ctx.clearRect(0, 0, W, H);
-      for (const p of pts) { if (!reduce) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; } }
-      for (let i = 0; i < pts.length; i++) { const a = pts[i];
-        for (let j = i + 1; j < pts.length; j++) { const b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y); if (d < 150) { ctx.strokeStyle = `rgba(255,255,255,${(1 - d / 150) * .13})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); } }
-        const dm = Math.hypot(a.x - mx, a.y - my), g = dm < 160 ? 1 - dm / 160 : 0;
-        if (g > 0) { ctx.strokeStyle = `rgba(255,255,255,${g * .22})`; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mx, my); ctx.stroke(); }
-        ctx.fillStyle = `rgba(255,255,255,${.28 + g * .5})`; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.283); ctx.fill(); }
-      if (vis && !reduce) raf = requestAnimationFrame(draw);
+    const ctx = net.getContext('2d'); let W = 0, H = 0, dpr = 1, stars = [], shoot = null, mx = 0, my = 0, sx = 0, sy = 0, vis = true, raf = 0, t0 = performance.now(), nextShoot = t0 + 4000;
+    const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = net.clientWidth; H = net.clientHeight; net.width = Math.round(W * dpr); net.height = Math.round(H * dpr); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.round(Math.min(160, W * H / 9000));
+      stars = Array.from({ length: n }, () => { const z = Math.random() ** 2; return { x: Math.random() * W, y: Math.random() * H, z, r: .5 + z * 1.5, a: .25 + z * .6, f: Math.random() * 6.283, s: .4 + Math.random() * 1.2, v: .01 + z * .05 }; }); };
+    const draw = (now) => {
+      const t = (now - t0) / 1000; ctx.clearRect(0, 0, W, H);
+      sx += (mx - sx) * .04; sy += (my - sy) * .04;
+      for (const p of stars) {
+        if (!reduce) { p.y -= p.v; if (p.y < -4) { p.y = H + 4; p.x = Math.random() * W; } }
+        const x = p.x + sx * p.z * 28, y = p.y + sy * p.z * 18, tw = reduce ? 1 : .65 + .35 * Math.sin(t * p.s + p.f), al = p.a * tw;
+        if (p.r > 1.2) { const g = ctx.createRadialGradient(x, y, 0, x, y, p.r * 5); g.addColorStop(0, `rgba(255,255,255,${al * .5})`); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, p.r * 5, 0, 6.283); ctx.fill(); }
+        ctx.fillStyle = `rgba(255,255,255,${al})`; ctx.beginPath(); ctx.arc(x, y, p.r, 0, 6.283); ctx.fill();
+      }
+      if (!reduce) {
+        if (!shoot && now > nextShoot) { const a = .5 + Math.random() * .3; shoot = { x: Math.random() * W * .8, y: Math.random() * H * .35, vx: Math.cos(a) * 9, vy: Math.sin(a) * 9, life: 0 }; nextShoot = now + 6000 + Math.random() * 7000; }
+        if (shoot) { const s = shoot; s.x += s.vx; s.y += s.vy; s.life++; const al = Math.max(0, 1 - s.life / 50) * .7;
+          const g = ctx.createLinearGradient(s.x, s.y, s.x - s.vx * 9, s.y - s.vy * 9); g.addColorStop(0, `rgba(255,255,255,${al})`); g.addColorStop(1, 'rgba(255,255,255,0)');
+          ctx.strokeStyle = g; ctx.lineWidth = 1.4; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(s.x, s.y); ctx.lineTo(s.x - s.vx * 9, s.y - s.vy * 9); ctx.stroke();
+          if (s.life > 50) shoot = null; }
+        if (vis) raf = requestAnimationFrame(draw);
+      }
     };
-    size(); draw();
-    addEventListener('resize', () => { size(); if (reduce) draw(); });
+    size(); draw(performance.now());
+    addEventListener('resize', () => { size(); if (reduce) draw(performance.now()); });
     if (!reduce) {
-      hero.addEventListener('pointermove', e => { const r = net.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
-      hero.addEventListener('pointerleave', () => { mx = my = -999; });
-      new IntersectionObserver(([e]) => { vis = e.isIntersecting; if (vis) { cancelAnimationFrame(raf); draw(); } }).observe(hero);
+      hero.addEventListener('pointermove', e => { const r = hero.getBoundingClientRect(); mx = (e.clientX - r.left) / r.width - .5; my = (e.clientY - r.top) / r.height - .5; });
+      new IntersectionObserver(([e]) => { vis = e.isIntersecting; if (vis) { cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); } }).observe(hero);
     }
   }
 

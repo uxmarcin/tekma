@@ -780,3 +780,13 @@ svg:has(>use[href^="#si-"]),svg:has(>use[href^="#i-"]),svg:has(>use[href="#tick"
 .stage-tilt{--rx:16deg}
 @media (prefers-reduced-motion:reduce){.stage-tilt{transform:none!important}}
 @media (max-width:760px){.stage-tilt{transform:rotateX(calc(var(--rx,10deg)*.6)) scale(var(--sc,.96))}}
+
+/* kosmos: mgławice (bardzo delikatne) */
+.hero::before,.hero::after{content:"";position:absolute;border-radius:50%;pointer-events:none;filter:blur(60px);z-index:0}
+.hero::before{width:620px;height:420px;left:6%;top:12%;background:radial-gradient(closest-side,rgba(255,255,255,.07),transparent 70%);animation:nebA 26s ease-in-out infinite alternate}
+.hero::after{width:520px;height:380px;right:4%;top:34%;background:radial-gradient(closest-side,rgba(150,170,255,.06),transparent 70%);animation:nebA 32s ease-in-out -8s infinite alternate-reverse}
+@keyframes nebA{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(60px,30px,0) scale(1.15)}}
+@media (prefers-reduced-motion:reduce){.hero::before,.hero::after{animation:none}}
+.hero-grid{opacity:.25}
+.hero-net{-webkit-mask-image:radial-gradient(ellipse 95% 85% at 50% 40%,#000 35%,transparent 90%);mask-image:radial-gradient(ellipse 95% 85% at 50% 40%,#000 35%,transparent 90%)}
+.hero-net{z-index:0}.hero>.wrap{position:relative;z-index:1}
