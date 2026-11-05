@@ -170,6 +170,7 @@ export const SEED = {
       status: 'open',
       stages: DEFAULT_STAGES,
       rubric_key: 'backend-tech',
+      work_mode: 'hybrid', contract_types: ['b2b', 'uop'], salary_min: 22000, salary_max: 30000, salary_currency: 'PLN',
       description: 'Szukamy osoby, która poprowadzi przebudowę systemu kolejkowania i będzie mentorować dwójkę juniorów. Stack: Go, Postgres, Kafka, Kubernetes.',
       created_at: daysAgo(34),
     },

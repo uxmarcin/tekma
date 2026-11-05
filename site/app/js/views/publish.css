@@ -1,0 +1,65 @@
+/* views/publish.css — Publikacje + projekt strony ogłoszenia. Prefiksy pb- i ap-. */
+.pb{display:grid;grid-template-columns:280px minmax(0,1fr);gap:20px;align-items:start}
+.pb-list{list-style:none;margin:0;padding:8px;display:flex;flex-direction:column;gap:2px}
+.pb-item{display:flex;flex-direction:column;gap:2px;width:100%;text-align:left;padding:10px 12px;border-radius:var(--r-md);border:0;background:transparent;font:inherit;color:var(--ink);cursor:pointer}
+.pb-item:hover{background:var(--s2)}
+.pb-item[aria-current=true]{background:var(--s2);box-shadow:inset 0 0 0 1px var(--border)}
+.pb-item b{font-size:14px;font-weight:600}.pb-item small{font-size:var(--fs-xs)}
+.pb-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.pb-tabs{display:flex;gap:4px}
+.pb-post{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.pb-post textarea{width:100%;min-height:340px;resize:vertical;font:inherit;font-size:14px;line-height:1.5;padding:12px;border-radius:var(--r-md);border:1px solid var(--border-strong);background:var(--bg);color:var(--ink)}
+.pb-card{width:100%;height:auto;border-radius:var(--r-md);display:block;box-shadow:0 0 0 1px var(--border)}
+.pb-row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
+.pb-note{font-size:var(--fs-sm)}
+.pb-post .st-h{margin-bottom:12px}
+@media (max-width:980px){.pb,.pb-post{grid-template-columns:1fr}}
+
+/* strona ogłoszenia — własna, jasna paleta niezależna od motywu aplikacji (jak w publicznej wersji) */
+.ap{--ap-ink:#0f0f12;--ap-sub:#5f5f6b;--ap-line:#e4e4e9;background:#fff;color:var(--ap-ink);border-radius:var(--r-lg);overflow:hidden;box-shadow:0 0 0 1px var(--ap-line)}
+.ap-hero{position:relative;padding:56px 48px 48px;overflow:hidden;background:#fafafa}
+.ap-mesh{-webkit-mask-image:none;mask-image:none}
+.ap-hero-in{position:relative;z-index:1;display:flex;flex-direction:column;gap:14px}
+.ap-eyebrow{margin:0;font-size:14px;font-weight:500;color:var(--ap-sub)}
+.ap-title{margin:0;font-size:clamp(34px,5vw,56px);line-height:1.04;letter-spacing:-.03em;font-weight:700;max-width:18ch}
+.ap-meta{margin:0;font-size:16px;color:var(--ap-sub)}
+.ap-sal{margin-top:18px;display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.ap-sal-l{flex-basis:100%;font-size:13px;font-weight:500;color:var(--ap-sub);text-transform:uppercase;letter-spacing:.06em}
+.ap-sal b{font-size:clamp(40px,7vw,80px);line-height:1;letter-spacing:-.04em;font-weight:700}
+.ap-cur{font-size:22px;font-weight:600;color:var(--ap-sub)}
+.ap-sal.warn .ap-sal-l{text-transform:none;letter-spacing:0;font-size:15px;color:#b45309}
+.ap-sec{padding:36px 48px;border-top:1px solid var(--ap-line);display:flex;flex-direction:column;gap:12px}
+.ap-sec h2{margin:0;font-size:22px;letter-spacing:-.02em}
+.ap-sec p{margin:0;line-height:1.6;max-width:68ch;white-space:pre-line}
+.ap-sub{color:var(--ap-sub)}
+.ap-crit{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:12px;max-width:640px}
+.ap-crit li{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) 44px;gap:14px;align-items:center;font-size:15px}
+.ap-crit .bar{height:8px;border-radius:99px;background:#eef0f4;overflow:hidden}
+.ap-crit .bar i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#2d68ff,#c084fc)}
+.ap-crit .v{font-variant-numeric:tabular-nums;color:var(--ap-sub);text-align:right}
+.ap-steps{list-style:none;margin:6px 0 0;padding:0;display:flex;gap:0;flex-wrap:wrap}
+.ap-steps li{display:flex;align-items:center;gap:10px;padding:10px 18px 10px 0;font-size:15px;font-weight:500}
+.ap-steps li:not(:last-child)::after{content:"";width:28px;height:1px;background:#c9ccd4;margin-left:8px}
+.ap-steps .i{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#0f0f12;color:#fff;font-size:12px;font-weight:600}
+.ap-days{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:6px}
+.ap-day{padding:18px;border-radius:var(--r);background:#f6f6f7;display:flex;flex-direction:column;gap:6px}
+.ap-day p{font-size:14px;color:var(--ap-sub)}.ap-day small{font-size:13px;color:var(--ap-sub);line-height:1.5}
+.ap-cta{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:28px 48px;background:#0f0f12;color:#fff;flex-wrap:wrap}
+.ap-cta p{margin:4px 0 0;color:#a1a1aa;font-size:14px}
+.ap-btn{display:inline-flex;height:44px;padding:0 24px;align-items:center;border-radius:99px;background:#2d68ff;font-weight:600}
+@media (max-width:700px){.ap-hero,.ap-sec,.ap-cta{padding-left:22px;padding-right:22px}.ap-days{grid-template-columns:1fr}.ap-crit li{grid-template-columns:1fr 44px}.ap-crit .bar{grid-column:1/-1;order:3}}
+
+/* mesh gradient — żywe, powoli dryfujące plamy; kontener reaguje na kursor (--px/--py) */
+.ap-mesh{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent)}
+.ap-mesh i{translate:calc(var(--px,0)*44px) calc(var(--py,0)*30px);transition:translate .9s var(--ease);position:absolute;border-radius:50%;filter:blur(72px);will-change:transform;mix-blend-mode:normal}
+.ap-mesh i:nth-child(1){width:640px;aspect-ratio:1;left:-6%;top:-14%;background:radial-gradient(circle,rgba(45,104,255,.42),transparent 68%);animation:apmesh-a 22s ease-in-out infinite alternate}
+.ap-mesh i:nth-child(2){width:560px;aspect-ratio:1;right:-4%;top:-8%;background:radial-gradient(circle,rgba(192,132,252,.42),transparent 68%);animation:apmesh-b 26s ease-in-out infinite alternate}
+.ap-mesh i:nth-child(3){width:600px;aspect-ratio:1;left:22%;bottom:-24%;background:radial-gradient(circle,rgba(52,211,153,.36),transparent 68%);animation:apmesh-c 24s ease-in-out infinite alternate}
+.ap-mesh i:nth-child(4){width:420px;aspect-ratio:1;right:14%;bottom:-6%;background:radial-gradient(circle,rgba(251,146,180,.34),transparent 68%);animation:apmesh-d 19s ease-in-out infinite alternate}
+@keyframes apmesh-a{to{transform:translate3d(120px,10%,0) scale(1.18)}}
+@keyframes apmesh-b{to{transform:translate3d(-100px,18%,0) scale(.88)}}
+@keyframes apmesh-c{to{transform:translate3d(-140px,-12%,0) scale(1.15)}}
+@keyframes apmesh-d{to{transform:translate3d(-90px,-22%,0) scale(1.25)}}
+
+@media (prefers-reduced-motion:reduce){.ap-mesh i{animation:none}.ap-mesh i{transition:none}}

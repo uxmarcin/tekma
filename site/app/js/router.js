@@ -25,6 +25,8 @@ export const ROUTES = [
   { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
   { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
   { pattern: '#/decisions', view: 'decisions', layout: 'shell', title: 'Dziennik decyzji', nav: 'decisions' },
+  { pattern: '#/publishing', view: 'publish', layout: 'shell', title: 'Publikacje', nav: 'publishing' },
+  { pattern: '#/inbox', view: 'inbox', layout: 'shell', title: 'Inbox', nav: 'inbox' },
   { pattern: '#/talent', view: 'talent', layout: 'shell', title: 'Baza talentów', nav: 'talent' },
   { pattern: '#/people', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
   { pattern: '#/people/:id', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
@@ -40,10 +42,12 @@ export const ROUTES = [
 const NAV = {
   main: [
     { key: 'dashboard', label: 'Pulpit', href: '#/', icon: 'dashboard' },
+    { key: 'inbox', label: 'Inbox', href: '#/inbox', icon: 'inbox' },
     { key: 'positions', label: 'Stanowiska', href: '#/positions', icon: 'briefcase' },
     { key: 'rubrics', label: 'Rubryki', href: '#/rubrics', icon: 'rubric' },
     { key: 'candidates', label: 'Kandydaci', href: '#/candidates', icon: 'users' },
     { key: 'talent', label: 'Baza talentów', href: '#/talent', icon: 'user-plus' },
+    { key: 'publishing', label: 'Publikacje', href: '#/publishing', icon: 'megaphone' },
     { key: 'decisions', label: 'Dziennik decyzji', href: '#/decisions', icon: 'scale' },
   ],
   later: [

@@ -240,6 +240,7 @@ export function createStore(adapter) {
           title: p.title, department: p.department, location: p.location, status: p.status,
           stages: p.stages, rubric_id: p.rubric_key ? rubricIds[p.rubric_key] : null,
           description: p.description, created_at: p.created_at,
+          work_mode: p.work_mode, contract_types: p.contract_types, salary_min: p.salary_min, salary_max: p.salary_max, salary_currency: p.salary_currency,
         });
         positionIds[p.key] = row.id;
       }
