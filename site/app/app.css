@@ -514,26 +514,14 @@ a.row:hover::before,.row.clickable:hover::before,a.row:hover + a.row::before,.ro
 .empty p{color:var(--muted);font-size:14px;line-height:20px;max-width:380px}
 .empty h3 + p{margin-top:-8px}
 .empty .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
-.empty .actions .btn{min-height:32px;height:32px;padding:0 16px;font-size:12px;font-weight:500;border-radius:12px;background:var(--bg);color:var(--ink);box-shadow:inset 0 0 0 1px var(--border-strong)}
-.empty .actions .btn:hover{background:var(--s2)}
-.empty .actions .btn svg{width:16px;height:16px;color:var(--ink)}
-/* trzy kafelki z lekkim pochyleniem (Figma: Responses · empty) */
-.empty-tiles{position:relative;width:174px;height:61px;flex:none}
-.empty-tile{position:absolute;top:1px;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;border:1px solid var(--border);box-shadow:0 2px 4px rgba(0,0,0,.1)}
-.empty-tile.t0{left:12px;transform:rotate(-8deg)}
-.empty-tile.t1{left:61px;z-index:1}
-.empty-tile.t2{left:109px;transform:rotate(8deg)}
+/* trzy kafelki — wymiary i pozycje 1:1 z Figmy (Avatars 173,46 × 60,73; boczne obrócone o ∓8°, środkowy wyżej) */
+.empty-tiles{position:relative;width:173.46px;height:60.73px;flex:none}
+.empty-tile{position:absolute;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;border:1px solid var(--border);background:linear-gradient(180deg,var(--bg),var(--s2));box-shadow:0 2px 4px rgba(0,0,0,.1);color:var(--ink);overflow:hidden}
+.empty-tile.t0{left:13.37px;top:4.37px;transform:rotate(-8deg)}
+.empty-tile.t1{left:60.73px;top:1px;z-index:1}
+.empty-tile.t2{left:108.1px;top:4.37px;transform:rotate(8deg)}
 .empty-tile svg{width:24px;height:24px}
-.empty-tile.blue{background:linear-gradient(160deg,#dfe8ff,#b9ccff);color:#1d4ed8}
-.empty-tile.green{background:linear-gradient(160deg,#dcf5e8,#aee6c8);color:#047857}
-.empty-tile.amber{background:linear-gradient(160deg,#ffeedd,#ffcfa3);color:#c2410c}
-:root[data-theme="dark"] .empty-tile.blue{background:linear-gradient(160deg,#22346b,#16224a);color:#8fb0ff}
-:root[data-theme="dark"] .empty-tile.green{background:linear-gradient(160deg,#17402c,#0f2a1d);color:#4ade80}
-:root[data-theme="dark"] .empty-tile.amber{background:linear-gradient(160deg,#5a3515,#33200d);color:#fb923c}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]) .empty-tile.blue{background:linear-gradient(160deg,#22346b,#16224a);color:#8fb0ff}
-  :root:not([data-theme="light"]) .empty-tile.green{background:linear-gradient(160deg,#17402c,#0f2a1d);color:#4ade80}
-  :root:not([data-theme="light"]) .empty-tile.amber{background:linear-gradient(160deg,#5a3515,#33200d);color:#fb923c}
+.empty-tile img{width:100%;height:100%;object-fit:cover;display:block}
 }
 /* ekran startowy pulpitu / stan centralny: nagłówek + jedno główne działanie (jak ekran startowy ChatGPT) */
 .hero-state{display:grid;justify-items:center;text-align:center;gap:12px;padding:min(14vh,120px) 16px 48px;max-width:560px;margin:0 auto}

@@ -327,19 +327,21 @@ export function confirm({ title = 'Na pewno?', text = '', confirmLabel = 'Potwie
 }
 
 /* ---------------------------------------------------------------- stany */
-/* Zestawy trzech kafelków (lewy, środkowy, prawy) dla pustych stanów — wg projektu „Responses · empty” z Figmy.
-   Zamiast zdjęć osób: kafelki z ikonami Lucide na pastelowych tłach (żadnych cudzych zdjęć w aplikacji). */
+/* Puste stany wg projektu „Responses · empty” z Figmy: trzy pochylone kafelki, tytuł, opis, mały przycisk.
+   Kafelki są monochromatyczne (ikona Lucide w kolorze tekstu); tylko stany dotyczące ludzi pokazują portrety. */
 const EMPTY_TILES = {
-  briefcase: ['users', 'briefcase', 'rubric'], users: ['user', 'users', 'briefcase'], user: ['calendar', 'user', 'target'],
-  message: ['star', 'message', 'check'], search: ['briefcase', 'search', 'users'], inbox: ['mail', 'inbox', 'calendar'],
-  alert: ['info', 'alert', 'clock'], plus: ['briefcase', 'plus', 'users'], target: ['flag', 'target', 'check'],
+  briefcase: ['users', 'briefcase', 'rubric'], message: ['star', 'message', 'check'], search: ['briefcase', 'search', 'users'],
+  inbox: ['mail', 'inbox', 'calendar'], alert: ['info', 'alert', 'clock'], plus: ['briefcase', 'plus', 'users'], target: ['flag', 'target', 'check'],
 };
-const TILE_TONES = ['blue', 'green', 'amber'];
+const PEOPLE_PHOTOS = ['../assets/people/p1.jpg', '../assets/people/p2.jpg', '../assets/people/p3.jpg'];
 export function emptyState({ title, text, action, icon: iconName = 'inbox' } = {}) {
   const actions = action ? (Array.isArray(action) ? action : [action]).map((a) => (a instanceof Node ? a : button({ variant: 'secondary', size: 'sm', ...a }))) : [];
+  const people = iconName === 'user' || iconName === 'users';
   const set = EMPTY_TILES[iconName] || ['clock', iconName, 'check'];
   const tiles = h('div', { class: 'empty-tiles', 'aria-hidden': 'true' },
-    set.map((n, i) => h('span', { class: `empty-tile t${i} ${TILE_TONES[i]}` }, icon(n, 24))));
+    people
+      ? PEOPLE_PHOTOS.map((src, i) => h('span', { class: `empty-tile t${i} photo` }, h('img', { src, alt: '', width: 52, height: 52, loading: 'lazy', draggable: 'false' })))
+      : set.map((n, i) => h('span', { class: `empty-tile t${i}` }, icon(n, 24))));
   return h('div', { class: 'empty' },
     tiles,
     title ? h('h3', null, title) : null,

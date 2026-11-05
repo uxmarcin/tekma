@@ -10,7 +10,7 @@
  * export default async function render(ctx) -> HTMLElement
  */
 
-import { CATEGORIES, searchRoles, categoryOf } from '../positions-db.js';
+import { CATEGORIES, searchRoles, categoryOf, classifyTitle, categoryById } from '../positions-db.js';
 import { WORK_MODES, CONTRACTS } from '../store.js';
 const norm = (x) => String(x || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/ł/g, 'l').trim();
 const uniqueValues = (list, key) => { const seen = new Set(); const out = []; for (const p of list) { const v = String(p[key] || '').trim(); if (v && !seen.has(v.toLowerCase())) { seen.add(v.toLowerCase()); out.push(v); } } return out; };
@@ -134,7 +134,7 @@ function positionRow(ctx, p, candidates) {
   const wm = (WORK_MODES.find((m) => m.key === p.work_mode) || {}).label;
   const meta = [p.department, p.location, wm].filter(Boolean).join(' · ');
   const open = p.status === 'open';
-  const cat = categoryOf(p.title);
+  const cat = (p.category && categoryById(p.category)) || categoryOf(p.title);
   return h('li', null,
     h('a', { class: 'pos-row', href: `#/positions/${encodeURIComponent(p.id)}`, 'aria-label': `${p.title}${meta ? ', ' + meta : ''}, ${open ? 'otwarte' : 'zamknięte'}, ${plural(active.length, 'kandydat w procesie', 'kandydatów w procesie', 'kandydatów w procesie')}` },
       h('span', { class: 'pos-ic', title: cat ? cat.name : 'Stanowisko', 'aria-hidden': 'true' }, icon(cat ? cat.icon : 'briefcase', 20)),
@@ -205,13 +205,16 @@ export function openNewPosition(ctx, { onCreated } = {}) {
   }
   function build() {
     const q = title.value.trim();
-    const own = orgPositions.filter((p) => (!q || norm(p.title).includes(norm(q))) && (!activeCat || (categoryOf(p.title) || {}).id === activeCat))
+    const own = orgPositions.filter((p) => (!q || norm(p.title).includes(norm(q))) && (!activeCat || (((p.category && categoryById(p.category)) || categoryOf(p.title)) || {}).id === activeCat))
       .filter((p, i, a) => a.findIndex((x) => norm(x.title) === norm(p.title)) === i).slice(0, 4)
-      .map((p) => ({ title: p.title, icon: (categoryOf(p.title) || {}).icon || 'briefcase', sub: 'Twoje stanowisko · uzupełni dział i etapy', own: true, position: p }));
+      .map((p) => ({ title: p.title, icon: ((p.category && categoryById(p.category)) || categoryOf(p.title) || {}).icon || 'briefcase', sub: 'Twoje stanowisko · uzupełni dział i etapy', own: true, position: p }));
     const ownKeys = new Set(own.map((o) => norm(o.title)));
     const cat = searchRoles(q, { cat: activeCat, limit: q ? 30 : 12 }).filter((r) => !ownKeys.has(r.key)).map((r) => ({ title: r.title, icon: r.icon, sub: r.catName }));
     const out = [...own, ...cat];
-    if (q.length >= 2 && !out.some((o) => norm(o.title) === norm(q))) out.push({ title: q, icon: 'plus', sub: 'Dodaj jako własną nazwę', custom: true });
+    if (q.length >= 2 && !out.some((o) => norm(o.title) === norm(q))) {
+      const guess = classifyTitle(q);
+      out.push({ title: q, icon: guess ? guess.cat.icon : 'briefcase', sub: guess ? `Własna nazwa · dobraliśmy kategorię „${guess.cat.name}”` : 'Własna nazwa · dodamy ją do Twojej bazy stanowisk', custom: true });
+    }
     return out;
   }
   function renderList(forceOpen) {
@@ -322,6 +325,7 @@ export function openNewPosition(ctx, { onCreated } = {}) {
         title: t, department: department.value, location: location.value,
         stages: stageList.list, rubric_id: rubric.value || null,
         work_mode: mode || null, contract_types: [...contracts],
+        category: (classifyTitle(t) || {}).cat ? classifyTitle(t).cat.id : undefined,
       });
       if (created._workSkipped) toast('Tryb pracy i forma współpracy zapiszą się po aktualizacji bazy (migracja 1.7).', 'info');
       toast(`Stanowisko „${created.title}” dodane.`, 'good');

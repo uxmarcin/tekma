@@ -56,7 +56,7 @@ export function createStore(adapter) {
   const positions = {
     list: () => adapter.positions.list(),
     get: (id) => adapter.positions.get(id),
-    async create({ title, department, location, stages, rubric_id, description, status, work_mode, contract_types } = {}) {
+    async create({ title, department, location, stages, rubric_id, description, status, work_mode, contract_types, category } = {}) {
       title = str(title);
       if (title.length < 2) throw new Error('Podaj nazwę stanowiska.');
       const st = Array.isArray(stages) && stages.length ? stages.map(str).filter(Boolean) : DEFAULT_STAGES;
@@ -66,6 +66,7 @@ export function createStore(adapter) {
         status: status === 'closed' ? 'closed' : 'open',
         stages: st, rubric_id: rubric_id || null, description: str(description),
         ...cleanWork({ work_mode, contract_types }),
+        ...(category ? { category: str(category).slice(0, 40) } : {}),
       });
     },
     async update(id, patch = {}) {
