@@ -24,6 +24,9 @@ export const ROUTES = [
   { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Kanban', nav: 'positions' },
   { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
   { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
+  { pattern: '#/people', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
+  { pattern: '#/people/:id', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
+  { pattern: '#/goals', view: 'goals', layout: 'shell', title: 'Cele', nav: 'goals' },
   { pattern: '#/rubrics', view: 'rubrics', layout: 'shell', title: 'Rubryki', nav: 'rubrics' },
   { pattern: '#/rubrics/:id', view: 'rubrics', layout: 'shell', title: 'Rubryka', nav: 'rubrics' },
   { pattern: '#/settings', view: 'settings', layout: 'shell', title: 'Ustawienia', nav: 'settings' },
@@ -39,8 +42,8 @@ const NAV = {
     { key: 'candidates', label: 'Kandydaci', href: '#/candidates', icon: 'users' },
   ],
   later: [
-    { label: 'Ludzie', icon: 'user' },
-    { label: 'Cele', icon: 'target' },
+    { key: 'people', label: 'Ludzie', href: '#/people', icon: 'user' },
+    { key: 'goals', label: 'Cele', href: '#/goals', icon: 'target' },
   ],
   admin: [
     { key: 'settings', label: 'Ustawienia', href: '#/settings', icon: 'settings' },
@@ -249,7 +252,7 @@ function ensureShell() {
       h('div', { class: 'grp' }, 'Rekrutacja'),
       NAV.main.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon), n.label)),
       h('div', { class: 'grp' }, 'Po zatrudnieniu'),
-      NAV.later.map((n) => h('span', { class: 'nav-soon', 'aria-disabled': 'true', title: 'Ten moduł pojawi się wkrótce' }, icon(n.icon), n.label, h('em', null, 'Wkrótce'))),
+      NAV.later.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon), n.label)),
       h('div', { class: 'grp' }, 'Administracja'),
       NAV.admin.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon), n.label)),
     ),
@@ -371,6 +374,10 @@ function openUserMenu(trigger, host) {
     h('hr'),
     themeRow(),
     h('hr'),
+    ...[['Ludzie', 'user', '#/people'], ['Cele', 'target', '#/goals']].map(([label, ic, href]) => {
+      const el = item(label, ic, { onClick: () => { closeUserMenu(host, trigger); navigate(href); } });
+      el.classList.add('only-mobile'); return el;
+    }),
     item('Ustawienia', 'settings', { onClick: () => { closeUserMenu(host, trigger); navigate('#/settings'); } }),
     item('Wyloguj się', 'logout', { onClick: () => { closeUserMenu(host, trigger); signOut(); } }),
   );

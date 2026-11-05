@@ -1,0 +1,32 @@
+/* views/goals.css — moduł Cele. Prefiks go-. */
+.go{display:flex;flex-direction:column;gap:16px}
+.go-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.go-sum{font-size:var(--fs-sm)}
+.go-card{padding:8px 20px}
+.go-none{padding:24px 0;text-align:center}
+.go-list{list-style:none;margin:0;padding:0}
+.go-row{position:relative;display:grid;grid-template-columns:minmax(0,2.2fr) minmax(120px,.9fr) minmax(200px,1.3fr) 32px;gap:16px;align-items:center;padding:16px 0}
+.go-row + .go-row::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--line)}
+.go-main{min-width:0}
+.go-t{display:block;font-weight:600;font-size:14.5px}
+.go-main small{display:block;font-size:var(--fs-xs);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.go-row.is-done .go-t{color:var(--muted)}
+.go-prog{display:flex;align-items:center;gap:12px}
+.go-pct{width:40px;text-align:right;font-size:13px;font-weight:600;font-variant-numeric:tabular-nums}
+.go-range{flex:1;min-width:0;height:4px;border-radius:999px;appearance:none;-webkit-appearance:none;cursor:pointer;
+  background:linear-gradient(90deg,var(--accent) var(--p,0%),var(--s3) var(--p,0%))}
+.go-range:disabled{cursor:default;opacity:.8}
+.go-range::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--bg);border:2px solid var(--accent);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+.go-range::-moz-range-thumb{width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--accent)}
+.go-range:focus-visible{outline:none;box-shadow:0 0 0 4px var(--ring)}
+.go-edit{width:32px;height:32px;border-radius:var(--r-round);display:grid;place-items:center;color:var(--muted);transition:background var(--t)}
+.go-edit:hover{background:var(--s2);color:var(--ink)}
+.go-skel{display:flex;flex-direction:column;gap:12px}
+.go-skel i{display:block;height:56px;border-radius:var(--r-md);background:var(--s2)}
+@media (max-width:760px){
+  .go-card{padding:4px 16px}
+  .go-row{grid-template-columns:minmax(0,1fr) 32px;gap:10px}
+  .go-due{grid-column:1;order:3}
+  .go-prog{grid-column:1 / -1;order:4}
+  .go-edit{grid-row:1;grid-column:2}
+}

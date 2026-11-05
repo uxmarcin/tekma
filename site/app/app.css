@@ -648,3 +648,5 @@ body.has-modal{overflow:hidden}
 .theme-seg button:hover{color:var(--ink)}
 .theme-seg button svg{width:16px;height:16px}
 .theme-seg button[aria-pressed="true"]{background:var(--bg);color:var(--ink);box-shadow:var(--shadow-card)}
+
+@media (min-width:900px){.popover .only-mobile{display:none}}

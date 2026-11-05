@@ -1,0 +1,71 @@
+/* views/people.css — moduł Ludzie. Prefiks pe-. Tylko tokeny z app.css. */
+.pe{display:flex;flex-direction:column;gap:16px}
+.pe-sum{font-size:var(--fs-sm)}
+.pe-card{padding:8px 20px}
+.pe-list{list-style:none;margin:0;padding:0}
+.pe-list li{position:relative}
+.pe-list li + li::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--line)}
+.pe-row{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) minmax(0,1.2fr) auto;gap:16px;align-items:center;padding:14px 12px;margin-inline:-12px;border-radius:var(--r-md);color:inherit;text-decoration:none;transition:background var(--t) var(--ease)}
+.pe-row:hover{background:var(--nav-hover)}
+.pe-who{display:flex;align-items:center;gap:12px;min-width:0}
+.pe-who .t{min-width:0}
+.pe-who b{display:block;font-weight:600;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pe-who small{display:block;font-size:var(--fs-xs);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pe-when{font-size:var(--fs-sm);color:var(--body)}
+.pe-prog{display:flex;align-items:center;gap:10px}
+.pe-prog .progress{flex:1}
+.pe-prog small{font-size:var(--fs-xs);min-width:34px;text-align:right}
+.pe-skel{display:flex;flex-direction:column;gap:12px}
+.pe-skel i{display:block;height:56px;border-radius:var(--r-md);background:var(--s2)}
+
+.pe-back{display:inline-flex;align-items:center;gap:4px;font-size:var(--fs-sm);color:var(--muted);align-self:flex-start;text-decoration:none}
+.pe-back svg{transform:rotate(90deg)}
+.pe-back:hover{color:var(--ink)}
+.pe-head{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) auto;gap:24px;align-items:center;padding:20px 24px}
+.pe-who.lg b{font-size:18px}
+.pe-stats{display:grid;grid-template-columns:auto minmax(0,1fr) 170px;gap:24px;align-items:end}
+.pe-stats > div{display:flex;flex-direction:column;gap:6px;min-width:0}
+.pe-stats b{font-size:15px;font-weight:600}
+.pe-stats small{font-size:var(--fs-xs)}
+.pe-stats .field{margin:0}
+.pe-stats .field label{font-size:var(--fs-xs)}
+.pe-act{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.pe-phases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:start}
+.pe-phase{padding:20px}
+.pe-ph{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.pe-h{font-size:var(--fs-h3);font-weight:600;margin:0}
+.pe-goal{font-size:var(--fs-sm);margin:2px 0 12px}
+.pe-tasks{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column}
+.pe-task{position:relative;display:flex;align-items:flex-start;gap:6px;padding:10px 0}
+.pe-task + .pe-task::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--line)}
+.pe-check{flex:1;display:flex;gap:10px;align-items:flex-start;cursor:pointer;min-width:0}
+.pe-check input{margin-top:3px;width:16px;height:16px;flex:none;accent-color:var(--accent);cursor:pointer}
+.pe-t{display:flex;flex-direction:column;gap:2px;min-width:0}
+.pe-tt{font-size:14px;color:var(--ink)}
+.pe-t small{font-size:var(--fs-xs)}
+.pe-task.is-done .pe-tt{color:var(--muted);text-decoration:line-through}
+.pe-over{color:var(--warn-ink, #b45309)}
+.pe-x{width:24px;height:24px;flex:none;border-radius:var(--r-round);display:grid;place-items:center;color:var(--muted);opacity:0;transition:opacity var(--t),background var(--t)}
+.pe-task:hover .pe-x,.pe-x:focus-visible{opacity:1}
+.pe-x:hover{background:var(--s2);color:var(--ink)}
+.pe-none{padding:8px 0;font-size:var(--fs-sm)}
+.pe-add{display:flex;gap:6px}
+.pe-new{flex:1;min-width:0;height:36px;padding:0 12px;border:1px solid var(--border-strong);border-radius:var(--r-sm, 8px);background:var(--bg);color:var(--ink);font:inherit;font-size:14px}
+.pe-new:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+.pe-add-b{width:36px;height:36px;flex:none;border-radius:8px;border:1px solid var(--border-strong);display:grid;place-items:center;color:var(--ink)}
+.pe-add-b:hover{background:var(--s2)}
+@media (max-width:1100px){
+  .pe-head{grid-template-columns:1fr}
+  .pe-stats{grid-template-columns:auto minmax(0,1fr)}
+  .pe-stats .field{grid-column:1 / -1}
+  .pe-act{justify-content:flex-start}
+  .pe-phases{grid-template-columns:1fr}
+}
+@media (max-width:760px){
+  .pe-row{grid-template-columns:minmax(0,1fr) auto;gap:8px 12px}
+  .pe-when{grid-column:1;order:3;font-size:var(--fs-xs);color:var(--muted)}
+  .pe-prog{grid-column:1 / -1;order:4}
+  .pe-st{grid-row:1;grid-column:2}
+  .pe-card{padding:4px 16px}
+  .pe-x{opacity:1}
+}

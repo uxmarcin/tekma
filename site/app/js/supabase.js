@@ -301,12 +301,22 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
         if (!row) throw new Error('Nie znaleziono rekordu. Może został usunięty.');
         return row;
       },
+      async remove(id) {
+        const oid = await orgId();
+        const rows = await rest(`/${name}`, { method: 'DELETE', headers: REPR, query: { id: `eq.${id}`, org_id: `eq.${oid}` } });
+        if (!Array.isArray(rows) || !rows.length) throw new Error('Nie udało się usunąć. Brak uprawnień albo rekord już nie istnieje.');
+        return true;
+      },
     };
   }
 
   const positions = table('positions');
   const candidates = table('candidates', { order: 'applied_at.desc' });
   const rubrics = table('rubrics', { order: 'updated_at.desc' });
+  // moduły Ludzie i Cele — wymagają migracji db/migrations/1.5-people-goals.sql
+  const people = table('people', { order: 'start_date.desc' });
+  const onboarding_tasks = table('onboarding_tasks', { order: 'position.asc' });
+  const goals = table('goals');
   const scorecards = {
     ...table('scorecards', { order: 'updated_at.desc' }),
     async find(candidate_id, stage) {
@@ -342,7 +352,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
     },
   };
 
-  return { mode: 'supabase', auth, org, members, positions, candidates, rubrics, scorecards };
+  return { mode: 'supabase', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals };
 }
 
 /* ================================================== mapowanie błędów */

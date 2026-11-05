@@ -23,6 +23,10 @@
  *   store.candidates.list({position_id?}) / get(id) / create({position_id,full_name,email,source,cv_score?}) / move(id,stage) / reject(id,reason) / update(id,patch)
  *   store.rubrics.list() / get(id) / create({name,questions}) / update(id,patch)   // update podnosi version, gdy zmieniły się pytania
  *   store.scorecards.get(candidate_id, stage) -> karta oceny (tworzy pustą, jeśli brak) / save(scorecard) / list()
+ *   store.people.list() / get(id) / create({full_name,job_title?,start_date?,candidate_id?}) (tworzy też domyślny plan 30/60/90) / update(id,patch) / remove(id)
+ *   store.tasks.list(person_id?) / create({person_id,phase,title,due_day?}) / update(id,patch) / toggle(id,done) / remove(id)
+ *   store.goals.list() / create({title,description?,due_date?,person_id?}) / update(id,patch) / remove(id)
+ *   Ludzie i Cele w trybie Supabase wymagają migracji db/migrations/1.5-people-goals.sql (brak tabel → Error z code 'no_table').
  *   store.stats.dashboard()           -> {openPositions, activeCandidates, interviewsThisWeek:null, attention:[…]}
  *
  * attention[] = {type:'discrepancy'|'stale'|'no-rubric', tone, title, text, href}
@@ -32,6 +36,7 @@ import { SUPABASE_URL, SUPABASE_ANON_KEY } from './config.js';
 import { createLocalAdapter } from './local.js';
 import { createSupabaseAdapter } from './supabase.js';
 import { SEED, DEFAULT_STAGES } from './seed.js';
+import { planTasks } from './plan.js';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const now = () => new Date().toISOString();
@@ -218,8 +223,97 @@ export function createStore(adapter) {
           ratings, ai: {}, decision: s.decision, updated_at: now(),
         });
       }
+      try { await seedPeopleAndGoals(); } catch (e) { console.warn('[demo] Ludzie/Cele pominięte:', e && e.message); }
       return { skipped: false, positions: SEED.positions.length, candidates: SEED.candidates.length, rubrics: SEED.rubrics.length };
     },
+  };
+
+  async function seedPeopleAndGoals() {
+    const iso = (offset) => { const d = new Date(); d.setDate(d.getDate() + offset); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+    const demo = [['Katarzyna Wiśniewska', 'Product Designer', -24, 6], ['Michał Zieliński', 'Backend Engineer', -3, 2]];
+    const ids = [];
+    for (const [full_name, job_title, off, doneCount] of demo) {
+      const p = await people.create({ full_name, job_title, start_date: iso(off) });
+      ids.push(p.id);
+      const ts = (await adapter.onboarding_tasks.list({ person_id: p.id })).sort((a, b) => a.position - b.position);
+      for (const t of ts.slice(0, doneCount)) await tasks.toggle(t.id, true);
+    }
+    const g1 = await goals.create({ title: 'Skrócić czas rekrutacji do 30 dni', description: 'Od publikacji oferty do podpisania umowy', due_date: iso(60) });
+    const g2 = await goals.create({ title: 'Każdy kandydat oceniony tą samą rubryką', due_date: iso(30) });
+    const g3 = await goals.create({ title: 'Zamknąć wdrożenie nowej projektantki', person_id: ids[0], due_date: iso(66) });
+    await goals.update(g1.id, { progress: 40 }); await goals.update(g2.id, { progress: 75 }); await goals.update(g3.id, { progress: 25 });
+  }
+
+  /* ------------------------------------------------ Ludzie i Cele */
+  const NEEDS_MIGRATION = 'Ten moduł wymaga jednorazowej migracji bazy (db/migrations/1.5-people-goals.sql).';
+  async function guard(fn) {
+    try { return await fn(); } catch (e) {
+      const msg = String((e && e.message) || '');
+      if (/relation .* does not exist|PGRST205|PGRST204|schema cache|Could not find the table|404/i.test(msg) || (e && (e.status === 404))) {
+        const err = new Error(NEEDS_MIGRATION); err.code = 'no_table'; throw err;
+      }
+      throw e;
+    }
+  }
+  const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  const people = {
+    list: () => guard(() => adapter.people.list()),
+    get: (id) => guard(() => adapter.people.get(id)),
+    async create({ full_name, job_title, start_date, candidate_id } = {}) {
+      full_name = str(full_name);
+      if (full_name.length < 2) throw new Error('Podaj imię i nazwisko.');
+      start_date = str(start_date) || new Date().toISOString().slice(0, 10);
+      if (!DATE_RE.test(start_date)) throw new Error('Podaj poprawną datę rozpoczęcia pracy.');
+      const row = await guard(() => adapter.people.create({ full_name, job_title: str(job_title), start_date, status: 'onboarding', candidate_id: candidate_id || null }));
+      try { for (const t of planTasks()) await adapter.onboarding_tasks.create({ ...t, person_id: row.id }); }
+      catch (e) { await adapter.people.remove(row.id).catch(() => {}); throw e; }
+      return row;
+    },
+    async update(id, patch = {}) {
+      const p = { ...patch };
+      if ('full_name' in p && str(p.full_name).length < 2) throw new Error('Podaj imię i nazwisko.');
+      if ('start_date' in p && !DATE_RE.test(str(p.start_date))) throw new Error('Podaj poprawną datę rozpoczęcia pracy.');
+      if ('status' in p && !['onboarding', 'active', 'left'].includes(p.status)) throw new Error('Nieprawidłowy status osoby.');
+      return guard(() => adapter.people.update(id, p));
+    },
+    remove: (id) => guard(() => adapter.people.remove(id)),
+  };
+  const tasks = {
+    list: (person_id) => guard(() => adapter.onboarding_tasks.list(person_id ? { person_id } : {})),
+    async create({ person_id, phase, title, due_day } = {}) {
+      title = str(title);
+      if (title.length < 2) throw new Error('Wpisz treść zadania.');
+      if (![30, 60, 90].includes(Number(phase))) throw new Error('Faza musi być 30, 60 albo 90.');
+      const existing = await adapter.onboarding_tasks.list({ person_id });
+      const position = existing.reduce((m, t) => Math.max(m, t.position || 0), 0) + 1;
+      return adapter.onboarding_tasks.create({ person_id, phase: Number(phase), title, due_day: Math.max(0, Math.min(120, parseInt(due_day, 10) || Number(phase))), done: false, done_at: null, position });
+    },
+    toggle: (id, done) => adapter.onboarding_tasks.update(id, { done: Boolean(done), done_at: done ? now() : null }),
+    async update(id, patch = {}) {
+      if ('title' in patch && str(patch.title).length < 2) throw new Error('Wpisz treść zadania.');
+      return adapter.onboarding_tasks.update(id, patch);
+    },
+    remove: (id) => adapter.onboarding_tasks.remove(id),
+  };
+  const goals = {
+    list: () => guard(() => adapter.goals.list()),
+    async create({ title, description, due_date, person_id } = {}) {
+      title = str(title);
+      if (title.length < 2) throw new Error('Wpisz nazwę celu.');
+      if (due_date && !DATE_RE.test(str(due_date))) throw new Error('Podaj poprawny termin.');
+      return guard(() => adapter.goals.create({ title, description: str(description), due_date: str(due_date) || null, person_id: person_id || null, progress: 0, status: 'active' }));
+    },
+    async update(id, patch = {}) {
+      const p = { ...patch };
+      if ('title' in p && str(p.title).length < 2) throw new Error('Wpisz nazwę celu.');
+      if ('progress' in p) {
+        p.progress = Math.max(0, Math.min(100, Math.round(Number(p.progress) || 0)));
+        p.status = p.progress >= 100 ? 'done' : 'active';
+      }
+      if ('due_date' in p) p.due_date = str(p.due_date) || null;
+      return guard(() => adapter.goals.update(id, p));
+    },
+    remove: (id) => guard(() => adapter.goals.remove(id)),
   };
 
   const stats = {
@@ -296,7 +390,7 @@ export function createStore(adapter) {
     setRole: (user_id, role) => adapter.members.setRole(user_id, role),
   };
 
-  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, stats, adapter };
+  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, stats, adapter };
 }
 
 const adapter = SUPABASE_URL

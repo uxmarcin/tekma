@@ -31,6 +31,9 @@ const EMPTY = () => ({
   candidates: [],
   rubrics: [],
   scorecards: [],
+  people: [],
+  onboarding_tasks: [],
+  goals: [],
 });
 
 function uuid() {
@@ -280,12 +283,27 @@ export function createLocalAdapter() {
         save();
         return clone(r);
       },
+      async remove(id) {
+        const o = requireOrg();
+        const i = db[name].findIndex((x) => x.id === id && x.org_id === o.id);
+        if (i < 0) throw new Error('Nie znaleziono rekordu. Może został usunięty.');
+        db[name].splice(i, 1);
+        if (name === 'people') { // kaskada jak w bazie
+          db.onboarding_tasks = db.onboarding_tasks.filter((t) => t.person_id !== id);
+          db.goals = db.goals.filter((g) => g.person_id !== id);
+        }
+        save();
+        return true;
+      },
     };
   }
 
   const positions = table('positions');
   const candidates = table('candidates', { order: 'applied_at' });
   const rubrics = table('rubrics', { order: 'updated_at' });
+  const people = table('people', { order: 'start_date' });
+  const onboarding_tasks = table('onboarding_tasks', { order: 'position', dir: 'asc' });
+  const goals = table('goals');
   const scorecardsBase = table('scorecards', { order: 'updated_at' });
   const scorecards = {
     ...scorecardsBase,
@@ -300,11 +318,11 @@ export function createLocalAdapter() {
   /** Czyści dane demo (do testów / resetu). Nie usuwa kont. */
   async function resetData() {
     const o = requireOrg();
-    for (const t of ['positions', 'candidates', 'rubrics', 'scorecards']) db[t] = db[t].filter((r) => r.org_id !== o.id);
+    for (const t of ['positions', 'candidates', 'rubrics', 'scorecards', 'people', 'onboarding_tasks', 'goals']) db[t] = db[t].filter((r) => r.org_id !== o.id);
     save();
   }
 
-  return { mode: 'demo', auth, org, members, positions, candidates, rubrics, scorecards, resetData, _db: () => db };
+  return { mode: 'demo', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals, resetData, _db: () => db };
 }
 
 export default createLocalAdapter;
