@@ -196,17 +196,27 @@ async function zespol(ctx) {
 }
 
 /* ------------------------------------------------ Integracje */
+/** Kafelek z logiem marki (assets/brands/<logo>.svg); gdy pliku brak, zostaje ikona zastępcza. */
+function brandTile(h, icon, it) {
+  const tile = h('span', { class: 'st-int-i', 'aria-hidden': 'true' }, icon(it.icon, 18));
+  if (it.logo) {
+    const img = h('img', { src: new URL(`../../../assets/brands/${it.logo}.svg`, import.meta.url).href, alt: '', width: '22', height: '22', loading: 'lazy' });
+    img.addEventListener('load', () => { tile.classList.add('has-logo'); tile.replaceChildren(img); });
+  }
+  return tile;
+}
+
 function integracje(ctx) {
   const { h, icon, tag } = ctx.ui;
   const items = [
-    { name: 'Kalendarz Google', text: 'Notetaker sam dołącza do rozmów', icon: 'calendar' },
-    { name: 'Gmail', text: 'Wiadomości do kandydatów w jednym wątku', icon: 'mail' },
-    { name: 'Outlook i Teams', text: 'Dla zespołów na Microsoft 365', icon: 'building' },
+    { name: 'Kalendarz Google', text: 'Notetaker sam dołącza do rozmów', icon: 'calendar', logo: 'google-calendar' },
+    { name: 'Gmail', text: 'Wiadomości do kandydatów w jednym wątku', icon: 'mail', logo: 'gmail' },
+    { name: 'Outlook i Teams', text: 'Dla zespołów na Microsoft 365', icon: 'building', logo: 'microsoft-365' },
   ];
   return h('div', { class: 'st-stack' },
     h('p', { class: 'muted st-lead' }, 'Integracje są w przygotowaniu. Gdy będą dostępne, podłączysz je tutaj, a Ty zatwierdzisz zakres uprawnień.'),
     h('div', { class: 'st-int' }, items.map((it) => h('div', { class: 'card st-int-c' },
-      h('span', { class: 'st-int-i', 'aria-hidden': 'true' }, icon(it.icon, 18)),
+      brandTile(h, icon, it),
       h('div', { class: 't' }, h('b', null, it.name), h('p', { class: 'muted' }, it.text)),
       tag('Wkrótce', 'neutral')))));
 }
