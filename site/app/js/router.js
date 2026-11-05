@@ -344,6 +344,8 @@ function openUserMenu(trigger, host) {
     h('div', { class: 'pop-head' }, h('span', { class: 'av dark sm', 'aria-hidden': 'true' }, org ? deps.ui.initials(org.name).slice(0, 1) : '?'),
       h('div', { class: 't' }, h('strong', null, org ? org.name : '—'), h('small', null, org ? (ROLE_LABEL[org.role] || org.role) : ''))),
     h('hr'),
+    themeRow(),
+    h('hr'),
     item('Ustawienia', 'settings', { disabled: true, soon: true }),
     item('Wyloguj się', 'logout', { onClick: () => { closeUserMenu(host, trigger); signOut(); } }),
   );
@@ -365,6 +367,25 @@ function openUserMenu(trigger, host) {
   document.addEventListener('keydown', onKey, true);
   setTimeout(() => document.addEventListener('mousedown', onDoc, true), 0);
   const first = items()[0]; if (first) first.focus();
+}
+/* Motyw: 'light' | 'dark' | 'system' — zapisany w localStorage (tekma.theme), ustawiany na <html data-theme>. */
+const THEME_KEY = 'tekma.theme';
+export function getTheme() { try { return localStorage.getItem(THEME_KEY) || 'system'; } catch { return 'system'; } }
+export function applyTheme(t) {
+  const el = document.documentElement;
+  if (t === 'light' || t === 'dark') el.setAttribute('data-theme', t); else el.removeAttribute('data-theme');
+  try { if (t === 'system') localStorage.removeItem(THEME_KEY); else localStorage.setItem(THEME_KEY, t); } catch {}
+}
+function themeRow() {
+  const { h, icon } = deps.ui;
+  const cur = getTheme();
+  const seg = h('div', { class: 'theme-seg', role: 'radiogroup', 'aria-label': 'Motyw' });
+  for (const [val, label, ic] of [['light', 'Jasny', 'sun'], ['dark', 'Ciemny', 'moon'], ['system', 'System', 'monitor']]) {
+    const b = h('button', { type: 'button', role: 'radio', 'aria-pressed': String(cur === val), 'aria-checked': String(cur === val), title: label }, icon(ic), label);
+    b.addEventListener('click', () => { applyTheme(val); seg.querySelectorAll('button').forEach(x => { const on = x === b; x.setAttribute('aria-pressed', String(on)); x.setAttribute('aria-checked', String(on)); }); });
+    seg.appendChild(b);
+  }
+  return h('div', { class: 'theme-row' }, h('span', null, 'Motyw'), seg);
 }
 function closeUserMenu(host, trigger) {
   const pop = host.querySelector('.popover');
