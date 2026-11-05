@@ -8,9 +8,11 @@
 .rb .page-lead{margin:4px 0 4px}
 
 /* ---------- lista ---------- */
-.rb-card{padding:4px 24px}
-.rb-row{gap:14px}
-.rb-row:hover{margin:0 -12px;padding-left:12px;padding-right:12px}
+.rb-card{padding:8px}
+.rb-row{gap:14px;padding:14px 16px;margin:0}
+.rb-card .rb-row:last-child{padding-bottom:14px}
+.rb-row:hover{margin:0;padding-left:16px;padding-right:16px}
+.rb-row + .rb-row::before{left:16px;right:16px}
 .rb-glyph{width:36px;height:36px;flex:none;border-radius:var(--r-md);background:var(--s2);color:var(--ink);display:grid;place-items:center}
 .rb-row .t small{white-space:normal;overflow:visible;text-overflow:clip;line-height:1.4}
 .rb-ver{flex:none}

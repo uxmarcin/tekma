@@ -36,9 +36,9 @@
 
 /* lista pozycji w karcie */
 .dash-list{display:flex;flex-direction:column}
-.dash-list li{min-width:0}
-.dash-list li + li .dash-item{border-top:1px solid var(--line)}
-.dash-list li:hover + li .dash-item{border-top-color:transparent}
+.dash-list li{min-width:0;position:relative}
+.dash-list li + li::before{content:"";position:absolute;top:0;left:4px;right:4px;height:1px;background:var(--line);pointer-events:none}
+.dash-list li:hover::before,.dash-list li:hover + li::before{opacity:0}
 .dash-item{
   display:flex;align-items:center;gap:12px;min-width:0;
   padding:12px 10px;margin:0 -6px;border-radius:var(--r-md);

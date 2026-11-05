@@ -473,8 +473,11 @@ main:focus-visible,.main:focus-visible,h1:focus-visible{outline:none}
 .row .t b{display:block;font-weight:500;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .row .t small{color:var(--muted);font-size:var(--fs-xs);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .row time,.row .meta{font-size:var(--fs-xs);color:var(--muted);white-space:nowrap}
-a.row,.row.clickable{border-radius:var(--r-md);transition:background var(--t)}
-a.row:hover,.row.clickable:hover{background:var(--s2);margin:0 -12px;padding-left:12px;padding-right:12px;border-top-color:transparent}
+a.row,.row.clickable{position:relative;border-top:0;border-radius:var(--r-md);transition:background var(--t)}
+a.row:hover,.row.clickable:hover{background:var(--s2);margin:0 -12px;padding-left:12px;padding-right:12px}
+/* separator klikalnych wierszy: prosta linia (nie zakręca na zaokrąglonych narożnikach), znika przy hoverze */
+a.row + a.row::before,.row.clickable + .row.clickable::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:var(--line);pointer-events:none}
+a.row:hover::before,.row.clickable:hover::before,a.row:hover + a.row::before,.row.clickable:hover + .row.clickable::before{opacity:0}
 .row.clickable{cursor:pointer}
 .list{display:flex;flex-direction:column}
 .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
