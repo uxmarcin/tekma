@@ -350,3 +350,23 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
   .browser{overflow:hidden}.browser img{min-width:0;width:100%}
   .phone{width:min(300px,80vw)}
 }
+
+/* voice path */
+.voice{margin-top:28px;display:flex;align-items:center;gap:20px;padding:16px 20px;border-radius:16px;background:#fff;border:1px solid var(--line);max-width:720px}
+.voice .rec{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:#be123c;white-space:nowrap}
+.voice .rec i{width:8px;height:8px;border-radius:50%;background:#f43f5e;box-shadow:0 0 0 0 rgba(244,63,94,.5);animation:recpulse 1.6s infinite}
+@keyframes recpulse{0%{box-shadow:0 0 0 0 rgba(244,63,94,.5)}70%{box-shadow:0 0 0 8px rgba(244,63,94,0)}100%{box-shadow:0 0 0 0 rgba(244,63,94,0)}}
+.voice .wave{flex:1;display:flex;align-items:center;gap:3px;height:36px}
+.voice .wave b{flex:1;height:100%;border-radius:3px;background:var(--blue);transform-origin:center;animation:wave 1.4s ease-in-out infinite;opacity:.9}
+.voice .wave b:nth-child(4n+1){animation-duration:1.1s;animation-delay:-.2s}
+.voice .wave b:nth-child(4n+2){animation-duration:1.5s;animation-delay:-.6s}
+.voice .wave b:nth-child(4n+3){animation-duration:1.3s;animation-delay:-.9s}
+.voice .wave b:nth-child(4n){animation-duration:1.7s;animation-delay:-.4s}
+.voice .wave b:nth-child(6n){animation-duration:.9s}
+@keyframes wave{0%,100%{transform:scaleY(.18)}50%{transform:scaleY(1)}}
+.voice .lang{font-size:12px;color:var(--muted);white-space:nowrap}
+@media (max-width:860px){.voice{gap:12px;padding:12px 14px}.voice .wave{height:28px;gap:2px}.voice .lang{display:none}}
+@media (prefers-reduced-motion:reduce){.voice .wave b{animation:none;height:60%}.voice .rec i{animation:none}}
+
+.who .av.photo{overflow:hidden;background:#dbe4ff}
+.who .av.photo svg{width:100%;height:100%}

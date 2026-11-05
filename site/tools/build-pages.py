@@ -3,7 +3,7 @@
 Uruchom: python3 tools/build-pages.py   (z katalogu site/)."""
 import os, re, json
 
-V = "light5"
+V = "light7"
 SITE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ICONS = {
@@ -155,10 +155,10 @@ def hero(ey, h1, lede, cta2=None, cta2href='#'):
 '''
 
 def shot(name, w, h, alt, url, lazy=True):
-    return f'''<div class="browser reveal" data-delay="2"><div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">{url}</span></div><picture><source media="(max-width:720px)" srcset="assets/landing/{name}-m.webp?v=2"><img src="assets/landing/{name}.webp?v=2" srcset="assets/landing/{name}-1x.webp?v=2 {w}w, assets/landing/{name}.webp?v=2 {w*2}w" sizes="(max-width:1200px) 100vw, 1120px" width="{w}" height="{h}" alt="{alt}"{' loading="lazy"' if lazy else ''}></picture></div>'''
+    return f'''<div class="browser reveal" data-delay="2"><div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">{url}</span></div><picture><source media="(max-width:720px)" srcset="assets/landing/{name}-m.webp?v=3"><img src="assets/landing/{name}.webp?v=3" srcset="assets/landing/{name}-1x.webp?v=3 {w}w, assets/landing/{name}.webp?v=3 {w*2}w" sizes="(max-width:1200px) 100vw, 1120px" width="{w}" height="{h}" alt="{alt}"{' loading="lazy"' if lazy else ''}></picture></div>'''
 
 def phone(name, w, h, alt):
-    return f'''<div class="phone reveal" data-delay="2"><img src="assets/landing/{name}.webp?v=2" srcset="assets/landing/{name}-1x.webp?v=2 {w}w, assets/landing/{name}.webp?v=2 {w*2}w" sizes="320px" width="{w}" height="{h}" alt="{alt}" loading="lazy"></div>'''
+    return f'''<div class="phone reveal" data-delay="2"><img src="assets/landing/{name}.webp?v=3" srcset="assets/landing/{name}-1x.webp?v=3 {w}w, assets/landing/{name}.webp?v=3 {w*2}w" sizes="320px" width="{w}" height="{h}" alt="{alt}" loading="lazy"></div>'''
 
 def checks(items):
     return '<ul class="checks">' + ''.join(f'<li><svg><use href="#check"/></svg>{i}</li>' for i in items) + '</ul>'
@@ -217,12 +217,14 @@ def carousel():
     out=[]
     for name,badge,kind,alt in cards:
         b = f'<span class="badge">{LOGOS[badge]}</span>' if badge else ''
-        out.append(f'<div class="car-card {kind}">{b}<img src="assets/landing/{name}-1x.webp?v=2" srcset="assets/landing/{name}-1x.webp?v=2 1x, assets/landing/{name}.webp?v=2 2x" alt="{alt}" loading="lazy"></div>')
+        out.append(f'<div class="car-card {kind}">{b}<img src="assets/landing/{name}-1x.webp?v=3" srcset="assets/landing/{name}-1x.webp?v=3 1x, assets/landing/{name}.webp?v=3 2x" alt="{alt}" loading="lazy"></div>')
     return f'''<section class="sec carousel" id="notetaker">
   <div class="wrap">
     <h2 class="car-h reveal">Notatki z rozmów ginęły w zeszytach. <br>Teraz każda rozmowa ma transkrypcję.</h2>
     <p class="car-lede reveal" data-delay="1">Każdy rekruter ma ten plik. Dziesiątki notatek z rozmów, <br>a mimo to nikt nie pamięta, co kandydat naprawdę powiedział.</p>
     <div class="car-label reveal" data-delay="2"><svg><use href="#l-mic"/></svg>Notetaker w rozmowie</div>
+    <div class="voice reveal" data-delay="3" aria-hidden="true"><span class="rec"><i></i>Nagrywanie · 18:42</span><div class="wave"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><span class="lang">PL · auto</span></div>
+    <div class="voice reveal" data-delay="3" aria-hidden="true"><span class="rec"><i></i>Nagrywanie · 18:42</span><div class="wave"><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b><b></b></div><span class="lang">PL · auto</span></div>
   </div>
   <div class="car-track" data-car><div class="car-strip">{''.join(out)}</div></div>
 </section>
