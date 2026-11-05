@@ -203,15 +203,36 @@ function afterNavigate(container, layout) {
 
 /* ------------------------------------------------ układ: bare */
 function ensureBare() {
-  if (root.firstElementChild && root.firstElementChild.classList.contains('bare')) {
+  // Logowanie / rejestracja / reset: dwie kolumny (formularz + panel z podglądem produktu), jak w projekcie w Figmie.
+  const split = Boolean(state.route && state.route.view === 'auth');
+  const cur = root.firstElementChild;
+  if (cur && cur.classList.contains('bare') && cur.classList.contains('auth-split') === split) {
     return root.querySelector('.bare-content');
   }
   shellEl = null; mainEl = null;
   const { h } = deps.ui;
   const content = h('div', { class: 'bare-content', style: 'width:100%;display:flex;flex-direction:column;align-items:center' });
-  const bare = h('div', { class: 'bare' }, h('div', { class: 'bare-logo' }, logo()), content);
+  const bare = split
+    ? h('div', { class: 'bare auth-split' },
+        h('div', { class: 'auth-side' },
+          h('div', { class: 'bare-logo' }, logo()),
+          content,
+          h('p', { class: 'auth-legal' }, '© 2026 Tekma · Dane przechowujemy w UE')),
+        authShowcase())
+    : h('div', { class: 'bare' }, h('div', { class: 'bare-logo' }, logo()), content);
   root.replaceChildren(bare);
   return content;
+}
+
+/** Prawa kolumna ekranów logowania: hasło produktu + kadr z karty oceny (ten sam zrzut co na stronie). */
+function authShowcase() {
+  const { h } = deps.ui;
+  const src = new URL('../../assets/landing/scorecard-1x.webp', import.meta.url).href;
+  return h('aside', { class: 'auth-showcase', 'aria-hidden': 'true' },
+    h('h2', null, 'Zatrudniaj na podstawie tego, co kandydat naprawdę powiedział.'),
+    h('p', null, 'Rubryki, notetaker AI i karty ocen w jednym miejscu. Po ofercie — plan pierwszych 90 dni.'),
+    h('div', { class: 'auth-preview' }, h('img', { src, alt: '', decoding: 'async' })),
+  );
 }
 
 /* ------------------------------------------------ układ: shell */

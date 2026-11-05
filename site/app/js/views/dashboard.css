@@ -12,7 +12,7 @@
 .dash-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
 .dash-stat{
   display:flex;flex-direction:column;min-width:0;
-  background:var(--s1);border-radius:var(--r-lg);padding:20px 20px 16px;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:20px 20px 16px;
   color:var(--ink);transition:background var(--t) var(--ease);
 }
 .dash-stat.is-link:hover{background:var(--s2)}
@@ -24,7 +24,7 @@
 
 /* dwie kolumny: Wymaga uwagi / Stanowiska w skrócie */
 .dash-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
-.dash-card{background:var(--s1);border-radius:var(--r-lg);padding:20px 20px 16px;min-width:0}
+.dash-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:20px 20px 16px;min-width:0}
 .dash-card-h{display:flex;align-items:center;gap:10px;padding:0 4px 10px}
 .dash-card-h h2{flex:1;font-size:var(--fs-h3);min-width:0}
 .dash-card-n{font-size:var(--fs-xs);font-weight:500;color:var(--ink);background:var(--s3);padding:2px 9px;border-radius:var(--r-pill)}

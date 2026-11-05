@@ -11,7 +11,7 @@
 .pos-summary{font-size:var(--fs-sm);color:var(--muted);margin:0}
 
 /* lista */
-.pos-list{display:flex;flex-direction:column;background:var(--s1);border-radius:var(--r-lg);padding:4px}
+.pos-list{display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:4px}
 .pos-list li{min-width:0}
 .pos-list li + li .pos-row{border-top:1px solid var(--line)}
 .pos-row{

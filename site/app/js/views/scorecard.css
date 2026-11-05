@@ -15,7 +15,7 @@
 .sc-tags{margin-top:10px}
 .sc-mail{overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .sc-reject{margin-top:8px;max-width:60ch}
-.sc-cv{display:flex;gap:12px;align-items:center;background:var(--s1);border-radius:var(--r-lg);padding:16px;flex:0 1 380px;min-width:0}
+.sc-cv{display:flex;gap:12px;align-items:center;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:16px;flex:0 1 380px;min-width:0}
 .sc-cv-t{min-width:0}
 .sc-cv-t b{font-size:var(--fs-sm)}
 .sc-cv-t p{margin-top:4px}
@@ -33,7 +33,7 @@
 .sc-stages-scroll::-webkit-scrollbar{display:none}
 .sc-segment{white-space:nowrap}
 .sc-segment button{display:inline-flex;align-items:center;gap:6px;position:relative}
-.sc-segment button .dot{width:6px;height:6px;border-radius:var(--r-round);background:var(--ink);flex:none}
+.sc-segment button .dot{width:6px;height:6px;border-radius:var(--r-round);background:var(--accent);flex:none}
 .sc-segment button[aria-pressed="true"] .dot{background:var(--bg)}
 
 /* ---------- układ: pytania + podsumowanie ---------- */
@@ -53,7 +53,7 @@
 
 /* ---------- pytanie ---------- */
 .sc-list{display:flex;flex-direction:column;gap:12px}
-.sc-q{background:var(--s1);border-radius:var(--r-lg);padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.sc-q{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:20px;display:flex;flex-direction:column;gap:12px;min-width:0}
 .sc-q.flag{background:var(--warn-soft)}
 .sc-q-h{display:flex;gap:12px;align-items:flex-start}
 .sc-q-n{width:26px;height:26px;flex:none;border-radius:var(--r-round);background:var(--bg);color:var(--ink);display:grid;place-items:center;font-size:12px;font-weight:600;box-shadow:var(--shadow-card)}
@@ -67,19 +67,19 @@
 .sc-score{
   position:relative;width:40px;height:40px;border-radius:var(--r-md);
   background:var(--bg);color:var(--ink);font-size:14px;font-weight:500;
-  display:grid;place-items:center;box-shadow:var(--shadow-card);
+  display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--border-strong),var(--shadow-card);
   transition:background var(--t) var(--ease),color var(--t),transform var(--t) var(--ease);
   -webkit-tap-highlight-color:transparent;
 }
-.sc-score:hover{background:var(--s3)}
+.sc-score:hover{background:var(--s2)}
 .sc-score:active{transform:scale(.96)}
-.sc-score[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
-.sc-score.ai{box-shadow:inset 0 0 0 1.5px var(--faint),var(--shadow-card)}
+.sc-score[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.sc-score.ai{box-shadow:inset 0 0 0 1.5px var(--accent-mid),var(--shadow-card)}
 .sc-score.ai[aria-pressed="true"]{box-shadow:none}
 .sc-score:disabled{opacity:.55;cursor:wait}
-.sc-ai-mark{position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:var(--r-round);background:var(--s3);color:var(--ink);display:grid;place-items:center}
+.sc-ai-mark{position:absolute;top:-5px;right:-5px;width:16px;height:16px;border-radius:var(--r-round);background:var(--blue-soft);color:var(--blue-ink);display:grid;place-items:center}
 .sc-ai-mark svg{width:10px;height:10px}
-.sc-score[aria-pressed="true"] .sc-ai-mark{background:var(--ink);color:var(--bg);box-shadow:0 0 0 2px var(--s1)}
+.sc-score[aria-pressed="true"] .sc-ai-mark{background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 2px var(--s1)}
 .sc-q.flag .sc-score[aria-pressed="true"] .sc-ai-mark{box-shadow:0 0 0 2px var(--warn-soft)}
 
 .sc-raters{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
@@ -112,14 +112,14 @@
 .sc-anchor-list li{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:var(--fs-sm);color:var(--body);line-height:1.45}
 .sc-anchor-list li:first-child{border-top:0}
 .sc-anchor-list li b{width:22px;height:22px;flex:none;border-radius:var(--r-round);background:var(--s2);display:grid;place-items:center;font-size:12px;color:var(--ink)}
-.sc-anchor-list li.on b{background:var(--ink);color:var(--bg)}
+.sc-anchor-list li.on b{background:var(--accent);color:var(--accent-ink)}
 .sc-anchor-list li.ai b{box-shadow:inset 0 0 0 1.5px var(--faint)}
 .sc-anchor-list li.on{color:var(--ink)}
 
 .sc-legal{margin-top:14px;line-height:1.5;max-width:70ch}
 
 /* ---------- podsumowanie ---------- */
-.sc-sum{background:var(--s1);border-radius:var(--r-lg);padding:16px 20px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.sc-sum{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:16px 20px;display:flex;flex-direction:column;gap:4px;min-width:0}
 .sc-sum > small{display:block;font-size:var(--fs-xs);color:var(--muted)}
 .sc-sum .cluster small{font-size:var(--fs-xs);color:var(--muted)}
 .sc-total{font:600 32px/1.1 var(--display);letter-spacing:-.03em;color:var(--ink)}

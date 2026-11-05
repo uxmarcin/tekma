@@ -36,7 +36,7 @@
 .rb-qlist{display:flex;flex-direction:column;gap:12px}
 .rb-q{padding:16px 24px 12px}
 .rb-q-h{display:flex;align-items:center;gap:10px;margin-bottom:14px}
-.rb-q-n{width:26px;height:26px;flex:none;border-radius:var(--r-round);background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px;font-weight:600}
+.rb-q-n{width:26px;height:26px;flex:none;border-radius:var(--r-round);background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:12px;font-weight:600}
 .rb-q-title{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .rb-q-tools{display:flex;gap:2px;flex:none}
 .rb-q-tools .btn{color:var(--muted)}

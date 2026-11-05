@@ -64,7 +64,7 @@ function form(ctx, { onSubmit, fields, submit, error }) {
 /* ------------------------------------------------ logowanie */
 function loginCard({ ctx, swap }, { prefillEmail = '' } = {}) {
   const { h, field, button } = ctx.ui;
-  const email = field({ label: 'E-mail', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl', value: prefillEmail });
+  const email = field({ label: 'E-mail służbowy', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl', value: prefillEmail });
   const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'current-password', required: true });
   const submit = button({ label: 'Zaloguj się', variant: 'primary', type: 'submit', block: true });
   const f = form(ctx, {
@@ -86,11 +86,11 @@ function loginCard({ ctx, swap }, { prefillEmail = '' } = {}) {
     },
   });
   const card = h('div', { class: 'bare-card' },
-    h('h1', null, 'Zaloguj się'),
-    h('p', { class: 'lead' }, 'Wróć do swoich stanowisk, kandydatów i kart oceny.'),
+    h('h1', null, 'Dobrze Cię znów widzieć'),
+    h('p', { class: 'lead' }, 'Zaloguj się i wracaj do rekrutacji.'),
     f,
     h('div', { class: 'bare-foot' }, h('a', { href: '#/reset' }, 'Nie pamiętasz hasła?')),
-    h('div', { class: 'bare-foot' }, 'Nie masz konta? ', h('a', { href: '#/signup' }, 'Załóż konto')),
+    h('div', { class: 'bare-foot' }, 'Nie masz jeszcze konta? ', h('a', { href: '#/signup' }, 'Załóż je za darmo')),
   );
   queueFocus(prefillEmail ? password.input : email.input);
   return card;
@@ -100,9 +100,9 @@ function loginCard({ ctx, swap }, { prefillEmail = '' } = {}) {
 function signupCard({ ctx, swap }, { prefill = {} } = {}) {
   const { h, field, button } = ctx.ui;
   const name = field({ label: 'Imię i nazwisko', name: 'name', type: 'text', autocomplete: 'name', required: true, placeholder: 'Anna Nowak', value: prefill.name || '' });
-  const email = field({ label: 'Służbowy e-mail', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl', value: prefill.email || '' });
+  const email = field({ label: 'E-mail służbowy', name: 'email', type: 'email', autocomplete: 'email', required: true, placeholder: 'anna@firma.pl', value: prefill.email || '' });
   const password = field({ label: 'Hasło', name: 'password', type: 'password', autocomplete: 'new-password', required: true, hint: 'Co najmniej 10 znaków. Najlepiej zdanie, które łatwo zapamiętać.' });
-  const submit = button({ label: 'Załóż konto', variant: 'primary', type: 'submit', block: true });
+  const submit = button({ label: 'Utwórz konto', variant: 'primary', type: 'submit', block: true });
   const card = h('div', { class: 'bare-card' });
 
   const f = form(ctx, {
@@ -126,7 +126,7 @@ function signupCard({ ctx, swap }, { prefill = {} } = {}) {
   });
   card.append(
     h('h1', null, 'Załóż konto'),
-    h('p', { class: 'lead' }, 'Strukturalna rekrutacja z AI, która tylko podpowiada. Decyzje zostają po Twojej stronie.'),
+    h('p', { class: 'lead' }, 'Pierwsze stanowisko skonfigurujesz w 5 minut. Bez karty.'),
     f,
     h('div', { class: 'bare-foot' }, 'Masz już konto? ', h('a', { href: '#/login' }, 'Zaloguj się')),
   );

@@ -27,14 +27,14 @@
 .pl-cols{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(196px,1fr);gap:10px;align-items:start;min-width:min-content}
 .pl-col{
   display:flex;flex-direction:column;gap:8px;
-  background:var(--s1);border-radius:var(--r-lg);padding:10px 10px 12px;min-height:280px;
+  background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:10px 10px 12px;min-height:280px;
   transition:background var(--t) var(--ease);
 }
 .pl-col.is-over{background:var(--s3)}
 .pl-col-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 6px 6px;min-width:0}
 .pl-col-h h2{font-size:var(--fs-sm);font-weight:600;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pl-col-h .n{flex:none;min-width:22px;height:22px;padding:0 8px;border-radius:var(--r-pill);background:var(--s3);color:var(--muted);font-size:11.5px;font-weight:600;display:grid;place-items:center;font-variant-numeric:tabular-nums}
-.pl-col.is-over .pl-col-h .n{background:var(--ink);color:var(--bg)}
+.pl-col.is-over .pl-col-h .n{background:var(--accent);color:var(--accent-ink)}
 .pl-col-b{display:flex;flex-direction:column;gap:8px;flex:1;min-height:120px;border-radius:var(--r-md)}
 .pl-empty{flex:1;display:grid;place-items:center;text-align:center;padding:24px 12px;border-radius:var(--r-md);background:var(--s2);color:var(--muted);font-size:var(--fs-xs);line-height:1.4}
 .pl-col.is-over .pl-empty{background:var(--s4);color:var(--ink)}
@@ -72,7 +72,7 @@
 .pl-cv svg{width:12px;height:12px;color:var(--faint)}
 .pl-cv b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
 .pl-cv .bar{width:36px;height:4px;border-radius:var(--r-pill);background:var(--s3);overflow:hidden}
-.pl-cv .bar i{display:block;height:100%;background:var(--ink);border-radius:var(--r-pill)}
+.pl-cv .bar i{display:block;height:100%;background:var(--accent);border-radius:var(--r-pill)}
 .pl-foot .tag{font-size:11px;padding:1px 7px}
 
 /* menu karty (popover przypięty do dokumentu) */
@@ -83,7 +83,7 @@
 .pl-menu [role="menuitem"] .chk{margin-left:auto;width:14px;height:14px;color:var(--ink)}
 
 /* sekcje pod tablicą: odrzuceni, zatrudnieni */
-.pl-aside{background:var(--s1);border-radius:var(--r-lg);padding:4px 20px}
+.pl-aside{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-card);padding:4px 20px}
 .pl-aside summary{list-style:none;display:flex;align-items:center;gap:8px;cursor:pointer;padding:12px 0;font-size:var(--fs-sm);font-weight:500;border-radius:var(--r-xs)}
 .pl-aside summary::-webkit-details-marker{display:none}
 .pl-aside summary svg{width:16px;height:16px;color:var(--muted);transition:transform var(--t)}
@@ -107,7 +107,7 @@
   .pl-tabs{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;margin:0 calc(-1 * var(--pad-x));padding:2px var(--pad-x)}
   .pl-tabs::-webkit-scrollbar{display:none}
   .pl-tabs button{flex:none;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border-radius:var(--r-pill);background:var(--s2);color:var(--muted);font-size:13px;font-weight:500;white-space:nowrap;transition:background var(--t),color var(--t)}
-  .pl-tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+  .pl-tabs button[aria-selected="true"]{background:var(--accent);color:var(--accent-ink)}
   .pl-tabs button .n{font-variant-numeric:tabular-nums;color:var(--faint)}
   .pl-tabs button[aria-selected="true"] .n{color:inherit;opacity:.75}
   .pl-board{overflow:visible;margin:0;padding:0;max-width:100%}
