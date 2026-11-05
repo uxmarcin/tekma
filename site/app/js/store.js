@@ -440,6 +440,38 @@ export function createStore(adapter) {
     },
   };
 
+  /* Prywatność i retencja — okres przechowywania (lokalnie, per przeglądarka), anonimizacja i eksport danych kandydatów. */
+  const RETENTION_KEY = 'tekma.retention.months';
+  const ANON_NAME = 'Kandydat zanonimizowany';
+  const isAnonymized = (c) => c.full_name === ANON_NAME;
+  const privacy = {
+    isAnonymized,
+    retentionMonths() { try { const v = Number(localStorage.getItem(RETENTION_KEY)); return [6, 12, 24].includes(v) ? v : 12; } catch { return 12; } },
+    setRetentionMonths(m) { if (![6, 12, 24].includes(m)) throw new Error('Wybierz 6, 12 lub 24 miesiące.'); try { localStorage.setItem(RETENTION_KEY, String(m)); } catch { /* brak storage */ } return m; },
+    /** Odrzuceni kandydaci, których dane przekroczyły okres przechowywania i nie są jeszcze zanonimizowane. */
+    async due(months = privacy.retentionMonths()) {
+      const limit = Date.now() - months * 30.44 * 864e5;
+      const [cands, pos] = await Promise.all([adapter.candidates.list(), adapter.positions.list()]);
+      const posBy = Object.fromEntries(pos.map((p) => [p.id, p.title]));
+      return cands.filter((c) => c.status === 'rejected' && !isAnonymized(c) && new Date(c.applied_at).getTime() < limit)
+        .map((c) => ({ ...c, position_title: posBy[c.position_id] || '' }));
+    },
+    async anonymize(ids) {
+      let n = 0;
+      for (const id of ids) { await adapter.candidates.update(id, { full_name: ANON_NAME, email: '', cv_score: null }); n++; }
+      return n;
+    },
+    /** Pełny eksport danych jednego kandydata (art. 15 RODO) albo wszystkich. */
+    async exportData(id) {
+      const [cands, cards, pos] = await Promise.all([adapter.candidates.list(), adapter.scorecards.list(), adapter.positions.list()]);
+      const posBy = Object.fromEntries(pos.map((p) => [p.id, p.title]));
+      const rows = (id ? cands.filter((c) => c.id === id) : cands).map((c) => ({
+        ...c, stanowisko: posBy[c.position_id] || '', karty_oceny: cards.filter((k) => k.candidate_id === c.id),
+      }));
+      return { wygenerowano: now(), liczba_kandydatow: rows.length, kandydaci: rows };
+    },
+  };
+
   const stats = {
     async dashboard() {
       const [pos, cands, cards] = await Promise.all([adapter.positions.list(), adapter.candidates.list(), adapter.scorecards.list()]);
@@ -514,7 +546,7 @@ export function createStore(adapter) {
     setRole: (user_id, role) => adapter.members.setRole(user_id, role),
   };
 
-  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, feedback, talent, stats, adapter };
+  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, feedback, talent, privacy, stats, adapter };
 }
 
 const adapter = SUPABASE_URL

@@ -16,6 +16,7 @@ const TABS = [
   { key: 'zespol', label: 'Zespół i uprawnienia', href: '#/settings/zespol' },
   { key: 'integracje', label: 'Integracje', href: '#/settings/integracje' },
   { key: 'plan', label: 'Plan i płatności', href: '#/settings/plan' },
+  { key: 'prywatnosc', label: 'Prywatność i retencja', href: '#/settings/prywatnosc' },
   { key: 'zgodnosc', label: 'RODO i AI Act', href: '#/settings/zgodnosc' },
 ];
 
@@ -37,7 +38,7 @@ export default async function render(ctx) {
   const panel = h('div', { class: 'st-panel' });
   const root = h('div', { class: 'st' }, tabs, panel);
 
-  const builders = { firma, zespol, integracje, plan, zgodnosc };
+  const builders = { firma, zespol, integracje, plan, prywatnosc: async (c) => (await import('./privacy.js')).default(c), zgodnosc };
   try {
     panel.append(await builders[tab](ctx));
   } catch (err) {
@@ -268,7 +269,7 @@ function zgodnosc(ctx) {
   const status = [
     ['Sugestie AI w aplikacji', 'Wersja demonstracyjna: podpowiedzi nie analizują jeszcze prawdziwych rozmów', 'warn', 'Demo'],
     ['Rejestr sugestii AI i decyzji człowieka', 'Zapis, kto i kiedy zatwierdził sugestię', 'neutral', 'Wkrótce'],
-    ['Eksport i usunięcie danych kandydata (RODO)', 'Wniosek o dane, sprostowanie i usunięcie', 'neutral', 'Wkrótce'],
+    ['Eksport i anonimizacja danych kandydata (RODO)', 'Zakładka Prywatność i retencja', 'good', 'Dostępne'],
     ['Umowa powierzenia przetwarzania (DPA)', 'Wzór dla klientów', 'neutral', 'Wkrótce'],
   ];
   return h('div', { class: 'st-stack' },
