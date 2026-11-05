@@ -110,6 +110,15 @@ export function matchRoute(hash) {
 export function startRouter(d) {
   deps = d;
   root = document.getElementById('root');
+  // własny licznik głębokości historii: przycisk „wstecz” w nagłówku (aplikacja na ekranie początkowym nie ma paska przeglądarki)
+  let idx = (history.state && typeof history.state.idx === 'number') ? history.state.idx : 0;
+  try { history.replaceState({ ...(history.state || {}), idx }, ''); } catch { /* np. file:// */ }
+  state.canBack = idx > 0;
+  window.addEventListener('hashchange', () => {
+    if (history.state && typeof history.state.idx === 'number') idx = history.state.idx;
+    else { idx += 1; try { history.replaceState({ idx }, ''); } catch { /* */ } }
+    state.canBack = idx > 0;
+  });
   window.addEventListener('hashchange', handleRoute);
   deps.store.auth.onChange((session) => {
     const had = Boolean(state.user), has = Boolean(session);
@@ -377,6 +386,10 @@ function setHeader({ title, crumbs, actions, width } = {}) {
   const a = shellEl.querySelector('[data-slot="actions"]');
   if (t) {
     const parts = [];
+    const hasCrumbLink = (crumbs || []).some((c) => c.href);
+    if (state.canBack && !hasCrumbLink && state.path !== '#/') {
+      parts.push(h('button', { type: 'button', class: 'crumb back', 'aria-label': 'Wróć', title: 'Wróć', on: { click: () => history.back() } }, icon('arrow-left', 24)));
+    }
     // Okruszek: na desktopie „Rodzic / Tytuł”, na mobile sam przycisk „wstecz” (strzałka) z etykietą dla czytników.
     for (const c of crumbs || []) {
       parts.push(c.href

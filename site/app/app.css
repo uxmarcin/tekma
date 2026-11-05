@@ -709,3 +709,10 @@ body.has-modal{overflow:hidden}
   body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}
   .side,.main-head,.tabbar,.btn,.icon-btn{-webkit-user-select:none;user-select:none}
 }
+
+/* przycisk „wstecz” w nagłówku: tylko tam, gdzie nie ma paska przeglądarki (telefon, aplikacja na ekranie początkowym) */
+.main-head .crumb.back{display:none;width:44px;height:44px;margin-left:-10px;border-radius:var(--r-round);place-items:center;color:var(--ink);flex:none}
+.main-head .crumb.back:hover{background:var(--s2)}
+.main-head .crumb.back svg{display:block;width:24px;height:24px}
+@media (max-width:899px){.main-head .crumb.back{display:grid}}
+@media (display-mode:standalone){.main-head .crumb.back{display:grid}}
