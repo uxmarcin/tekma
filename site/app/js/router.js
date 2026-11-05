@@ -29,7 +29,7 @@ export const ROUTES = [
   { pattern: '#/goals', view: 'goals', layout: 'shell', title: 'Cele', nav: 'goals' },
   { pattern: '#/rubrics', view: 'rubrics', layout: 'shell', title: 'Rubryki', nav: 'rubrics' },
   { pattern: '#/rubrics/:id', view: 'rubrics', layout: 'shell', title: 'Rubryka', nav: 'rubrics' },
-  { pattern: '#/feedback', view: 'feedback', layout: 'shell', title: 'Opinie', nav: 'feedback' },
+  { pattern: '#/feedback', view: 'feedback', layout: 'shell', title: 'Feedback', nav: 'feedback' },
   { pattern: '#/settings', view: 'settings', layout: 'shell', title: 'Ustawienia', nav: 'settings' },
   { pattern: '#/settings/zgodnosc', view: 'settings', layout: 'shell', title: 'RODO i AI Act', nav: 'compliance' },
   { pattern: '#/settings/:tab', view: 'settings', layout: 'shell', title: 'Ustawienia', nav: 'settings' },
@@ -51,7 +51,7 @@ const NAV = {
     { key: 'compliance', label: 'RODO i AI Act', href: '#/settings/zgodnosc', icon: 'shield' },
   ],
   support: [
-    { key: 'feedback', label: 'Opinie', href: '#/feedback', icon: 'message' },
+    { key: 'feedback', label: 'Feedback', href: '#/feedback', icon: 'message' },
   ],
 };
 const ROLE_LABEL = { owner: 'Właściciel', recruiter: 'Rekruter', interviewer: 'Rozmówca' };
@@ -475,7 +475,7 @@ function openUserMenu(trigger, host) {
     h('hr'),
     themeRow(),
     h('hr'),
-    ...[['Ludzie', 'user', '#/people'], ['Cele', 'target', '#/goals'], ['Opinie', 'message', '#/feedback']].map(([label, ic, href]) => {
+    ...[['Ludzie', 'user', '#/people'], ['Cele', 'target', '#/goals'], ['Feedback', 'message', '#/feedback']].map(([label, ic, href]) => {
       const el = item(label, ic, { onClick: () => { closeUserMenu(host, trigger); navigate(href); } });
       el.classList.add('only-mobile'); return el;
     }),

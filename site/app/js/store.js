@@ -27,7 +27,7 @@
  *   store.tasks.list(person_id?) / create({person_id,phase,title,due_day?}) / update(id,patch) / toggle(id,done) / remove(id)
  *   store.goals.list() / create({title,description?,due_date?,person_id?}) / update(id,patch) / remove(id)
  *   Ludzie i Cele w trybie Supabase wymagają migracji db/migrations/1.5-people-goals.sql (brak tabel → Error z code 'no_table').
- *   store.feedback.list() / create({kind,rating?,message}) — opinie z aplikacji (kind: idea|bug|question|praise); page/wersja/UA dołączane automatycznie
+ *   store.feedback.list() / create({kind,rating?,message}) — feedback z aplikacji (kind: idea|bug|question|praise); page/wersja/UA dołączane automatycznie
  *   store.stats.dashboard()           -> {openPositions, activeCandidates, interviewsThisWeek:null, attention:[…]}
  *
  * attention[] = {type:'discrepancy'|'stale'|'no-rubric', tone, title, text, href}
@@ -322,10 +322,10 @@ export function createStore(adapter) {
   const feedback = {
     list: () => guard(() => adapter.feedback.list()),
     async create({ kind, rating, message } = {}) {
-      if (!['idea', 'bug', 'question', 'praise'].includes(kind)) throw new Error('Wybierz rodzaj opinii.');
+      if (!['idea', 'bug', 'question', 'praise'].includes(kind)) throw new Error('Wybierz rodzaj feedbacku.');
       message = str(message);
       if (message.length < 3) throw new Error('Napisz kilka słów, żebyśmy wiedzieli, o co chodzi.');
-      if (message.length > 4000) throw new Error('Opinia jest za długa (maksymalnie 4000 znaków).');
+      if (message.length > 4000) throw new Error('Feedback jest za długi (maksymalnie 4000 znaków).');
       const r = rating ? Math.round(Number(rating)) : null;
       if (r !== null && !(r >= 1 && r <= 5)) throw new Error('Ocena musi być od 1 do 5.');
       const session = await adapter.auth.session();

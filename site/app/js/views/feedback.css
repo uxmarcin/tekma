@@ -1,4 +1,4 @@
-/* views/feedback.css — moduł Opinie. Prefiks fb-. */
+/* views/feedback.css — moduł Feedback. Prefiks fb-. */
 .fb-page{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
 .fb-card{padding:24px}
 .fb-h{font-size:var(--fs-h3);font-weight:600;margin:0 0 4px}
