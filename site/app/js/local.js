@@ -35,6 +35,7 @@ const EMPTY = () => ({
   onboarding_tasks: [],
   goals: [],
   feedback: [],
+  talent_pool: [],
 });
 
 function uuid() {
@@ -306,6 +307,7 @@ export function createLocalAdapter() {
   const onboarding_tasks = table('onboarding_tasks', { order: 'position', dir: 'asc' });
   const goals = table('goals');
   const feedback = table('feedback');
+  const talent_pool = table('talent_pool');
   const scorecardsBase = table('scorecards', { order: 'updated_at' });
   const scorecards = {
     ...scorecardsBase,
@@ -320,11 +322,11 @@ export function createLocalAdapter() {
   /** Czyści dane demo (do testów / resetu). Nie usuwa kont. */
   async function resetData() {
     const o = requireOrg();
-    for (const t of ['positions', 'candidates', 'rubrics', 'scorecards', 'people', 'onboarding_tasks', 'goals']) db[t] = db[t].filter((r) => r.org_id !== o.id);
+    for (const t of ['positions', 'candidates', 'rubrics', 'scorecards', 'people', 'onboarding_tasks', 'goals', 'talent_pool']) db[t] = db[t].filter((r) => r.org_id !== o.id);
     save();
   }
 
-  return { mode: 'demo', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals, feedback, resetData, _db: () => db };
+  return { mode: 'demo', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals, feedback, talent_pool, resetData, _db: () => db };
 }
 
 export default createLocalAdapter;

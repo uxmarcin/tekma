@@ -24,6 +24,7 @@ export const ROUTES = [
   { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Kanban', nav: 'positions' },
   { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
   { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
+  { pattern: '#/talent', view: 'talent', layout: 'shell', title: 'Baza talentów', nav: 'talent' },
   { pattern: '#/people', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
   { pattern: '#/people/:id', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
   { pattern: '#/goals', view: 'goals', layout: 'shell', title: 'Cele', nav: 'goals' },
@@ -41,6 +42,7 @@ const NAV = {
     { key: 'positions', label: 'Stanowiska', href: '#/positions', icon: 'briefcase' },
     { key: 'rubrics', label: 'Rubryki', href: '#/rubrics', icon: 'rubric' },
     { key: 'candidates', label: 'Kandydaci', href: '#/candidates', icon: 'users' },
+    { key: 'talent', label: 'Baza talentów', href: '#/talent', icon: 'user-plus' },
   ],
   later: [
     { key: 'people', label: 'Ludzie', href: '#/people', icon: 'user' },

@@ -27,6 +27,7 @@
  *   store.tasks.list(person_id?) / create({person_id,phase,title,due_day?}) / update(id,patch) / toggle(id,done) / remove(id)
  *   store.goals.list() / create({title,description?,due_date?,person_id?}) / update(id,patch) / remove(id)
  *   Ludzie i Cele w trybie Supabase wymagają migracji db/migrations/1.5-people-goals.sql (brak tabel → Error z code 'no_table').
+ *   store.talent.list() / create({full_name,email?,role_title?,location?,tags?,source?,consent_status?}) / update / grantConsent(id) / requestConsent(id) / remove(id) / purgeExpired() / rejectedCandidates() / addFromCandidate(c) — baza talentów (migracja 1.9); talentConsent(row) → {state,days}
  *   store.feedback.list() / create({kind,rating?,message}) — feedback z aplikacji (kind: idea|bug|question|praise); page/wersja/UA dołączane automatycznie
  *   store.stats.dashboard()           -> {openPositions, activeCandidates, interviewsThisWeek:null, attention:[…]}
  *
@@ -50,6 +51,17 @@ function cleanWork({ work_mode, contract_types } = {}) {
   if (work_mode !== undefined) out.work_mode = WORK_MODES.some((m) => m.key === work_mode) ? work_mode : null;
   if (contract_types !== undefined) out.contract_types = [...new Set((contract_types || []).filter((k) => CONTRACTS.some((c) => c.key === k)))];
   return out;
+}
+
+/** Stan zgody wpisu w bazie talentów: granted | expiring (≤14 dni) | expired | pending | none, plus liczba dni do końca. */
+export function talentConsent(row, today = new Date()) {
+  if (!row) return { state: 'none', days: null };
+  if (row.consent_status === 'pending') return { state: 'pending', days: null };
+  if (row.consent_status !== 'granted' || !row.consent_until) return { state: 'none', days: null };
+  const t = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  const u = new Date(`${row.consent_until}T00:00:00`).getTime();
+  const days = Math.round((u - t) / 86400000);
+  return { state: days < 0 ? 'expired' : days <= 14 ? 'expiring' : 'granted', days };
 }
 
 export function createStore(adapter) {
@@ -236,10 +248,25 @@ export function createStore(adapter) {
           ratings, ai: {}, decision: s.decision, updated_at: now(),
         });
       }
+      try { await seedTalent(); } catch (e) { console.warn('[demo] Baza talentów pominięta:', e && e.message); }
       try { await seedPeopleAndGoals(); } catch (e) { console.warn('[demo] Ludzie/Cele pominięte:', e && e.message); }
       return { skipped: false, positions: SEED.positions.length, candidates: SEED.candidates.length, rubrics: SEED.rubrics.length };
     },
   };
+
+  async function seedTalent() {
+    const iso = (offset) => { const d = new Date(); d.setDate(d.getDate() + offset); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+    const demo = [
+      ['Agnieszka Nowak', 'Senior Backend Engineer', 'Warszawa · zdalnie', ['Go', 'Kafka', 'Lead'], 'granted', 240, -90],
+      ['Paweł Wiśniewski', 'Product Designer', 'Kraków · hybrydowo', ['Figma', 'B2B'], 'granted', 9, -180],
+      ['Katarzyna Lis', 'Engineering Manager', 'Wrocław · zdalnie', ['Scale-up', 'Mentoring'], 'granted', 270, -7],
+      ['Michał Grabowski', 'Data Engineer', 'Gdańsk · zdalnie', ['dbt', 'Airflow'], 'none', null, -14],
+      ['Ewa Zielińska', 'QA Automation', 'Poznań · hybrydowo', ['Playwright'], 'pending', null, -1],
+    ];
+    for (const [full_name, role_title, location, tags, st, days, last] of demo) {
+      await adapter.talent_pool.create({ full_name, email: '', role_title, location, tags, source: 'Rekruter', note: '', consent_status: st, consent_until: days === null ? null : iso(days), last_contact: iso(last), candidate_id: null });
+    }
+  }
 
   async function seedPeopleAndGoals() {
     const iso = (offset) => { const d = new Date(); d.setDate(d.getDate() + offset); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
@@ -351,6 +378,55 @@ export function createStore(adapter) {
     },
   };
 
+  /* ------------------------------------------------ Baza talentów (migracja 1.9) */
+  const TALENT_MONTHS = 12;
+  const addMonths = (iso, n) => { const d = new Date(`${iso}T12:00:00`); d.setMonth(d.getMonth() + n); return d.toISOString().slice(0, 10); };
+  const todayIso = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+  const cleanTags = (t) => [...new Set((Array.isArray(t) ? t : String(t || '').split(',')).map((x) => str(x).slice(0, 30)).filter(Boolean))].slice(0, 12);
+  const talent = {
+    list: () => guard(() => adapter.talent_pool.list()),
+    async create({ full_name, email, role_title, location, tags, source, note, consent_status, candidate_id } = {}) {
+      full_name = str(full_name); email = str(email);
+      if (full_name.length < 2) throw new Error('Wpisz imię i nazwisko.');
+      if (email && !EMAIL_RE.test(email)) throw new Error('Podaj poprawny adres e-mail albo zostaw pole puste.');
+      const granted = consent_status === 'granted';
+      return guard(() => adapter.talent_pool.create({
+        full_name, email, role_title: str(role_title), location: str(location), tags: cleanTags(tags), source: str(source), note: str(note),
+        consent_status: granted ? 'granted' : 'pending', consent_until: granted ? addMonths(todayIso(), TALENT_MONTHS) : null,
+        last_contact: todayIso(), candidate_id: candidate_id || null,
+      }));
+    },
+    async update(id, patch = {}) {
+      const p = { ...patch };
+      if ('full_name' in p && str(p.full_name).length < 2) throw new Error('Wpisz imię i nazwisko.');
+      if ('email' in p && str(p.email) && !EMAIL_RE.test(str(p.email))) throw new Error('Podaj poprawny adres e-mail albo zostaw pole puste.');
+      if ('tags' in p) p.tags = cleanTags(p.tags);
+      return guard(() => adapter.talent_pool.update(id, p));
+    },
+    /** Zgoda udzielona: ważna 12 miesięcy od dziś. */
+    grantConsent: (id) => guard(() => adapter.talent_pool.update(id, { consent_status: 'granted', consent_until: addMonths(todayIso(), TALENT_MONTHS), last_contact: todayIso() })),
+    /** Prośba o (ponowną) zgodę wysłana — czekamy na odpowiedź. */
+    requestConsent: (id) => guard(() => adapter.talent_pool.update(id, { consent_status: 'pending', last_contact: todayIso() })),
+    remove: (id) => guard(() => adapter.talent_pool.remove(id)),
+    /** Usuwa wpisy bez ważnej zgody: wygasłe oraz oznaczone „brak zgody”. Zwraca liczbę usuniętych. */
+    async purgeExpired() {
+      const rows = await guard(() => adapter.talent_pool.list());
+      const dead = rows.filter((r) => talentConsent(r).state === 'expired' || r.consent_status === 'none');
+      for (const r of dead) await adapter.talent_pool.remove(r.id);
+      return dead.length;
+    },
+    /** Odrzuceni kandydaci, których jeszcze nie ma w bazie (do zaproszenia do puli). */
+    async rejectedCandidates() {
+      const [cands, pool, pos] = await Promise.all([adapter.candidates.list(), adapter.talent_pool.list(), adapter.positions.list()]);
+      const have = new Set(pool.map((r) => r.candidate_id).filter(Boolean));
+      const posBy = Object.fromEntries(pos.map((p) => [p.id, p.title]));
+      return cands.filter((c) => c.status === 'rejected' && !have.has(c.id)).map((c) => ({ ...c, position_title: posBy[c.position_id] || '' }));
+    },
+    async addFromCandidate(c) {
+      return talent.create({ full_name: c.full_name, email: c.email, role_title: c.position_title || '', source: c.source || '', consent_status: 'pending', candidate_id: c.id });
+    },
+  };
+
   const stats = {
     async dashboard() {
       const [pos, cands, cards] = await Promise.all([adapter.positions.list(), adapter.candidates.list(), adapter.scorecards.list()]);
@@ -425,7 +501,7 @@ export function createStore(adapter) {
     setRole: (user_id, role) => adapter.members.setRole(user_id, role),
   };
 
-  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, feedback, stats, adapter };
+  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, feedback, talent, stats, adapter };
 }
 
 const adapter = SUPABASE_URL
