@@ -31,16 +31,20 @@ export default async function render(ctx) {
   const gfx = { photo: null, template: 'mesh', format: 'li', palette: 'tekma', seed: 7, headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
   const pub = readPub(ctx.org);
   const root = h('div', { class: 'pb' });
-  const side = h('aside', { class: 'card' });
+  const side = h('aside', { class: 'pb-rail' });
   const main = h('div', { class: 'pb-main' });
   root.append(side, main);
 
   const url = () => `${location.origin}${location.pathname.replace(/app\/?(index\.html)?$/, '')}`; // do czasu publicznych linków: strona główna Tekmy
 
+  let sideExtra = null;
+  const MODES = [['page', 'eye', 'Podgląd ogłoszenia', 'Tak widzi je kandydat'], ['gfx', 'palette', 'Design', `${TEMPLATES.length} stylów grafik`], ['post', 'megaphone', 'Publikacja', 'Post i udostępnianie na LinkedIn']];
   function paintSide() {
-    side.replaceChildren(h('ul', { class: 'pb-list' }, positions.map((p) => h('li', null,
-      h('button', { type: 'button', class: 'pb-item', 'aria-current': String(p.id === cur.id), on: { click: () => { cur = p; paint(); } } },
-        h('b', null, p.title), h('small', { class: 'muted' }, pub[p.id] ? 'Opublikowano na LinkedIn' : (adCheck(p).ready ? 'Gotowe do publikacji' : 'Do uzupełnienia')))))));
+    const pick = h('select', { class: 'pb-pick', 'aria-label': 'Stanowisko' }, positions.map((p) => h('option', { value: p.id, selected: p.id === cur.id }, p.title)));
+    pick.addEventListener('change', () => { cur = positions.find((p) => p.id === pick.value) || cur; paint(); });
+    const modes = h('div', { class: 'pb-modes', role: 'tablist', 'aria-label': 'Widok' }, MODES.map(([k, ic, t, s]) => h('button', { type: 'button', role: 'tab', class: 'pb-mode', 'aria-selected': String(tab === k), on: { click: () => { tab = k; paint(); } } },
+      h('span', { class: 'pb-mi' }, icon(ic)), h('span', { class: 'pb-mt' }, h('b', null, t), h('small', { class: 'muted' }, s)))));
+    side.replaceChildren(h('label', { class: 'pb-pl' }, h('span', null, 'Stanowisko'), pick), modes, ...(sideExtra ? [sideExtra] : []));
   }
 
   function editAd() { openAdEditor(ctx, cur, { onSaved: (u) => { Object.assign(cur, u); paint(); } }); }
@@ -159,7 +163,8 @@ export default async function render(ctx) {
     paintPhoto();
     fetch(new URL('../../assets/bg/manifest.json', import.meta.url)).then((r) => (r.ok ? r.json() : [])).then((m) => { if (Array.isArray(m) && m.length) { libItems = m; paintPhoto(); } }).catch(() => {});
 
-    const fmts = h('div', { class: 'gx-fmts', role: 'group', 'aria-label': 'Format' }, FORMATS.map((f) => h('button', { type: 'button', class: 'gx-fmt', 'aria-pressed': String(gfx.format === f.id), on: { click: (e) => { gfx.format = f.id; fmts.querySelectorAll('button').forEach((q, i) => q.setAttribute('aria-pressed', String(FORMATS[i].id === f.id))); draw(); } } }, h('b', null, f.label), h('small', { class: 'muted' }, f.note))));
+    const PLAT = { li: ['linkedin', 'LinkedIn'], ig: ['instagram', 'Instagram'], sq: ['square', 'Instagram · FB'], st: ['smartphone', 'Stories · Reels'], fb: ['facebook', 'Facebook'] };
+    const fmts = h('div', { class: 'gx-fmts', role: 'group', 'aria-label': 'Format' }, FORMATS.map((f) => { const [ic, cap] = PLAT[f.id] || ['square', '']; return h('button', { type: 'button', class: 'gx-fmt', 'aria-pressed': String(gfx.format === f.id), 'data-f': f.id, on: { click: () => { gfx.format = f.id; fmts.querySelectorAll('button').forEach((q) => q.setAttribute('aria-pressed', String(q.dataset.f === f.id))); draw(); } } }, h('span', { class: 'gx-fi' }, icon(ic)), h('span', { class: 'gx-ft' }, h('b', null, f.label), h('small', { class: 'muted' }, cap)), h('em', { class: 'gx-fs' }, f.note)); }));
     const sw = h('div', { class: 'gx-sw', role: 'radiogroup', 'aria-label': 'Paleta' }, PALETTES.map((P) => h('button', { type: 'button', class: 'gx-swb', role: 'radio', title: P.name, 'aria-checked': String(gfx.palette === P.id), style: `background:linear-gradient(135deg,${P.a},${P.b} 55%,${P.c})`, on: { click: () => { gfx.palette = P.id; sw.querySelectorAll('button').forEach((q, i) => q.setAttribute('aria-checked', String(PALETTES[i].id === P.id))); draw(); } } })));
     const head = h('input', { class: 'input', type: 'text', maxlength: '80', placeholder: cur.title, 'aria-label': 'Nagłówek na grafice', value: gfx.headline });
     const cta = h('input', { class: 'input', type: 'text', maxlength: '40', 'aria-label': 'Tekst przycisku', value: gfx.cta });
@@ -167,7 +172,7 @@ export default async function render(ctx) {
     head.addEventListener('input', () => { gfx.headline = head.value; later(); }); cta.addEventListener('input', () => { gfx.cta = cta.value; later(); });
     const tog = (key, label) => { const lockedMark = key === 'showMark' && !isPro; const i = h('input', { type: 'checkbox', checked: gfx[key], disabled: lockedMark }); i.addEventListener('change', () => { gfx[key] = i.checked; draw(); }); return h('label', { class: 'gx-tg', title: lockedMark ? 'Wyłączenie znaku Tekma jest w planie Pro' : null }, i, h('span', null, label), lockedMark ? h('a', { class: 'gx-pro', href: '#/settings/plan' }, icon('lock'), 'Pro') : null); };
     const noSal = !salaryLabel(cur);
-    const side = h('div', { class: 'gx-side' },
+    const gSide = h('div', { class: 'gx-side' },
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Format'), fmts),
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Tło'), phBox, fileIn),
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Kolory'), sw,
@@ -186,20 +191,18 @@ export default async function render(ctx) {
     const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, nameLbl, seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Style · ${TEMPLATES.length}`), chipBar), gallery);
     const banner = preview && !isPro ? h('div', { class: 'gx-pv' }, icon('crown'), h('span', null, h('b', null, 'Podgląd Pro. '), 'Oglądasz wszystkie style, ale pobranie stylów Pro wymaga planu Pro.'), button({ label: 'Wyłącz podgląd', variant: 'secondary', size: 'sm', onClick: () => { setPreview(false); paint(); } }), button({ label: 'Zobacz plan Pro', variant: 'primary', size: 'sm', onClick: () => { location.hash = '#/settings/plan'; } })) : null;
     main2.prepend(...(banner ? [banner] : []));
-    const wrap = h('div', { class: 'gx' }, side, main2);
+    sideExtra = gSide;
     draw();
-    return wrap;
+    return main2;
   }
 
   function paint() {
-    paintSide();
+    sideExtra = null;
     const edit = button({ label: 'Edytuj ogłoszenie', variant: 'secondary', icon: 'edit', onClick: editAd });
-    const seg = h('div', { class: 'segment pb-tabs', role: 'group', 'aria-label': 'Widok' },
-      [['page', 'Strona ogłoszenia'], ['gfx', 'Design'], ['post', 'Post na LinkedIn']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(tab === k), on: { click: () => { tab = k; paint(); } } }, l)));
-    root.classList.toggle('pb-solo', tab === 'gfx');
-    const pick = h('select', { class: 'input pb-pick', 'aria-label': 'Stanowisko' }, positions.map((p) => h('option', { value: p.id, selected: p.id === cur.id }, p.title)));
-    pick.addEventListener('change', () => { cur = positions.find((p) => p.id === pick.value) || cur; paint(); });
-    main.replaceChildren(h('div', { class: 'pb-row', style: 'justify-content:space-between;margin:0' }, seg, h('span', { class: 'pb-row', style: 'margin:0' }, tab === 'gfx' ? pick : null, edit)), tab === 'page' ? pageTab() : (tab === 'gfx' ? gfxTab() : postTab()));
+    const content = tab === 'page' ? pageTab() : (tab === 'gfx' ? gfxTab() : postTab());
+    paintSide();
+    const st = pub[cur.id] ? 'Opublikowano na LinkedIn' : (adCheck(cur).ready ? 'Gotowe do publikacji' : 'Do uzupełnienia');
+    main.replaceChildren(h('div', { class: 'pb-top' }, h('div', null, h('h2', { class: 'pb-t' }, cur.title), h('small', { class: 'muted' }, st)), edit), content);
   }
   paint();
   return root;
