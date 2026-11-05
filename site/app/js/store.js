@@ -263,7 +263,7 @@ export function createStore(adapter) {
         });
       }
       try { await seedTalent(); } catch (e) { console.warn('[demo] Baza talentów pominięta:', e && e.message); }
-      try { await seedPeopleAndGoals(); } catch (e) { console.warn('[demo] Ludzie/Cele pominięte:', e && e.message); }
+      try { await seedPeopleAndGoals(candidateIds); } catch (e) { console.warn('[demo] Ludzie/Cele pominięte:', e && e.message); }
       return { skipped: false, positions: SEED.positions.length, candidates: SEED.candidates.length, rubrics: SEED.rubrics.length };
     },
   };
@@ -282,12 +282,13 @@ export function createStore(adapter) {
     }
   }
 
-  async function seedPeopleAndGoals() {
+  async function seedPeopleAndGoals(candidateIds = {}) {
     const iso = (offset) => { const d = new Date(); d.setDate(d.getDate() + offset); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
     const demo = [['Katarzyna Wiśniewska', 'Product Designer', -24, 6], ['Michał Zieliński', 'Backend Engineer', -3, 2]];
     const ids = [];
     for (const [full_name, job_title, off, doneCount] of demo) {
       const p = await people.create({ full_name, job_title, start_date: iso(off) });
+      if (full_name === 'Katarzyna Wiśniewska' && candidateIds['katarzyna-h']) await adapter.people.update(p.id, { candidate_id: candidateIds['katarzyna-h'] });
       ids.push(p.id);
       const ts = (await adapter.onboarding_tasks.list({ person_id: p.id })).sort((a, b) => a.position - b.position);
       for (const t of ts.slice(0, doneCount)) await tasks.toggle(t.id, true);
@@ -368,6 +369,29 @@ export function createStore(adapter) {
       return guard(() => adapter.goals.update(id, p));
     },
     remove: (id) => guard(() => adapter.goals.remove(id)),
+  };
+
+  /* ------------------------------------------------ Ocena po 90 dniach (migracja 2.1) */
+  const reviews = {
+    list: (person_id) => guard(() => adapter.person_reviews.list({ person_id })),
+    /** Jedna ocena na fazę (30/60/90): zapis nadpisuje poprzednią. rating 1–5, keeper: yes|unsure|no. */
+    async save({ person_id, phase, rating, keeper, notes } = {}) {
+      phase = Number(phase); rating = Number(rating);
+      if (![30, 60, 90].includes(phase)) throw new Error('Faza musi być 30, 60 albo 90.');
+      if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new Error('Wybierz ocenę od 1 do 5.');
+      if (!['yes', 'unsure', 'no'].includes(keeper)) throw new Error('Odpowiedz na pytanie, czy walczyłbyś o zatrzymanie tej osoby.');
+      const row = { person_id, phase, rating, keeper, notes: str(notes).slice(0, 1000) };
+      const ex = (await guard(() => adapter.person_reviews.list({ person_id }))).find((r) => r.phase === phase);
+      return guard(() => (ex ? adapter.person_reviews.update(ex.id, row) : adapter.person_reviews.create(row)));
+    },
+    /** Dowody z rekrutacji: średnia ocen i decyzje z kart oceny kandydata, na którego zatrudniono osobę. */
+    async evidence(person) {
+      if (!person || !person.candidate_id) return null;
+      const cards = (await adapter.scorecards.list()).filter((k) => k.candidate_id === person.candidate_id);
+      const scores = cards.flatMap((k) => (k.ratings || []).map((r) => r.score)).filter((n) => typeof n === 'number');
+      if (!scores.length) return null;
+      return { avg: scores.reduce((a, b) => a + b, 0) / scores.length, count: scores.length, stages: cards.length, decisions: cards.map((k) => k.decision).filter(Boolean) };
+    },
   };
 
   /* ------------------------------------------------ Opinie */
@@ -547,7 +571,7 @@ export function createStore(adapter) {
     setRole: (user_id, role) => adapter.members.setRole(user_id, role),
   };
 
-  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, feedback, talent, privacy, stats, adapter };
+  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, people, tasks, goals, feedback, talent, privacy, reviews, stats, adapter };
 }
 
 const adapter = SUPABASE_URL

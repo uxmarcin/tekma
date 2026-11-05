@@ -219,6 +219,7 @@ export const SEED = {
     { key: 'marta-sowa', position_key: 'backend', full_name: 'Marta Sowa', email: 'marta.sowa@example.com', source: 'Pracuj.pl', stage: 'Screening CV', cv_score: 48, status: 'rejected', reject_reason: 'Zbyt małe doświadczenie z Postgresem w produkcji.', applied_at: daysAgo(290) },
     { key: 'piotr', position_key: 'backend', full_name: 'Piotr Lis', email: 'piotr.lis@example.com', source: 'Polecenie', stage: 'Screening CV', cv_score: 52, status: 'rejected', reject_reason: 'Oczekiwania poza budżetem stanowiska.', applied_at: daysAgo(420) },
     // Product Designer
+    { key: 'katarzyna-h', position_key: 'designer', full_name: 'Katarzyna Wiśniewska', email: 'katarzyna.wisniewska@example.com', source: 'Polecenie', stage: 'Oferta', cv_score: 91, status: 'hired', reject_reason: null, applied_at: daysAgo(70) },
     { key: 'sofia', position_key: 'designer', full_name: 'Sofia Romero', email: 'sofia.romero@example.com', source: 'LinkedIn', stage: 'Zadanie projektowe', cv_score: 88, status: 'active', applied_at: daysAgo(17) },
     { key: 'claire', position_key: 'designer', full_name: 'Claire Dubois', email: 'claire.dubois@example.com', source: 'Polecenie', stage: 'Rozmowa wstępna', cv_score: 74, status: 'active', applied_at: daysAgo(8) },
     { key: 'ola', position_key: 'designer', full_name: 'Aleksandra Nowak', email: 'aleksandra.nowak@example.com', source: 'Strona kariery', stage: 'Screening CV', cv_score: 63, status: 'active', applied_at: daysAgo(2) },
@@ -268,6 +269,18 @@ export const SEED = {
         { question_id: 'q-system-design', rater: 'bartek', score: 4 },
         { question_id: 'q-problem-solving', rater: 'bartek', score: 5 },
         { question_id: 'q-collaboration', rater: 'bartek', score: 4 },
+      ],
+    },
+    {
+      candidate_key: 'katarzyna-h',
+      stage: 'Rozmowa z zespołem',
+      rubric_key: 'design-portfolio',
+      decision: 'yes',
+      ratings: [
+        { question_id: 'q-process', rater: 'me', score: 5 },
+        { question_id: 'q-process', rater: 'kasia', score: 4 },
+        { question_id: 'q-craft', rater: 'me', score: 5 },
+        { question_id: 'q-craft', rater: 'kasia', score: 5 },
       ],
     },
     {

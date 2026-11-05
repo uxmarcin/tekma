@@ -7,6 +7,7 @@
  */
 import { PHASES, dayOf } from '../plan.js';
 import { setHeader } from './positions.js';
+import { reviewSection } from './people-review.js';
 
 const STATUS = { onboarding: ['Wdrożenie', 'blue'], active: ['Zespół', 'good'], left: ['Odeszła/odszedł', 'neutral'] };
 const canWrite = (ctx) => ctx.org && (ctx.org.role === 'owner' || ctx.org.role === 'recruiter');
@@ -148,6 +149,7 @@ async function detail(ctx) {
           h('div', { class: 'pe-ov' }, h('small', { class: 'muted' }, `Plan wykonany w ${pct}%`), h('span', { class: 'progress' }, h('i', { style: `width:${pct}%` })), h('small', { class: 'muted' }, `${done} z ${total} zadań`)),
           status),
         actions),
+      reviewSection(ctx, person, { write }),
       h('div', { class: 'pe-phases' }, PHASES.map(phaseCol)));
   }
   await load();

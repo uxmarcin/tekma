@@ -331,6 +331,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
   // moduły Ludzie i Cele — wymagają migracji db/migrations/1.5-people-goals.sql
   const people = table('people', { order: 'start_date.desc' });
   const onboarding_tasks = table('onboarding_tasks', { order: 'position.asc' });
+  const person_reviews = table('person_reviews', { order: 'created_at.desc' });
   const goals = table('goals');
   const feedback = table('feedback'); // migracja db/migrations/1.6-feedback.sql
   const talent_pool = table('talent_pool'); // migracja db/migrations/1.9-talent-pool.sql
@@ -369,7 +370,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
     },
   };
 
-  return { mode: 'supabase', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals, feedback, talent_pool };
+  return { mode: 'supabase', auth, org, members, positions, candidates, rubrics, scorecards, people, onboarding_tasks, goals, feedback, talent_pool, person_reviews };
 }
 
 /* ================================================== mapowanie błędów */

@@ -69,3 +69,17 @@
   .pe-card{padding:4px 16px}
   .pe-x{opacity:1}
 }
+
+/* Ocena po 90 dniach */
+.pe-rev{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+.pe-ev{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:var(--r-md);background:var(--s2)}
+.pe-ev b{font-size:18px}.pe-ev-n{margin-left:auto;font-weight:600}
+.pe-rvs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.pe-rv{display:flex;flex-direction:column;gap:8px;align-items:flex-start;padding:14px;border-radius:var(--r-md);border:1px solid var(--line)}
+.pe-rv.done{background:var(--s1,transparent)}
+.pe-rate{font-size:22px;margin-right:8px}
+.pe-rv p{margin:6px 0 0;font-size:var(--fs-sm)}
+.pe-rec{padding:12px 14px;border-radius:var(--r-md);background:var(--s2)}
+.pe-rec p{margin:4px 0 0;font-size:var(--fs-sm)}
+.pe-rec.good{background:var(--good-soft,#e7f7ef)}.pe-rec.warn{background:var(--warn-soft,#fff4e0)}.pe-rec.bad{background:var(--bad-soft,#fde8e8)}
+@media (max-width:760px){.pe-rvs{grid-template-columns:1fr}}
