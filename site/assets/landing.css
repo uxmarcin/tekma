@@ -370,3 +370,7 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
 
 .who .av.photo{overflow:hidden;background:#dbe4ff}
 .who .av.photo svg{width:100%;height:100%}
+
+/* kafelki na białym tle: ramka + cień w stanie domyślnym */
+.sec:not(.alt) .tile,.sec:not(.alt) .tcard,.sec:not(.alt) .icard{border:1px solid var(--line);box-shadow:var(--shadow-card)}
+.sec:not(.alt) .tile:hover{border-color:transparent;box-shadow:0 24px 48px -24px rgba(15,15,25,.18)}
