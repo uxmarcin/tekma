@@ -213,18 +213,38 @@ function integracje(ctx) {
 
 /* ------------------------------------------------ Plan i płatności */
 function plan(ctx) {
-  const { h, icon } = ctx.ui;
-  const feats = ['1 otwarte stanowisko', '5 rozmów z analizą AI / mies.', 'Rubryki, notetaker, karty ocen', 'Strona kariery i portal kandydata'];
+  const { h, icon, tag } = ctx.ui;
+  const owner = ctx.org.role === 'owner';
+  // Zakres planów jak w formularzu zamówienia (assets/checkout.js) i na stronie głównej.
+  const PLANS = [
+    { key: 'free', name: 'Free', price: '0 €', per: 'na zawsze', sub: 'Na pierwsze rekrutacje, bez karty.', feats: ['1 otwarte stanowisko', '5 rozmów z analizą AI / mies.', 'Rubryki, notetaker, karty ocen', 'Strona kariery i portal kandydata'] },
+    { key: 'starter', name: 'Starter', price: '49 €', per: '/ mies.', sub: 'Dla zespołu, który zaczyna rosnąć.', feats: ['5 aktywnych stanowisk', '25 rozmów z analizą AI / mies.', 'Notetaker dołącza sam', 'Raporty lejka', 'Strona kariery i portal kandydata'] },
+    { key: 'pro', name: 'Pro', price: '129 €', per: '/ mies.', sub: 'Dla zespołów, które rekrutują ciągle.', badge: 'Najczęściej wybierany', feats: ['Bez limitu stanowisk', '60 rozmów z analizą AI / mies., kolejne po 2\u00a0€', 'Coach AI na żywo i kalibracja rozmówców', 'Gmail, Outlook, Slack i kalendarze', 'Eksport rejestru decyzji AI'] },
+  ];
+  const current = 'free'; // rozliczenia online jeszcze nie działają — każde konto zaczyna na Free
+  const cards = PLANS.map((p) => {
+    const isCur = p.key === current;
+    const cta = isCur
+      ? h('button', { type: 'button', class: 'btn btn-secondary btn-block', disabled: true }, 'Twój plan')
+      : (owner
+        ? h('a', { class: `btn ${p.key === 'pro' ? 'btn-primary' : 'btn-secondary'} btn-block`, href: `../checkout.html?plan=${p.key}` }, `Przejdź na ${p.name}`)
+        : h('button', { type: 'button', class: 'btn btn-secondary btn-block', disabled: true, title: 'Plan zmienia właściciel firmy' }, `Przejdź na ${p.name}`));
+    return h('section', { class: `card st-card st-pl${isCur ? ' is-cur' : ''}${p.badge ? ' is-hi' : ''}`, 'aria-label': `Plan ${p.name}` },
+      h('div', { class: 'st-card-h' }, h('h2', { class: 'st-h' }, p.name), isCur ? tag('Aktywny', 'good') : (p.badge ? tag(p.badge, 'blue') : null)),
+      h('div', { class: 'st-price' }, h('b', null, p.price), h('span', null, p.per)),
+      h('p', { class: 'muted st-pl-sub' }, p.sub),
+      h('ul', { class: 'st-checks' }, p.feats.map((f) => h('li', null, icon('check', 15), f))),
+      h('div', { class: 'st-pl-cta' }, cta));
+  });
   return h('div', { class: 'st-stack' },
-    h('section', { class: 'card st-card st-plan', 'aria-labelledby': 'st-plan-h' },
-      h('div', { class: 'st-card-h' }, h('h2', { id: 'st-plan-h', class: 'st-h' }, 'Twój plan'), ctx.ui.tag('Aktywny', 'good')),
-      h('div', { class: 'st-price' }, h('b', null, 'Free'), h('span', null, '0 € · na zawsze')),
-      h('p', { class: 'muted' }, 'Na pierwsze rekrutacje, bez karty.'),
-      h('ul', { class: 'st-checks' }, feats.map((f) => h('li', null, icon('check', 15), f)))),
+    h('div', { class: 'st-plans' }, cards),
     h('section', { class: 'card st-card' },
-      h('h2', { class: 'st-h' }, 'Płatności'),
-      h('p', { class: 'muted' }, 'Rozliczenia online pojawią się wkrótce. Do tego czasu nie pobieramy żadnych opłat. Zmianę planu ustalisz mailowo: ',
-        h('a', { class: 'link', href: 'mailto:hello@tekma.app?subject=Zmiana%20planu%20Tekma' }, 'hello@tekma.app'), '.')));
+      h('h2', { class: 'st-h' }, 'Płatności i faktury'),
+      h('p', { class: 'muted' }, owner
+        ? 'Rozliczenia online pojawią się wkrótce, do tego czasu nie pobieramy żadnych opłat. Po wybraniu planu wypełnisz formularz zamówienia (dane do faktury), a dostęp i fakturę potwierdzimy mailowo. '
+        : 'Plan i dane do faktury zmienia właściciel firmy. ',
+        'Potrzebujesz więcej niż Pro (SSO, własna domena, DPA)? ',
+        h('a', { class: 'link', href: 'mailto:hello@tekma.app?subject=Tekma%20Scale' }, 'Napisz o planie Scale'), '.')));
 }
 
 /* ------------------------------------------------ RODO i AI Act */

@@ -102,7 +102,15 @@
 .st-int-i{width:36px;height:36px;flex:none;border-radius:8px;background:var(--s2);color:var(--ink);display:grid;place-items:center}
 
 /* Plan */
-.st-plan{max-width:560px}
+.st-plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+.st-pl{display:flex;flex-direction:column}
+.st-pl.is-cur{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+.st-pl.is-hi:not(.is-cur){border-color:var(--accent-mid, var(--accent))}
+.st-pl .st-card-h{margin-bottom:8px;min-height:26px}
+.st-pl-sub{font-size:var(--fs-sm)}
+.st-pl .st-checks{margin-bottom:20px}
+.st-pl-cta{margin-top:auto}
+.st-pl-cta .btn{text-decoration:none}
 .st-price{display:flex;align-items:baseline;gap:12px;margin:2px 0 6px}
 .st-price b{font:600 30px/1.1 var(--display);letter-spacing:-.02em}
 .st-price span{color:var(--muted);font-size:var(--fs-sm)}
@@ -121,7 +129,7 @@
 .st-status p{font-size:var(--fs-xs);margin-top:2px}
 
 @media (max-width:899px){
-  .st-grid,.st-pr,.st-roles{grid-template-columns:minmax(0,1fr)}
+  .st-grid,.st-pr,.st-roles,.st-plans{grid-template-columns:minmax(0,1fr)}
   .st-roles{gap:14px}
   .st-bar-r small{display:none}
   .st-table .table th:nth-child(3),.st-table .table td:nth-child(3){display:none}
