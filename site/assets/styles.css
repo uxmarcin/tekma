@@ -801,3 +801,6 @@ svg:has(>use[href^="#si-"]),svg:has(>use[href^="#i-"]),svg:has(>use[href="#tick"
 .hero::before{width:900px;height:520px;left:50%;top:430px;margin-left:-640px;background:radial-gradient(closest-side,rgba(77,141,255,.7),rgba(167,139,250,.34) 55%,transparent 75%)}
 .hero::after{width:820px;height:480px;left:50%;right:auto;top:470px;margin-left:-60px;background:radial-gradient(closest-side,rgba(47,208,255,.5),rgba(77,141,255,.26) 55%,transparent 75%)}
 .cta-box::before{background:radial-gradient(closest-side,rgba(77,141,255,.38),rgba(167,139,250,.16) 55%,transparent 75%);filter:blur(60px)}
+
+/* hero bez mgławic */
+.hero::before,.hero::after{display:none}
