@@ -46,7 +46,7 @@ LOGOS = {
 }
 
 ACCESS = 'mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy'
-NAV = [('produkt.html','Produkt'),('integracje.html','Integracje'),('ai.html','AI w Tekmie'),('dla-kandydatow.html','Dla kandydatów'),('index.html#cennik','Cennik')]
+NAV = [('produkt.html','Produkt'),('integracje.html','Integracje'),('ai.html','AI w Tekmie'),('dla-kandydatow.html','Dla kandydatów'),('/#cennik','Cennik')]
 
 def svg_symbols():
     return '<svg width="0" height="0" style="position:absolute" aria-hidden="true">' + ''.join(f'<symbol id="{k}" viewBox="0 0 {"32 32" if k=="mark" else "14 14" if k=="check" else "24 24"}">{v}</symbol>' for k,v in ICONS.items()) + '</svg>'
@@ -87,7 +87,7 @@ def nav(current):
     return f'''{svg_symbols()}
 <header class="nav" id="nav">
   <div class="wrap nav-in">
-    <a class="logo" href="index.html" aria-label="Tekma — strona główna"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a>
+    <a class="logo" href="/" aria-label="Tekma — strona główna"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a>
     <nav class="nav-links" aria-label="Główna nawigacja">{links}</nav>
     <div class="nav-r"><a class="login" href="app/">Zaloguj się</a><a data-access class="btn btn-ink btn-sm" href="{ACCESS}">Poproś o dostęp</a></div>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mmenu"><span></span></button>
@@ -100,10 +100,10 @@ def nav(current):
 FOOTER = f'''</main>
 <footer class="foot">
   <div class="wrap">
-    <div class="brand"><a class="logo" href="index.html"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a><p>© 2026 Tekma · Rzeszów · dane w UE</p></div>
+    <div class="brand"><a class="logo" href="/"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a><p>© 2026 Tekma · Rzeszów · dane w UE</p></div>
     <div class="foot-cols">
       <div><h5>Produkt</h5><ul><li><a href="produkt.html">Rubryki i karty ocen</a></li><li><a href="integracje.html">Integracje</a></li><li><a href="ai.html">AI w Tekmie</a></li><li><a href="po-zatrudnieniu.html">Pierwsze 90 dni</a></li></ul></div>
-      <div><h5>Firma</h5><ul><li><a href="index.html#jak">Jak to działa</a></li><li><a href="index.html#cennik">Cennik</a></li><li><a href="mailto:hello@tekma.app">Kontakt</a></li></ul></div>
+      <div><h5>Firma</h5><ul><li><a href="/#jak">Jak to działa</a></li><li><a href="/#cennik">Cennik</a></li><li><a href="mailto:hello@tekma.app">Kontakt</a></li></ul></div>
       <div><h5>Zaufanie</h5><ul><li><a href="ai.html#nadzor">RODO i AI Act</a></li><li><a href="dla-kandydatow.html">Dla kandydatów</a></li></ul></div>
     </div>
   </div>
