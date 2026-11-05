@@ -768,3 +768,9 @@ svg:has(>use[href^="#si-"]),svg:has(>use[href^="#i-"]),svg:has(>use[href="#tick"
 .plan-card.pro{background:linear-gradient(180deg,#1a1a1a,#0d0d0d 60%);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 30px 90px -34px rgba(255,255,255,.25)}
 .plan-card h3 em{background:#fff;color:#000}
 .cta-box::before{background:radial-gradient(closest-side,rgba(255,255,255,.2),transparent 70%)}
+
+/* Pro bez wyróżnienia tłem i górną kreską — trzy równe pakiety */
+.plan-card.pro,.plan-card.pro:hover{background:#000;box-shadow:none}
+.plan-card.pro:hover{background:#0a0a0a}
+.plan-card.pro::after{opacity:0}
+.plan-card.pro:hover::after{opacity:1}
