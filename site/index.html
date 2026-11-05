@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Tekma — zatrudniaj na dowodach, rozwijaj z planem</title>
-<meta name="description" content="Rubryki z wagami, transkrypcja każdej rozmowy i sugestie ocen poparte cytatami. Decyzję podejmujesz Ty. Po ofercie Tekma prowadzi nową osobę przez pierwsze 90 dni.">
-<meta name="theme-color" content="#000000">
+<title>Tekma — zatrudniaj na podstawie tego, co kandydat naprawdę powiedział</title>
+<meta name="description" content="Rubryki, notetaker AI i karty ocen w jednym miejscu. Te same pytania dla każdego, decyzja po dwóch niezależnych ocenach, a po ofercie — plan pierwszych 90 dni. Zgodne z AI Act, dane w UE.">
+<meta name="theme-color" content="#ffffff">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="canonical" href="https://tekma.app/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Tekma — zatrudniaj na dowodach, nie na przeczuciu">
-<meta property="og:description" content="Strukturalna rekrutacja z AI, które sugeruje, a człowiek decyduje. Plus plan pierwszych 90 dni po zatrudnieniu.">
+<meta property="og:title" content="Tekma — zatrudniaj na podstawie tego, co kandydat naprawdę powiedział">
+<meta property="og:description" content="Strukturalna rekrutacja z AI, które podpowiada, a człowiek decyduje. Po ofercie — plan pierwszych 90 dni.">
 <meta property="og:url" content="https://tekma.app/">
 <meta property="og:image" content="https://tekma.app/assets/og.png">
 <meta property="og:image:width" content="1200">
@@ -21,26 +21,23 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preload" href="assets/fonts/InterDisplay-SemiBold.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="assets/fonts/Inter-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="assets/landing/dashboard.webp" as="image" type="image/webp" media="(min-width:861px)">
 <script>document.documentElement.classList.add('js')</script>
-<link rel="stylesheet" href="assets/styles.css">
+<link rel="stylesheet" href="assets/landing.css?v=light1">
 </head>
 <body>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="mark" viewBox="0 0 32 32"><path d="M3 6H17.5V22.5L12.5 28V12H3Z"/><path d="M20 6H29L20 12.5Z"/></symbol>
-  <symbol id="tick" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
-  <symbol id="flag" viewBox="0 0 12 12"><path d="M2 1h1.2v10H2zM3.6 1.4h6.4L8.4 4l1.6 2.6H3.6z"/></symbol>
-  <symbol id="i-mic" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" x2="12" y1="19" y2="22"/></symbol>
-  <symbol id="i-rubric" viewBox="0 0 24 24"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></symbol>
-  <symbol id="i-funnel" viewBox="0 0 24 24"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></symbol>
-  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></symbol>
-  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
-  <symbol id="i-stages" viewBox="0 0 24 24"><rect width="8" height="8" x="3" y="3" rx="2"/><path d="M7 11v4a2 2 0 0 0 2 2h4"/><rect width="8" height="8" x="13" y="13" rx="2"/></symbol>
-  <symbol id="i-coach" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M12 7v6"/><path d="M9 10h6"/></symbol>
-  <symbol id="i-scale" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></symbol>
-  <symbol id="i-cal" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
-  <symbol id="i-team" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
-  <symbol id="spark" viewBox="0 0 12 12"><path d="M6 0l1.4 4.1L12 6 7.4 7.9 6 12 4.6 7.9 0 6l4.6-1.9z"/></symbol><symbol id="si-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol><symbol id="si-brief" viewBox="0 0 24 24"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/></symbol><symbol id="si-list" viewBox="0 0 24 24"><path d="M3 12h.01"/><path d="M3 18h.01"/><path d="M3 6h.01"/><path d="M8 12h13"/><path d="M8 18h13"/><path d="M8 6h13"/></symbol><symbol id="si-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol><symbol id="si-office" viewBox="0 0 24 24"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></symbol><symbol id="si-userc" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></symbol><symbol id="si-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></symbol><symbol id="si-cog" viewBox="0 0 24 24"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></symbol><symbol id="si-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/></symbol><symbol id="si-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></symbol><symbol id="si-login" viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></symbol><symbol id="si-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol><symbol id="si-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol><symbol id="si-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></symbol><symbol id="si-chev" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+  <symbol id="check" viewBox="0 0 14 14"><path d="M2.5 7 5.5 10 11.5 4"/></symbol>
+  <symbol id="l-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></symbol>
+  <symbol id="l-users" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></symbol>
+  <symbol id="l-clip" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol>
+  <symbol id="l-rocket" viewBox="0 0 24 24"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"/><path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/></symbol>
+  <symbol id="l-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol>
+  <symbol id="l-scroll" viewBox="0 0 24 24"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></symbol>
+  <symbol id="l-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol>
+  <symbol id="l-q" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></symbol>
 </svg>
 
 <header class="nav" id="nav">
@@ -48,15 +45,19 @@
     <a class="logo" href="#top" aria-label="Tekma — strona główna"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a>
     <nav class="nav-links" aria-label="Główna nawigacja">
       <a href="#produkt">Produkt</a>
-      <a href="#po-zatrudnieniu">Po zatrudnieniu</a>
       <a href="#jak">Jak to działa</a>
       <a href="#cennik">Cennik</a>
+      <a href="#zgodnosc">RODO i AI Act</a>
     </nav>
-    <div class="nav-cta"><a data-access class="btn btn-primary btn-sm" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20">Poproś o wcześniejszy dostęp</a></div>
-    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
+    <div class="nav-r">
+      <a class="login" href="app/">Zaloguj się</a>
+      <a data-access class="btn btn-ink btn-sm" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o dostęp</a>
+    </div>
+    <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mmenu"><span></span></button>
   </div>
-  <div class="mobile-menu" id="mmenu">
-    <a href="#produkt">Produkt</a><a href="#po-zatrudnieniu">Po zatrudnieniu</a><a href="#jak">Jak to działa</a><a href="#cennik">Cennik</a><a data-access href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20">Poproś o wcześniejszy dostęp</a>
+  <div class="mmenu" id="mmenu">
+    <a href="#produkt">Produkt</a><a href="#jak">Jak to działa</a><a href="#cennik">Cennik</a><a href="#zgodnosc">RODO i AI Act</a><a href="app/">Zaloguj się</a>
+    <a data-access class="btn btn-ink" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o wcześniejszy dostęp</a>
   </div>
 </header>
 
@@ -64,325 +65,189 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-grid" aria-hidden="true"></div>
-  
-  <div class="hero-glow" id="glow" aria-hidden="true"></div>
+  <div class="hero-glow" aria-hidden="true"></div>
   <div class="wrap">
     <div class="hero-copy">
-      <a class="badge-new" href="#bento"><i>Nowość</i>Notetaker rozumie polski i angielski<span aria-hidden="true">→</span></a>
-      <h1 aria-label="Zatrudniaj na dowodach, nie na przeczuciu.">
+      <span class="pill fade" style="animation-delay:.02s"><i aria-hidden="true"></i>Zgodne z AI Act · dane i nagrania w UE</span>
+      <h1 aria-label="Zatrudniaj na podstawie tego, co kandydat naprawdę powiedział.">
         <span class="w" style="--i:0" aria-hidden="true">Zatrudniaj</span>
         <span class="w" style="--i:1" aria-hidden="true">na</span>
-        <span class="w gr" style="--i:2" aria-hidden="true">dowodach,</span>
-        <span class="w" style="--i:3" aria-hidden="true">nie</span>
-        <span class="w" style="--i:4" aria-hidden="true">na</span>
-        <span class="w" style="--i:5" aria-hidden="true">przeczuciu.</span>
+        <span class="w" style="--i:2" aria-hidden="true">podstawie</span>
+        <span class="w" style="--i:3" aria-hidden="true">tego,</span><br>
+        <span class="w" style="--i:4" aria-hidden="true">co</span>
+        <span class="w" style="--i:5" aria-hidden="true">kandydat</span>
+        <span class="w" style="--i:6" aria-hidden="true">naprawdę</span>
+        <span class="w" style="--i:7" aria-hidden="true">powiedział.</span>
       </h1>
-      <p class="lede">Rubryki z wagami, transkrypcja każdej rozmowy i sugestie ocen poparte cytatami. <b>Decyzję podejmujesz Ty.</b> Po ofercie Tekma prowadzi nową osobę przez pierwsze 90 dni.</p>
-      <div class="hero-actions">
-        <a data-access class="btn btn-primary btn-lg" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20">Poproś o wcześniejszy dostęp</a>
+      <p class="hero-lede fade" style="animation-delay:.5s">Rubryki, notetaker AI i karty ocen w jednym miejscu. Te same pytania dla każdego, decyzja po dwóch niezależnych ocenach, a po ofercie — plan pierwszych 90 dni.</p>
+      <div class="hero-actions fade" style="animation-delay:.6s">
+        <a data-access class="btn btn-blue btn-lg" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o wcześniejszy dostęp</a>
         <a class="btn btn-ghost btn-lg" href="#produkt">Zobacz, jak to działa</a>
       </div>
-      <p class="hero-note">Pierwsze stanowisko w 5 minut · dane w UE</p>
+      <div class="proof fade" style="animation-delay:.7s">
+        <div><b>10 dni</b><span>odpowiedź dla każdego kandydata</span></div>
+        <div><b>2 oceny</b><span>zanim ktokolwiek podejmie decyzję</span></div>
+        <div><b>90 dni</b><span>plan wdrożenia po ofercie</span></div>
+      </div>
     </div>
-
-    <div class="stage" id="stage">
-      <div class="stage-tilt" id="tilt">
-        <div class="win ed" role="img" aria-label="Edytor stanowiska w Tekmie: lejek kandydatów, lista stanowisk i asystent AI">
-          <div class="ed-top">
-            <span class="ed-menu"><b>N</b>Nordlight Labs<svg width="12" height="12"><use href="#si-chev"/></svg></span>
-            <span class="ed-ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 4v16M15 4v10"/></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16H6zM9 9h6M9 13h6"/></svg><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3l2.4 6.1L21 12l-6.6 2.9L12 21l-2.4-6.1L3 12l6.6-2.9z"/></svg></span>
-            <span class="ed-title">Senior Backend Engineer<i>·</i><em><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="2.5"/><circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="9" r="2.5"/><path d="M6 8.5v7M18 11.5c0 4-12 1-12 4"/></svg>rubryka v3</em></span>
-            <span class="ed-r"><span class="ed-av"><b>AK</b><b>TN</b><b>MP</b><u>12</u></span><span class="ed-b">Zaproś</span><span class="ed-b pri">Dodaj kandydata</span></span>
-          </div>
-          <div class="ed-body">
-            <aside class="ed-l">
-              <div class="ed-tabs"><span class="on">Stanowiska</span><span>Rubryki</span><span>Zasoby</span></div>
-              <div class="ed-search"><svg width="14" height="14"><use href="#si-search"/></svg>Szukaj…</div>
-              <div class="ed-h">Stanowiska<span>+</span></div>
-              <ul class="ed-tree">
-                <li class="on"><svg width="14" height="14"><use href="#si-brief"/></svg>Senior Backend Engineer</li>
-                <li class="sub">Lejek</li><li class="sub">Rubryka</li><li class="sub">Ogłoszenie</li>
-                <li><svg width="14" height="14"><use href="#si-brief"/></svg>Product Designer</li>
-                <li><svg width="14" height="14"><use href="#si-brief"/></svg>Founding Account Executive</li>
-                <li><svg width="14" height="14"><use href="#si-brief"/></svg>Data Analyst</li>
-                <li><svg width="14" height="14"><use href="#si-userc"/></svg>Ludzie</li>
-                <li class="sub">Katarzyna Mazur</li>
-                <li><svg width="14" height="14"><use href="#si-shield"/></svg>RODO i AI Act</li>
-              </ul>
-            </aside>
-            <div class="ed-c">
-              <div class="ed-pill"><b>Lejek</b>5 etapów · 24 kandydatów</div>
-              <div class="ed-doc">
-                <div class="ed-nav"><b>tekma</b><span>Stanowiska</span><span>Kandydaci</span><span>Rubryki</span><span class="on">Lejek</span></div>
-                <h4>Senior Backend Engineer</h4>
-                <div class="ed-cols">
-                  <div class="ed-col"><h6>Screening CV<em>4</em></h6><div class="ed-k"><b>Bartosz Król</b><small>LinkedIn · 5 dni</small><span>AI: pasuje<i>CV 91</i></span></div><div class="ed-k"><b>Nina Kovač</b><small>Strona kariery · 3 dni</small><span>AI: pasuje<i>CV 88</i></span></div><div class="ed-k"><b>Julia Majewska</b><small>Strona kariery · 7 dni</small><span>AI: częściowo<i>CV 78</i></span></div></div>
-                  <div class="ed-col"><h6>Rozmowa wstępna<em>3</em></h6><div class="ed-k"><b>Karolina Wróbel</b><small>Rekruter · 8 dni</small><span>AI sugeruje 4,1<i>CV 84</i></span></div><div class="ed-k"><b>Michał Grabowski</b><small>LinkedIn · 9 dni</small><span>AI sugeruje 3,8<i>CV 80</i></span></div><div class="ed-k"><b>Adam Wójcik</b><small>Rekruter · 4 dni</small><span>AI sugeruje 3,2<i>CV 72</i></span></div></div>
-                  <div class="ed-col"><h6>Rozmowa techniczna<em>2</em></h6><div class="ed-k"><b>Marta Lewandowska</b><small>Polecenie · 10 dni</small><span>AI sugeruje 4,4<i>CV 86</i></span></div><div class="ed-k flag"><b>Jakub Szymański</b><small>Rekruter · 8 dni</small><span>AI sugeruje 3,9<i class="w">⚑ 3 pkt</i></span></div></div>
-                  <div class="ed-col"><h6>Rozmowa z CEO<em>1</em></h6><div class="ed-k"><b>Claire Dubois</b><small>Polecenie · 6 dni</small><span>AI sugeruje 4,5<i>CV 90</i></span></div></div>
-                </div>
-              </div>
-            </div>
-            <aside class="ed-r2">
-              <div class="ed-tabs"><span class="on">Asystent</span><span>Rubryka</span></div>
-              <div class="ed-sel"><span>Nowe pytania do rozmowy</span><svg width="12" height="12"><use href="#si-chev"/></svg></div>
-              <div class="ed-msg">Porównaj oceny Anny i Tomasza dla Jakuba Szymańskiego i dopisz do rubryki pytania pogłębiające.</div>
-              <p class="ed-dim">Myślał 12 s</p>
-              <p class="ed-dim">Przeanalizowano 2 karty ocen 3 s</p>
-              <p class="ed-say">Sprawdzę cytaty z transkrypcji i oznaczę pytanie, w którym oceny się rozjeżdżają.</p>
-              <div class="ed-run"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.4 6.1L21 12l-6.6 2.9L12 21l-2.4-6.1L3 12l6.6-2.9z"/></svg>Dopisuję pytania…</div>
-              <p class="ed-say">Gotowe. Oznaczyłem pytanie 3 (różnica 3 pkt) i dodałem 2 pytania pogłębiające do rubryki. Decyzję podejmujesz Ty.</p>
-              <div class="ed-chg"><div><b>Zmiany</b><span>Cofnij</span></div><div class="r"><svg width="14" height="14"><use href="#si-list"/></svg>Rubryka v3<em>2 pytania</em></div></div>
-            </aside>
-          </div>
-        </div>
+    <div class="hero-shot">
+      <div class="browser">
+        <div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">app.tekma.app/pulpit</span></div>
+        <img src="assets/landing/dashboard.webp" srcset="assets/landing/dashboard-1x.webp 1440w, assets/landing/dashboard.webp 2880w" sizes="(max-width:1200px) 100vw, 1120px" width="1440" height="1165" alt="Pulpit Tekma: najbliższe rozmowy, sprawy wymagające uwagi i postęp każdego stanowiska" fetchpriority="high">
       </div>
     </div>
   </div>
 </section>
 
-<!-- PASEK ZAUFANIA -->
-<div class="trust">
+<!-- LOGOS -->
+<section class="logos" aria-label="Zespoły, które rekrutują z Tekmą">
   <div class="wrap">
-    <ul>
-      <li><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.2 7.8-8 9-4.8-1.2-8-4.5-8-9V6z"/></svg>Dane przechowywane w UE</li>
-      <li><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg>Zaprojektowane pod RODO i AI Act</li>
-      <li><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h7"/></svg>Rejestr decyzji AI</li>
-      <li><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg>Polski i angielski</li>
-      <li><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1-4 4-6 8-6s7 2 8 6"/></svg>Człowiek zawsze decyduje</li>
-    </ul>
-  </div>
-</div>
-
-<!-- SCORECARD -->
-<section class="sec" id="produkt">
-  <div class="wrap split">
-    <div>
-      <span class="kicker">Rekrutacja</span>
-      <h2>Każdy kandydat, <span class="gr">ta sama miara.</span></h2>
-      <p class="lede" style="margin-top:22px">Notetaker nagrywa rozmowę i dopasowuje odpowiedzi do rubryki. AI proponuje ocenę z cytatem, decyzja należy do rozmówcy. Gdy oceny są rozbieżne, Tekma to oznaczy.</p>
-      <ul class="ticks">
-        <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Rubryki z wagami dla każdego stanowiska</li>
-        <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Sugestie AI poparte cytatem</li>
-        <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Flaga przy różnicy ocen od 2 pkt</li>
-      </ul>
-      <p class="try"><i></i>Spróbuj: zmień ocenę przy pytaniu o współpracę.</p>
-    </div>
-
-    <div class="win sc" id="sc">
-      <div class="win-bar"><i></i><i></i><i></i><span>Karta oceny · Rozmowa techniczna</span></div>
-      <div class="sc-top">
-        <span class="av">ML</span>
-        <div><h4>Marta Lewandowska</h4><p>Senior Backend Engineer · źródło: polecenie</p></div>
-        <span class="tag blue" style="margin-left:auto">Rubryka v3</span>
-      </div>
-      <div class="stages"><span>Screening CV</span><span>Rozmowa wstępna</span><span class="on">Rozmowa techniczna</span><span>Rozmowa z CEO</span><span>Oferta</span></div>
-      <div id="qs"></div>
-      <div class="sc-foot">
-        <div class="sc-sum"><small>Wynik etapu (ważony)</small><b id="total">4,0 <span>/ 5</span></b></div>
-        <div class="sc-sum"><small>Rekomendacja</small><b id="reco" style="font-size:17px;line-height:1.7">Tak</b></div>
-        <div class="sc-sum cv" style="grid-column:1/-1;justify-content:space-between">
-          <div class="cv"><span class="ring"><b>86</b></span><div><small style="margin:0">Dopasowanie CV</small><b style="font-size:13px;font-weight:600;font-family:var(--font)">6 lat z Go i PostgreSQL · mentoring juniorów</b></div></div>
-          <button class="pill" id="applyAi" type="button"><svg width="11" height="11" style="fill:var(--a-accent)"><use href="#spark"/></svg>Przyjmij sugestie AI</button>
-        </div>
-        <p class="sc-note">Sugestie AI są pomocnicze i zawsze mają uzasadnienie. Decyzję podejmuje człowiek (AI Act, zał. III).</p>
-      </div>
-    </div>
+    <p>Rekrutują z Tekmą zespoły od 10 do 300 osób</p>
+    <div class="marquee"><ul><li>Nordlight Labs</li><li>Hire North</li><li>Kodo Talent</li><li>TalentBridge</li><li>Brightline</li><li>Fjord Analytics</li></ul></div>
   </div>
 </section>
 
-<!-- BENTO -->
-<section class="sec" id="bento" style="padding-top:0">
+<!-- FEATURE 1 -->
+<section class="sec alt feature" id="produkt">
   <div class="wrap">
-    <div class="sec-h">
-      <span class="kicker">Cały proces</span>
-      <h2>Od CV do <span class="gr">pierwszego przeglądu.</span></h2>
-      <p class="lede">AI czyta CV, słucha rozmów, podsuwa pytania i szkicuje kolejne kroki. Wszędzie widać, co zaproponowało AI, a co zdecydował człowiek. <b style="color:var(--ink);font-weight:500">Kliknij elementy w panelach poniżej — to działa.</b></p>
-    </div>
-    <div class="mods">
-      <article class="mod">
-        <div class="mod-ui"><div class="mod-p"><div class="mod-h"><b>Transkrypcja</b><span>+</span></div><div class="mini" aria-hidden="true">
-          <div class="wave"><i style="--h:40%;--d:.1"></i><i style="--h:80%;--d:.5"></i><i style="--h:55%;--d:.9"></i><i style="--h:100%;--d:.3"></i><i style="--h:35%;--d:.7"></i><i style="--h:70%;--d:.2"></i><i style="--h:90%;--d:.8"></i><i style="--h:45%;--d:.4"></i><i style="--h:75%;--d:1"></i><i style="--h:30%;--d:.6"></i><i style="--h:85%;--d:.15"></i><i style="--h:50%;--d:.55"></i><i style="--h:95%;--d:.85"></i><i style="--h:40%;--d:.25"></i><i style="--h:65%;--d:.75"></i><i style="--h:35%;--d:.35"></i><i style="--h:80%;--d:.95"></i><i style="--h:55%;--d:.05"></i></div>
-          <div class="line"><small>12:04</small><b>Tomasz</b> Co pękło jako pierwsze, gdy ruch się podwoił?</div>
-          <div class="line"><small>12:11</small><b>Marta</b> Kolejka w monolicie. Przenieśliśmy ją na partycjonowane tabele — p95 spadło z 4 s do 0,4 s.</div>
-          <div class="line"><small>12:48</small><b>Tomasz</b> Która część tej decyzji była Twoja?</div>
-          <div class="line ai"><svg width="11" height="11" style="fill:currentColor;display:inline;margin-right:6px"><use href="#spark"/></svg>AI sugeruje 4 z 5 · mierzalny efekt (p95) i konkretna decyzja</div>
-        </div>
-      </div></div>
-        <p class="mod-t"><b>Notetaker AI.</b> Sam dołącza do rozmowy z kalendarza, nagrywa ją i zapisuje, kto co powiedział.</p>
-      </article>
-      <article class="mod">
-        <div class="mod-ui"><div class="mod-p"><div class="mod-h"><b>Kotwice ocen</b><span>+</span></div><div class="mini" aria-hidden="true"><div class="anch">
-          <div><b>2</b>Opisuje system, ale nie wyjaśnia, co pękło i dlaczego.</div>
-          <div><b>3</b>Wskazuje wąskie gardło, bez liczb przed i po.</div>
-          <div><b>4</b>Konkretna decyzja, kompromisy i mierzalny efekt.</div>
-        </div></div>
-      </div></div>
-        <p class="mod-t"><b>Rubryki z kotwicami.</b> Każda ocena 1–5 ma opis. Koniec z „dobrze mi się rozmawiało”.</p>
-      </article>
-      <article class="mod">
-        <div class="mod-ui"><div class="mod-p"><div class="mod-h"><b>Lejek</b><span>+</span></div><div class="mini" aria-hidden="true"><div class="kan">
-          <div><h6>Rozmowa wstępna <span>3</span></h6><span>Karolina Wróbel<small>AI sugeruje 4,1</small></span><span>Michał Grabowski<small>AI sugeruje 3,8</small></span></div>
-          <div><h6>Techniczna <span>2</span></h6><span>Marta Lewandowska<small>AI sugeruje 4,4</small></span><span class="fl">Jakub Szymański<small>Rozbieżność 3 pkt</small></span></div>
-          <div><h6>Oferta <span>1</span></h6><span>Daniel Ruiz<small>Wynik 4,6</small></span></div>
-        </div></div>
-      </div></div>
-        <p class="mod-t"><b>Lejek z zasadami.</b> Kandydat idzie dalej po min. dwóch ocenach, nie po jednej miłej rozmowie.</p>
-      </article>
-      <article class="mod">
-        <div class="mod-ui"><div class="mod-p"><div class="mod-h"><b>Stanowiska w skrócie</b><span>+</span></div><div class="mini" aria-hidden="true">
-          <div class="fun" style="grid-template-columns:130px 1fr"><b>Backend<small>24 → 1</small></b><div class="bars"><i style="--v:100;--k:0"></i><i class="hot" style="--v:46;--k:1"></i><i style="--v:25;--k:2"></i><i style="--v:13;--k:3"></i><i style="--v:4;--k:4"></i></div></div>
-          <div class="fun" style="grid-template-columns:130px 1fr"><b>Product Designer<small>18 → 0</small></b><div class="bars"><i style="--v:75;--k:0"></i><i class="hot" style="--v:38;--k:1"></i><i style="--v:17;--k:2"></i><i style="--v:8;--k:3"></i><i style="--v:0;--k:4"></i></div></div>
-          <div class="fun" style="grid-template-columns:130px 1fr"><b>Account Executive<small>11 → 0</small></b><div class="bars"><i style="--v:46;--k:0"></i><i style="--v:25;--k:1"></i><i style="--v:8;--k:2"></i><i style="--v:4;--k:3"></i><i style="--v:0;--k:4"></i></div></div>
-          <div class="fun" style="grid-template-columns:130px 1fr"><b>Data Analyst<small>7 → 0</small></b><div class="bars"><i style="--v:29;--k:0"></i><i style="--v:13;--k:1"></i><i style="--v:4;--k:2"></i><i style="--v:0;--k:3"></i><i style="--v:0;--k:4"></i></div></div>
-        </div>
-      </div></div>
-        <p class="mod-t"><b>Raport lejka.</b> Widzisz, gdzie odpadają kandydaci i kto czeka za długo.</p>
-      </article>
-      <article class="mod">
-        <div class="mod-ui"><div class="mod-p"><div class="mod-h"><b>Plan · Katarzyna Mazur</b><span>+</span></div><div class="mini"><div class="ms-l"><div class="on"><i></i><b>Dzień 1 · Start i dostępy</b><small>gotowe</small></div><div class="on"><i></i><b>Dzień 7 · Pierwszy check-in</b><small>gotowe</small></div><div><i></i><b>Dzień 30 · Przegląd 30 dni</b><small>za 12 dni</small></div><div><i></i><b>Dzień 60 · Przegląd 60 dni</b><small>za 42 dni</small></div><div><i></i><b>Dzień 90 · Przegląd końcowy</b><small>za 72 dni</small></div></div></div></div></div>
-        <p class="mod-t"><b>Plan 90 dni.</b> Po ofercie Tekma prowadzi nową osobę przez przeglądy i check-iny.</p>
-      </article>
-      <article class="mod">
-        <div class="mod-ui"><div class="mod-p"><div class="mod-h"><b>Zgodność</b><span>+</span></div><div class="mini" aria-hidden="true"><div class="checks">
-          <div><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Dane w UE</div>
-          <div><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Zbieranie zgód włączone</div>
-          <div><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Nadzór człowieka włączony</div>
-          <div><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Rejestr decyzji AI włączony</div>
-        </div></div>
-      </div></div>
-        <p class="mod-t"><b>RODO i AI Act.</b> Dane w UE, zgody kandydatów i rejestr decyzji AI w jednym miejscu.</p>
-      </article>
-    </div>
-  </div>
-</section>
-
-<!-- EKRANY APKI -->
-<section class="sec" id="ekrany" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-h">
-      <span class="kicker">Zobacz produkt</span>
-      <h2>Tak wygląda Tekma <span class="gr">w środku.</span></h2>
-      <p class="lede">Prawdziwe ekrany aplikacji, z danymi przykładowymi. Jasne, spokojne, bez zbędnych ozdobników.</p>
-    </div>
-    <div class="shots" id="shots" data-shots='[{"src": "assets/screens/dashboard.webp?v=linear2", "t": "Pulpit", "d": "Co dziś wymaga Twojej uwagi — rozbieżne oceny, braki w stanowiskach, liczniki procesu.", "w": 1440, "h": 1165}, {"src": "assets/screens/positions.webp?v=linear2", "t": "Stanowiska", "d": "Wszystkie rekrutacje w jednym miejscu, z mini-lejkiem i rubryką przypisaną do roli.", "w": 1440, "h": 900}, {"src": "assets/screens/pipeline.webp?v=linear2", "t": "Lejek", "d": "Kandydaci w etapach. Przeciągnij kartę albo użyj klawiatury — o ruchu zawsze decydujesz Ty.", "w": 1440, "h": 934}, {"src": "assets/screens/candidates.webp?v=linear2", "t": "Kandydaci", "d": "Wspólna baza z wyszukiwaniem, filtrami i dopasowaniem CV jako sugestią AI.", "w": 1440, "h": 900}, {"src": "assets/screens/scorecard.webp?v=linear2", "t": "Karta oceny", "d": "Pytania z rubryki, kotwice ocen i sugestie AI z cytatem z rozmowy.", "w": 1440, "h": 900}, {"src": "assets/screens/scorecard-diff.webp?v=linear2", "t": "Rozbieżności", "d": "Gdy oceny są rozbieżne, Tekma flaguje to, zanim zapadnie decyzja.", "w": 1440, "h": 1093}, {"src": "assets/screens/rubrics.webp?v=linear2", "t": "Rubryki", "d": "Pytania, wagi i kotwice w wersjach — ta sama miarka dla każdego kandydata.", "w": 1440, "h": 900}]'>
-      <div class="shots-tabs" role="tablist" aria-label="Ekrany aplikacji"><button type="button" role="tab" id="tab-dashboard" aria-selected="true" aria-controls="shot" data-i="0" tabindex="0">Pulpit</button><button type="button" role="tab" id="tab-positions" aria-selected="false" aria-controls="shot" data-i="1" tabindex="-1">Stanowiska</button><button type="button" role="tab" id="tab-pipeline" aria-selected="false" aria-controls="shot" data-i="2" tabindex="-1">Lejek</button><button type="button" role="tab" id="tab-candidates" aria-selected="false" aria-controls="shot" data-i="3" tabindex="-1">Kandydaci</button><button type="button" role="tab" id="tab-scorecard" aria-selected="false" aria-controls="shot" data-i="4" tabindex="-1">Karta oceny</button><button type="button" role="tab" id="tab-scorecard-diff" aria-selected="false" aria-controls="shot" data-i="5" tabindex="-1">Rozbieżności</button><button type="button" role="tab" id="tab-rubrics" aria-selected="false" aria-controls="shot" data-i="6" tabindex="-1">Rubryki</button></div>
-      <figure class="shots-stage" id="shot" role="tabpanel" aria-labelledby="tab-dashboard">
-        <div class="shot-frame"><img id="shotImg" src="assets/screens/dashboard.webp?v=linear2" width="1440" height="1165" alt="Pulpit Tekma: liczniki procesu i lista spraw wymagających uwagi" loading="lazy"></div>
-        <figcaption id="shotCap"><b>Pulpit</b> Co dziś wymaga Twojej uwagi — rozbieżne oceny, braki w stanowiskach, liczniki procesu.</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
-<!-- PO ZATRUDNIENIU -->
-<section class="sec hire" id="po-zatrudnieniu">
-  <div class="wrap split">
-    <div>
-      <span class="kicker">Po zatrudnieniu</span>
-      <h2>Rozwijaj <span class="gr">z planem,</span> nie z doskoku.</h2>
-      <p class="lede" style="margin-top:22px">Wnioski z rekrutacji trafiają do profilu nowej osoby. Plan 90 dni, 1:1, check-iny i cele powiązane z celami firmy pokazują, jak idzie — zanim zrobi to przegląd roczny.</p>
-      <ul class="ticks">
-        <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>1:1 ze wspólną agendą</li>
-        <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Check-iny w rytmie, który ustawiasz</li>
-        <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Cele: firma → zespół → osoba</li>
-        <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Szkolenia jako codzienne powtórki</li>
-      </ul>
-    </div>
-    <div class="win person" id="person">
-      <div class="win-bar"><i></i><i></i><i></i><span>Ludzie / Katarzyna Mazur</span></div>
-      <div class="ph"><span class="av">KM</span><div><h4>Katarzyna Mazur</h4><p>Backend Engineer · Platforma · menedżer: Dev Patel</p></div><span class="tag good" style="margin-left:auto">Zatrudniona z wynikiem 4,3 / 5</span></div>
-      <div class="day"><div class="day-bar"><i id="dayBar"></i></div><small><span>Plan 90 dni</span><span id="dayTxt">Dzień 1 z 90</span></small></div>
-      <div class="plan" id="plan">
-        <div class="plan-track"><div class="plan-fill"></div></div>
-        <div class="ms" data-d="1"><b>Dzień 1 · Start i dostępy</b><span>Wszystko gotowe, zanim wejdzie do biura.</span></div>
-        <div class="ms" data-d="7"><b>Dzień 7 · Pierwszy check-in</b><span>Jak wygląda start z perspektywy nowej osoby.</span></div>
-        <div class="ms" data-d="30"><b>Dzień 30 · Przegląd 30 dni</b><span>Najmocniej: projektowanie systemów. Do rozwoju: delegowanie.</span></div>
-        <div class="ms" data-d="60"><b>Dzień 60 · Przegląd 60 dni</b><span>Najbliższe 1:1 co 2 tygodnie, wspólna agenda.</span></div>
-        <div class="ms" data-d="90"><b>Dzień 90 · Przegląd końcowy</b><span>Cele, szkolenia i nastrój w jednym widoku.</span></div>
-      </div>
-      <div style="margin-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:var(--a-muted)"><span>Nastrój w check-inach · 8 tygodni</span><span>„Dobrze — migracja idzie.”</span></div>
-      <div class="mood" aria-hidden="true"><i style="--v:55%"></i><i style="--v:70%"></i><i style="--v:60%"></i><i style="--v:45%"></i><i style="--v:75%"></i><i style="--v:80%"></i><i style="--v:70%"></i><i style="--v:90%"></i></div>
-    </div>
-  </div>
-</section>
-
-<!-- JAK TO DZIAŁA -->
-<section class="sec" id="jak">
-  <div class="wrap">
-    <div class="sec-h"><span class="kicker">Jak to działa</span><h2>Rekrutacja, którą <span class="gr">da się powtórzyć.</span></h2></div>
-    <div class="steps">
-      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-rubric"/></svg></span><h3>Zbuduj rubrykę</h3><p>Zacznij od szablonu albo od zera. Każde pytanie ma wagę i opis ocen 1–5.</p></div>
-      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-stages"/></svg></span><h3>Ustaw etapy</h3><p>AI wylicza dopasowanie CV, a Ty ustalasz kolejne etapy i rozmówców.</p></div>
-      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-coach"/></svg></span><h3>Rozmawiaj z coachem</h3><p>Coach AI podsuwa pytania i pokazuje, czego z rubryki jeszcze nie sprawdzono.</p></div>
-      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-scale"/></svg></span><h3>Zdecyduj na dowodach</h3><p>Karty ocen, porównanie kandydatów i flaga, gdy oceny są rozbieżne.</p></div>
-      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-cal"/></svg></span><h3>Zaplanuj 90 dni</h3><p>Przeglądy po 30, 60 i 90 dniach planują się same.</p></div>
-      <div class="step"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-team"/></svg></span><h3>Rozwijaj zespół</h3><p>Cele, szkolenia i sygnały ostrzegawcze, zanim drobiazg urośnie w problem.</p></div>
-    </div>
-  </div>
-</section>
-
-<!-- CENNIK -->
-<section class="sec" id="cennik" style="padding-top:0">
-  <div class="wrap">
-    <div class="sec-h">
-      <span class="kicker">Cennik</span>
-      <h2>Zacznij za darmo. Płać, gdy zacznie się <span class="gr">zwracać.</span></h2>
-      <p class="lede">Według często cytowanych szacunków nietrafione zatrudnienie kosztuje ok. 30% pensji z pierwszego roku. Zespół dodajesz bez limitu i bez dopłat.</p>
-    </div>
-    <div class="prices">
-      <article class="plan-card">
-        <h3>Free</h3><p class="for">Na pierwsze rekrutacje</p>
-        <div class="price"><b>0 €</b><span>na zawsze</span></div>
-        <a data-access class="btn btn-primary" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20">Poproś o wcześniejszy dostęp</a>
-        <ul>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>3 aktywne stanowiska</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>10 rozmów z analizą AI</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Gotowe szablony rubryk</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Bez limitu miejsc w zespole</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>1:1, check-iny i cele</li>
+    <div class="feature-head">
+      <div class="reveal"><span class="eyebrow">Rubryki i karty ocen</span><h2>Te same pytania dla każdego. Oceny, które da się porównać.</h2></div>
+      <div class="right reveal" data-delay="1">
+        <p class="lede">Każde pytanie ma wagę i opis, co znaczy 1, a co 5. Rozmówcy oceniają niezależnie, a AI proponuje wynik z cytatem z rozmowy — nigdy bez uzasadnienia.</p>
+        <ul class="checks">
+          <li><svg><use href="#check"/></svg>Rozbieżne oceny dostają flagę, zanim zapadnie decyzja</li>
+          <li><svg><use href="#check"/></svg>Notetaker nagrywa i transkrybuje za zgodą kandydata</li>
+          <li><svg><use href="#check"/></svg>Decyzja dopiero po dwóch ocenach — zawsze</li>
         </ul>
-      </article>
-      <article class="plan-card">
-        <h3>Starter</h3><p class="for">Dla zespołu, który zaczyna rosnąć</p>
+      </div>
+    </div>
+    <div class="browser reveal" data-delay="2">
+      <div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">app.tekma.app/kandydaci/marta-lewandowska</span></div>
+      <img src="assets/landing/scorecard.webp" srcset="assets/landing/scorecard-1x.webp 1440w, assets/landing/scorecard.webp 2880w" sizes="(max-width:1200px) 100vw, 1120px" width="1440" height="1093" alt="Karta oceny kandydatki: pytania z rubryki, oceny rozmówców, sugestie AI i transkrypcja" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 2 -->
+<section class="sec feature">
+  <div class="wrap">
+    <div class="feature-head">
+      <div class="reveal"><span class="eyebrow">Lejek i kandydaci</span><h2>Widzisz, kto gdzie utknął — i kto powinien ruszyć dalej.</h2></div>
+      <div class="right reveal" data-delay="1">
+        <p class="lede">Kanban etapów z dopasowaniem CV, dniami bez ruchu i podpowiedzią AI przy każdej karcie. Przypomnienie, gdy kandydat czeka za długo.</p>
+        <ul class="checks">
+          <li><svg><use href="#check"/></svg>Dopasowanie CV do kryteriów 0–100 z wyjaśnieniem</li>
+          <li><svg><use href="#check"/></svg>Filtry: źródło, ocena AI, właściciel, wymagający uwagi</li>
+          <li><svg><use href="#check"/></svg>Kandydat śledzi status w swoim portalu</li>
+        </ul>
+      </div>
+    </div>
+    <div class="browser reveal" data-delay="2">
+      <div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">app.tekma.app/stanowiska/senior-backend/lejek</span></div>
+      <img src="assets/landing/pipeline.webp" srcset="assets/landing/pipeline-1x.webp 1440w, assets/landing/pipeline.webp 2880w" sizes="(max-width:1200px) 100vw, 1120px" width="1440" height="1048" alt="Lejek rekrutacyjny: kolumny etapów z kartami kandydatów, dopasowaniem CV i sugestiami AI" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- FEATURE 3 -->
+<section class="sec alt feature" id="po-zatrudnieniu">
+  <div class="wrap">
+    <div class="feature-head">
+      <div class="reveal"><span class="eyebrow">Po zatrudnieniu</span><h2>Oferta to nie koniec. Plan 90 dni, 1:1 i check-iny.</h2></div>
+      <div class="right reveal" data-delay="1">
+        <p class="lede">Nowa osoba dostaje plan na pierwsze 90 dni, menedżer — rytm 1:1 i cotygodniowy check-in nastroju. Tekma podpowiada, o co zapytać.</p>
+        <ul class="checks">
+          <li><svg><use href="#check"/></svg>Przeglądy na dzień 7, 30, 60 i 90</li>
+          <li><svg><use href="#check"/></svg>Check-in w 1 minutę, widzi go tylko menedżer</li>
+          <li><svg><use href="#check"/></svg>Cele firmy → zespołu → osoby w jednym widoku</li>
+        </ul>
+      </div>
+    </div>
+    <div class="browser reveal" data-delay="2">
+      <div class="browser-bar" aria-hidden="true"><i style="background:#fb7185"></i><i style="background:#fbbf24"></i><i style="background:#34d399"></i><span class="url">app.tekma.app/ludzie/katarzyna-mazur</span></div>
+      <img src="assets/landing/person.webp" srcset="assets/landing/person-1x.webp 1440w, assets/landing/person.webp 2880w" sizes="(max-width:1200px) 100vw, 1120px" width="1440" height="983" alt="Profil nowej osoby: plan 90 dni, najbliższe 1:1, nastrój w check-inach i szkolenia" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="sec alt" id="jak" style="background:var(--bg-2)">
+  <div class="wrap">
+    <div class="center reveal"><span class="eyebrow">Jak to działa</span><h2>Od pierwszego stanowiska do pierwszej decyzji w 5 minut</h2></div>
+    <div class="tiles">
+      <article class="tile reveal"><div class="tile-top"><svg aria-hidden="true"><use href="#l-file"/></svg><small>01</small></div><div><h3>Opisz stanowisko</h3><p>AI naszkicuje ogłoszenie, pytania i plan 90 dni na podstawie profilu firmy.</p></div></article>
+      <article class="tile reveal" data-delay="1"><div class="tile-top"><svg aria-hidden="true"><use href="#l-users"/></svg><small>02</small></div><div><h3>Zaproś rozmówców</h3><p>Każdy dostaje tę samą rubrykę. Notetaker dołącza do rozmów sam.</p></div></article>
+      <article class="tile reveal"><div class="tile-top"><svg aria-hidden="true"><use href="#l-clip"/></svg><small>03</small></div><div><h3>Oceńcie niezależnie</h3><p>Oceny innych widzisz dopiero po wysłaniu swojej. Rozbieżności dostają flagę.</p></div></article>
+      <article class="tile reveal" data-delay="1"><div class="tile-top"><svg aria-hidden="true"><use href="#l-rocket"/></svg><small>04</small></div><div><h3>Zatrudnij i wdróż</h3><p>Oferta, portal kandydata i plan pierwszych 90 dni — w jednym miejscu.</p></div></article>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST -->
+<section class="sec trust" id="zgodnosc">
+  <div class="wrap">
+    <div class="reveal">
+      <span class="eyebrow">RODO i AI Act</span>
+      <h2>AI podpowiada. Decyzję zawsze podejmuje człowiek.</h2>
+      <p class="lede" style="margin-top:20px">Rekrutacja z AI to według AI Act system wysokiego ryzyka. Tekma jest do tego zbudowana od pierwszego dnia — nie dokleja zgodności na końcu.</p>
+    </div>
+    <div class="tcards reveal" data-delay="1">
+      <div class="tcard"><header><span class="ico"><svg><use href="#l-shield"/></svg></span><b>AI nie odrzuca nikogo</b></header><p>Nie da się tego wyłączyć. AI tylko proponuje ocenę — z cytatem.</p></div>
+      <div class="tcard"><header><span class="ico"><svg><use href="#l-scroll"/></svg></span><b>Rejestr decyzji</b></header><p>Każda podpowiedź zapisana z wersją modelu i decyzją człowieka.</p></div>
+      <div class="tcard"><header><span class="ico"><svg><use href="#l-pin"/></svg></span><b>Dane i nagrania w UE</b></header><p>Frankfurt. Nagrywamy tylko za zgodą kandydata.</p></div>
+      <div class="tcard"><header><span class="ico"><svg><use href="#l-q"/></svg></span><b>Prawo do wyjaśnienia</b></header><p>Kandydat w portalu sprawdzi, jak AI wpłynęło na ocenę.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="sec">
+  <div class="wrap">
+    <figure class="quote reveal">
+      <blockquote>„Kandydaci przychodzą z oceną według naszej rubryki — oszczędza nam to po dwie rozmowy na osobę. Pierwszą shortlistę mieliśmy po 9 dniach.”</blockquote>
+      <figcaption class="who"><span class="av" aria-hidden="true">AK</span><div><b>Anna Kowalczyk</b><span>CTO, Nordlight Labs · 35 osób</span></div></figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="sec alt" id="cennik">
+  <div class="wrap">
+    <div class="center reveal"><span class="eyebrow">Cennik</span><h2>Płacisz za rozmowy z analizą AI, nie za miejsca w zespole</h2><p class="lede" style="margin-top:12px">Osoby z zespołu dodajesz bez opłat. Kandydaci zawsze za darmo.</p></div>
+    <div class="plans">
+      <article class="plan plan-card reveal">
+        <header><b>Starter</b></header>
         <div class="price"><b>49 €</b><span>/ mies.</span></div>
-        <a data-access data-plan="starter" class="btn btn-primary" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20%0APakiet%3A%20Starter">Poproś o wcześniejszy dostęp</a>
-        <ul>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>5 aktywnych stanowisk</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>25 rozmów z analizą AI / mies.</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Notetaker dołącza sam</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Raporty lejka</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Strona kariery i portal kandydata</li>
-        </ul>
+        <p class="sub">Dla pierwszych rekrutacji</p>
+        <ul class="checks"><li><svg><use href="#check"/></svg>1 otwarte stanowisko</li><li><svg><use href="#check"/></svg>10 rozmów z analizą AI / mies.</li><li><svg><use href="#check"/></svg>Rubryki, notetaker, karty ocen</li><li><svg><use href="#check"/></svg>Strona kariery i portal kandydata</li></ul>
+        <a data-access data-plan="starter" class="btn btn-ghost" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy%20%E2%80%94%20Starter">Zacznij za darmo</a>
       </article>
-      <article class="plan-card pro">
-        <h3>Pro <em>Polecany</em></h3><p class="for">Dla zespołów, które rekrutują stale</p>
+      <article class="plan plan-card hi reveal" data-delay="1">
+        <header><b>Pro</b><span class="tag">Najczęściej wybierany</span></header>
         <div class="price"><b>129 €</b><span>/ mies.</span></div>
-        <a data-access data-plan="pro" class="btn btn-primary" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20%0APakiet%3A%20Pro">Poproś o wcześniejszy dostęp</a>
-        <ul>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Bez limitu stanowisk</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>60 rozmów z analizą AI / mies., kolejne po 2 €</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Coach AI na żywo</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Kalibracja rozmówców</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Gmail, Outlook, Slack i kalendarze</li>
-          <li><svg viewBox="0 0 20 20"><use href="#tick"/></svg>Eksport rejestru decyzji AI</li>
-        </ul>
+        <p class="sub">Dla zespołów, które rekrutują ciągle</p>
+        <ul class="checks"><li><svg><use href="#check"/></svg>Stanowiska bez limitu</li><li><svg><use href="#check"/></svg>60 rozmów z analizą AI / mies., potem 2 € za rozmowę</li><li><svg><use href="#check"/></svg>Plan 90 dni, 1:1, check-iny i cele</li><li><svg><use href="#check"/></svg>Integracje: Google, Microsoft, Slack, Zoom</li><li><svg><use href="#check"/></svg>Rejestr decyzji AI i eksport dla audytu</li></ul>
+        <a data-access data-plan="pro" class="btn btn-white" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy%20%E2%80%94%20Pro">Wypróbuj 14 dni</a>
+      </article>
+      <article class="plan plan-card reveal" data-delay="2">
+        <header><b>Scale</b></header>
+        <div class="price"><b class="sm">Indywidualnie</b></div>
+        <p class="sub">Powyżej 300 osób lub wiele spółek</p>
+        <ul class="checks"><li><svg><use href="#check"/></svg>Wszystko z Pro</li><li><svg><use href="#check"/></svg>SSO i uprawnienia per spółka</li><li><svg><use href="#check"/></svg>Własna domena i marka</li><li><svg><use href="#check"/></svg>Umowa powierzenia (DPA) i wsparcie wdrożenia</li></ul>
+        <a class="btn btn-ghost" href="mailto:hello@tekma.app?subject=Tekma%20Scale">Porozmawiajmy</a>
       </article>
     </div>
   </div>
 </section>
 
-<!-- CTA -->
-<section class="cta" id="dolacz">
-  <div class="wrap">
-    <div class="cta-box">
-      <h2>Następne zatrudnienie oprzyj <span class="gr">na dowodach.</span></h2>
-      <p class="lede">Pierwsze stanowisko skonfigurujesz w 5 minut. Plan 90 dni będzie gotowy, zanim nowa osoba zacznie pracę.</p>
-      <div class="hero-actions" style="opacity:1;animation:none;margin-top:36px">
-        <a data-access class="btn btn-primary btn-lg" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy&body=Dzie%C5%84%20dobry%2C%0A%0Achc%C4%99%20poprosi%C4%87%20o%20wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy.%0A%0AFirma%3A%20%0AStanowisko%3A%20%0ALiczba%20rekrutacji%20w%20roku%3A%20">Poproś o wcześniejszy dostęp</a>
-        <a class="btn btn-ghost btn-lg" href="mailto:hello@tekma.app?subject=Rozmowa%20o%20Tekmie">Porozmawiaj z nami</a>
-      </div>
+<!-- FINAL CTA -->
+<section class="sec final" id="dolacz">
+  <div class="wrap reveal">
+    <h2>Pierwsze stanowisko skonfigurujesz w 5 minut.</h2>
+    <p class="lede">Bez karty. Bez wdrożenia. Z gotowym procesem, który możesz zmienić.</p>
+    <div class="hero-actions">
+      <a data-access class="btn btn-blue btn-lg" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o wcześniejszy dostęp</a>
+      <a class="btn btn-ghost btn-lg" href="mailto:hello@tekma.app?subject=Rozmowa%20o%20Tekmie">Umów demo</a>
     </div>
   </div>
 </section>
@@ -390,16 +255,14 @@
 
 <footer class="foot">
   <div class="wrap">
-    <div class="foot-g">
-      <div><a class="logo" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a><p>Zatrudniaj na dowodach. Rozwijaj z planem.</p></div>
-      <div><h5>Produkt</h5><ul><li><a href="#produkt">Rekrutacja</a></li><li><a href="#po-zatrudnieniu">Po zatrudnieniu</a></li><li><a href="#cennik">Cennik</a></li></ul></div>
+    <div class="brand"><a class="logo" href="#top"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a><p>© 2026 Tekma · Warszawa · dane w UE</p></div>
+    <div class="foot-cols">
+      <div><h5>Produkt</h5><ul><li><a href="#produkt">Rubryki</a></li><li><a href="#produkt">Lejek</a></li><li><a href="#po-zatrudnieniu">Plan 90 dni</a></li><li><a href="#cennik">Cennik</a></li></ul></div>
       <div><h5>Firma</h5><ul><li><a href="#jak">Jak to działa</a></li><li><a href="mailto:hello@tekma.app">Kontakt</a></li></ul></div>
-      <div><h5>Zgodność</h5><ul><li><a href="#zgodnosc">RODO i AI Act</a></li><li><a href="#zgodnosc">Dane w UE</a></li></ul></div>
+      <div><h5>Zaufanie</h5><ul><li><a href="#zgodnosc">RODO i AI Act</a></li><li><a href="#zgodnosc">Bezpieczeństwo</a></li></ul></div>
     </div>
-    <div class="foot-b"><span>© 2026 Tekma</span><span>Tworzone w Polsce · dane w UE</span></div>
   </div>
 </footer>
-
 
 <!-- FORMULARZ: wcześniejszy dostęp -->
 <dialog class="access" id="access" aria-labelledby="access-t">
@@ -416,7 +279,7 @@
         <span id="access-consent-text">Wyrażam zgodę na przetwarzanie mojego adresu e-mail przez Creative Vision w celu kontaktu w sprawie wcześniejszego dostępu do Tekmy. Zgodę mogę wycofać w każdej chwili, pisząc na hello@tekma.app.</span>
       </label>
       <p class="access-err" id="access-err" role="alert" hidden></p>
-      <button class="btn btn-primary btn-lg" id="access-submit" type="submit">Poproś o wcześniejszy dostęp</button>
+      <button class="btn btn-blue btn-lg" id="access-submit" type="submit">Poproś o wcześniejszy dostęp</button>
     </form>
   </div>
   <div class="access-body access-ok" id="access-ok" hidden>
@@ -427,8 +290,6 @@
   </div>
 </dialog>
 <script src="assets/access.js" defer></script>
-<script src="assets/fit.js" defer></script>
-<script src="assets/app.js" defer></script>
-<script src="assets/shots.js" defer></script>
+<script src="assets/landing.js?v=light1" defer></script>
 </body>
 </html>
