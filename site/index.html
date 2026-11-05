@@ -204,8 +204,8 @@
   <div class="wrap">
     <div class="tpl-head reveal">
       <span class="eyebrow">Ogłoszenia, które wyglądają jak marka</span>
-      <h2>Grafika do ogłoszenia w minutę. Z widełkami, w 4 formatach.</h2>
-      <p class="lead">LinkedIn, Instagram, Story, Facebook. Tekma układa grafikę z danych stanowiska, więc nie otwierasz Canvy. W Free dostajesz 3 szablony, Pro odblokowuje wszystkie.</p>
+      <h2>100 stylów grafik do ogłoszeń. Z widełkami, w 4 formatach, w minutę.</h2>
+      <p class="lead">LinkedIn, Instagram, Story, Facebook. Tekma układa grafikę z danych stanowiska, więc nie otwierasz Canvy. W Free dostajesz 3 style, a Pro odblokowuje wszystkie 100.</p>
     </div>
     <div class="tpl-grid" id="tplGrid" aria-label="Szablony ogłoszeń"></div>
     <div class="tpl-cta reveal"><a class="btn btn-ink btn-lg" href="app/index.html#/signup">Zrób pierwszą grafikę za darmo</a><span class="tpl-note">Bez karty. 3 szablony zostają z Tobą na zawsze.</span></div>
@@ -300,14 +300,15 @@ if (grid) {
   const data = { title: 'Product Designer', org: 'Nord', dept: 'Produkt', salary: '16 000–22 000', currency: 'PLN', meta: ['Praca hybrydowa', 'Umowa o pracę / B2B'] };
   const opts = { headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
   const nLocked = TEMPLATES.length - FREE.length;
-  TEMPLATES.forEach((t) => {
+  const SHOW = [...FREE, 'noir', 'brutal', 'aurora', 'glass', 'terminal', 'editorial', 'gradient', 'blueprint', 'outline'];
+  SHOW.map((id) => TEMPLATES.find((q) => q.id === id)).forEach((t) => {
     const free = FREE.includes(t.id);
     const el = document.createElement('a'); el.href = 'app/index.html#/signup'; el.className = 'tpl-card' + (free ? '' : ' is-locked');
     el.innerHTML = '<span class="tpl-th"><canvas></canvas>' + (free ? '<i class="tpl-free">Free</i>' : '<i class="tpl-lk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Pro</i>') + '</span><b>' + t.name + '</b><small>' + t.hint + '</small>';
     grid.append(el);
-    renderGraphic(el.querySelector('canvas'), { template: t.id, format: 'li', palette: 'tekma', data, opts, seed: 7 });
+    renderGraphic(el.querySelector('canvas'), { template: t.id, format: 'li', palette: 'tekma', data, opts, seed: 7, scale: 0.4 });
   });
-  const more = document.createElement('div'); more.className = 'tpl-more'; more.innerHTML = '<b>+' + nLocked + ' szablonów w Pro</b><span>Nowe style co miesiąc</span>'; grid.append(more);
+  const more = document.createElement('div'); more.className = 'tpl-more'; more.innerHTML = '<b>+' + (TEMPLATES.length - SHOW.length) + ' kolejnych stylów w Pro</b><span>Razem ' + TEMPLATES.length + ' stylów, nowe co miesiąc</span>'; grid.append(more);
 }
 </script>
 <script src="assets/access.js" defer></script>

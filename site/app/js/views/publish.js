@@ -86,29 +86,41 @@ export default async function render(ctx) {
     let token = 0;
     const big = h('canvas', { class: 'gx-big', 'aria-label': 'Podgląd grafiki' });
     const bigWrap = h('div', { class: 'gx-stage' }, big);
+    let rev = 0;
+    const nameLbl = h('b', null, '');
+    const seedLbl = h('span', { class: 'gx-seed muted' }, '');
     const gallery = h('div', { class: 'gx-gal', role: 'listbox', 'aria-label': 'Szablony' });
     const locked = (t) => !isPro && !FREE_TPL.includes(t.id);
     const nLocked = TEMPLATES.filter(locked).length;
-    const upsell = () => ctx.ui.modal({ title: `Odblokuj ${nLocked} szablonów w Pro`, body: h('div', { class: 'gx-up' },
-      h('p', null, `Free ma ${TEMPLATES.length - nLocked} szablony. Pro odblokowuje wszystkie ${TEMPLATES.length} — od Noir i Aurory po Brutal i Blueprint — w każdym formacie: LinkedIn, Instagram, Story, Facebook.`),
-      h('ul', null, ...TEMPLATES.filter(locked).map((t) => h('li', null, h('b', null, t.name), ' — ', t.hint)))),
+    const upsell = () => ctx.ui.modal({ title: `Odblokuj ${nLocked} stylów w Pro`, body: h('div', { class: 'gx-up' },
+      h('p', null, `Free ma ${TEMPLATES.length - nLocked} style. Pro odblokowuje wszystkie ${TEMPLATES.length}: jasne, nocne, żywe i papierowe, w każdym formacie — LinkedIn, Instagram, Story i Facebook — oraz wyłączenie znaku Tekma.`),
+      h('p', { class: 'muted' }, 'Nowe style dochodzą co miesiąc.')),
       actions: [{ label: 'Zobacz plan Pro', variant: 'primary', icon: 'crown', onClick: () => { location.hash = '#/settings/plan'; document.querySelector('.modal .close')?.click(); } }] });
+    const TONE_LBL = { light: 'Jasne', dark: 'Nocne', vivid: 'Żywe', paper: 'Papier' };
+    let filter = 'all';
+    const queue = { busy: false, items: [] };
+    const pump = async () => { if (queue.busy) return; queue.busy = true; while (queue.items.length) { const b = queue.items.shift(); if (!b.isConnected || b._rev === rev) continue; b._rev = rev; const f = FORMATS.find((q) => q.id === gfx.format); await renderGraphic(b._c, { template: b.dataset.id, format: gfx.format, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed, scale: Math.min(1, 360 / f.w) }); } queue.busy = false; };
+    const want = (b) => { if (b._rev !== rev && !queue.items.includes(b)) { queue.items.push(b); pump(); } };
+    const io = new IntersectionObserver((es) => es.forEach((e) => { e.target._vis = e.isIntersecting; if (e.isIntersecting) want(e.target); }), { rootMargin: '300px' });
     const thumbs = TEMPLATES.map((t) => {
       const lk = locked(t); const c = h('canvas', { class: 'gx-th' });
-      const b = h('button', { type: 'button', class: `gx-card${lk ? ' is-locked' : ''}`, role: 'option', 'aria-selected': 'false', 'data-id': t.id, 'aria-label': lk ? `${t.name} — szablon Pro` : t.name, title: t.hint, on: { click: () => { if (lk) { upsell(); return; } gfx.template = t.id; draw(); } } },
-        h('span', { class: 'gx-thw' }, c, lk ? h('span', { class: 'gx-lk' }, icon('crown'), 'Pro') : null), h('b', null, t.name), h('small', { class: 'muted' }, t.hint));
-      b._c = c; gallery.append(b); return b;
+      const b = h('button', { type: 'button', class: `gx-card${lk ? ' is-locked' : ''}`, role: 'option', 'aria-selected': 'false', 'data-id': t.id, 'aria-label': lk ? `${t.name} — styl Pro` : t.name, title: t.hint, on: { click: () => { if (lk) { upsell(); return; } gfx.template = t.id; draw(); } } },
+        h('span', { class: 'gx-thw' }, c, lk ? h('span', { class: 'gx-lk' }, icon('crown'), 'Pro') : h('span', { class: 'gx-fr' }, 'Free'), lk ? h('span', { class: 'gx-unl' }, icon('lock'), 'Odblokuj') : null), h('b', null, t.name));
+      b._c = c; b._t = t; io.observe(b); return b;
     });
-    if (nLocked) gallery.append(h('div', { class: 'gx-more' }, h('b', null, `+${nLocked} szablonów w Pro`), h('p', { class: 'muted' }, 'Wszystkie style, nowe co miesiąc. Free zostaje z 3 szablonami na zawsze.'), button({ label: 'Odblokuj Pro', variant: 'primary', size: 'sm', icon: 'crown', onClick: upsell })));
+    const chips = [['all', `Wszystkie · ${TEMPLATES.length}`], ['free', `Free · ${TEMPLATES.length - nLocked}`], ['pro', `Pro · ${nLocked}`], ...Object.entries(TONE_LBL)];
+    const chipBar = h('div', { class: 'gx-chips', role: 'group', 'aria-label': 'Filtr stylów' }, chips.map(([k, l]) => h('button', { type: 'button', class: 'gx-chip', 'aria-pressed': String(filter === k), 'data-k': k, on: { click: () => { filter = k; chipBar.querySelectorAll('button').forEach((q) => q.setAttribute('aria-pressed', String(q.dataset.k === k))); applyFilter(); } } }, l)));
+    function applyFilter() { thumbs.forEach((b) => { const t = b._t; const ok = filter === 'all' || (filter === 'free' && !locked(t)) || (filter === 'pro' && locked(t)) || t.tone === filter; b.hidden = !ok; }); gallery.dataset.empty = String(thumbs.every((b) => b.hidden)); }
+    thumbs.forEach((b) => gallery.append(b));
+    function paintThumbs() { rev++; thumbs.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.id === gfx.template))); thumbs.filter((b) => b._vis && !b.hidden).forEach(want); }
 
-    const seedLbl = h('span', { class: 'gx-seed muted' }, '');
     async function draw() {
       seedLbl.textContent = gfx.seed === 7 ? 'Układ domyślny' : `Układ nr ${gfx.seed}`;
-      const my = ++token; const data = gfxData(); const o = gfxOpts();
-      thumbs.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.id === gfx.template)));
+      const data = gfxData(); const o = gfxOpts();
       await renderGraphic(big, { template: gfx.template, format: gfx.format, palette: gfx.palette, data, opts: o, seed: gfx.seed });
       const f = FORMATS.find((q) => q.id === gfx.format); bigWrap.style.setProperty('--ar', `${f.w} / ${f.h}`); bigWrap.dataset.fmt = gfx.format;
-      for (const b of thumbs) { if (my !== token) return; await renderGraphic(b._c, { template: b.dataset.id, format: gfx.format, palette: gfx.palette, data, opts: o, seed: gfx.seed }); }
+      nameLbl.textContent = TEMPLATES.find((t) => t.id === gfx.template).name;
+      paintThumbs();
     }
 
     const fmts = h('div', { class: 'gx-fmts', role: 'group', 'aria-label': 'Format' }, FORMATS.map((f) => h('button', { type: 'button', class: 'gx-fmt', 'aria-pressed': String(gfx.format === f.id), on: { click: (e) => { gfx.format = f.id; fmts.querySelectorAll('button').forEach((q, i) => q.setAttribute('aria-pressed', String(FORMATS[i].id === f.id))); draw(); } } }, h('b', null, f.label), h('small', { class: 'muted' }, f.note))));
@@ -133,7 +145,7 @@ export default async function render(ctx) {
       for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
       gfx.format = keep; toast('Pobrano wszystkie formaty.', 'good');
     } });
-    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, h('b', null, TEMPLATES.find((t) => t.id === gfx.template).name), seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Szablony · ${TEMPLATES.length}`), h('span', { class: 'muted', style: 'font-size:var(--fs-xs)' }, nLocked ? `${TEMPLATES.length - nLocked} w Free, ${nLocked} w Pro` : '')), gallery);
+    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, nameLbl, seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('div', { class: 'gx-strip-h' }, h('h2', { class: 'st-h', style: 'margin:0' }, `Style · ${TEMPLATES.length}`), chipBar), gallery);
     const wrap = h('div', { class: 'gx' }, side, main2);
     draw();
     return wrap;

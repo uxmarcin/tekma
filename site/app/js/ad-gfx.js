@@ -25,6 +25,8 @@ export const PALETTES = [
   { id: 'mono', name: 'Mono', a: '#18181b', b: '#71717a', c: '#d4d4d8' },
 ];
 
+import { buildStyles } from './ad-styles.js';
+
 /* ---------- pomocnicze ---------- */
 const hex = (h) => { const n = parseInt(h.slice(1), 16); return [(n >> 16) & 255, (n >> 8) & 255, n & 255]; };
 const mix = (a, b, t) => { const x = hex(a), y = hex(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
@@ -161,62 +163,64 @@ const SANS = 'Inter, "Helvetica Neue", Arial, sans-serif';
 const SERIF = 'Georgia, "Times New Roman", serif';
 const MONO = 'ui-monospace, "SF Mono", Menlo, Consolas, monospace';
 
-export const TEMPLATES = [
-  { id: 'mesh', name: 'Mesh', hint: 'Jasny, miękki gradient — znak firmowy Tekmy',
+const HAND = [
+  { id: 'mesh', tone: 'light', name: 'Mesh', hint: 'Jasny, miękki gradient — znak firmowy Tekmy',
     st: (P) => ({ font: SANS, titleWeight: 700, salaryWeight: 700, ink: '#0f0f12', sub: '#5f5f6b', acc: '#0f0f12', cta: 'pill', ctaBg: '#0f0f12', titleTrack: -0.035, align: 'left' }),
     bg(x, W, H, P, r) { x.fillStyle = '#fafafa'; x.fillRect(0, 0, W, H); const m = Math.max(W, H); blob(x, W * (0.1 + r() * 0.2), H * 0.12, m * 0.55, P.a, 0.5); blob(x, W * (0.8 + r() * 0.15), H * 0.15, m * 0.5, P.b, 0.5); blob(x, W * (0.4 + r() * 0.2), H * 1.0, m * 0.55, P.c, 0.42); blob(x, W * 0.92, H * 0.85, m * 0.35, '#fb92b4', 0.38); } },
-  { id: 'noir', name: 'Noir', hint: 'Czarne tło, neonowa poświata i ziarno',
+  { id: 'noir', tone: 'dark', name: 'Noir', hint: 'Czarne tło, neonowa poświata i ziarno',
     st: (P) => ({ font: SANS, titleWeight: 800, salaryWeight: 800, ink: '#fafafa', sub: '#a1a1aa', acc: ensure(P.a, '#09090b'), cta: 'pill', ctaBg: ensure(P.a, '#09090b'), titleTrack: -0.04, align: 'left' }),
     bg(x, W, H, P, r) { x.fillStyle = '#09090b'; x.fillRect(0, 0, W, H); blob(x, W * 0.85, H * 0.95, Math.max(W, H) * 0.7, ensure(P.a, '#09090b', 2), 0.55); blob(x, W * 0.1, H * 0.05, Math.max(W, H) * 0.4, ensure(P.b, '#09090b', 2), 0.22); grain(x, W, H, r, 0.05); },
     deco(x, W, H, P) { x.fillStyle = ensure(P.a, '#09090b'); x.fillRect(0, 0, W, 8); } },
-  { id: 'brutal', name: 'Brutal', hint: 'Neo-brutalizm: grube obrysy, przesunięte cienie, naklejka',
+  { id: 'brutal', tone: 'paper', name: 'Brutal', hint: 'Neo-brutalizm: grube obrysy, przesunięte cienie, naklejka',
     st: (P) => ({ mark: '#000000', font: SANS, titleWeight: 800, salaryWeight: 800, ink: '#000', sub: '#222', acc: '#000', cta: 'brutal', ctaBg: P.b, salary: 'box', salaryBg: P.a, salaryBorder: true, upperTitle: true, titleTrack: -0.03, align: 'left', upperSmall: true }),
     bg(x, W, H, P) { x.fillStyle = '#fff6dc'; x.fillRect(0, 0, W, H); x.strokeStyle = '#000'; x.lineWidth = 6; x.strokeRect(14, 14, W - 28, H - 28); },
     deco(x, W, H, P) { const s = Math.min(W, H) / 1080, r = 112 * s, cx = W - 0.075 * W - r - 4 * s, cy = H - 0.075 * W - 76 * s - r - 270 * s; x.save(); x.translate(cx, cy); x.rotate(0.22); x.fillStyle = '#000'; x.beginPath(); x.arc(8 * s, 8 * s, r, 0, 7); x.fill(); x.fillStyle = P.c; x.beginPath(); x.arc(0, 0, r, 0, 7); x.fill(); x.lineWidth = 5 * s; x.strokeStyle = '#000'; x.stroke(); x.fillStyle = '#000'; x.font = `800 ${28 * s}px ${SANS}`; x.textAlign = 'center'; x.fillText('WIDEŁKI', 0, -4 * s); x.fillText('OD POCZĄTKU', 0, 30 * s); x.restore(); } },
-  { id: 'swiss', name: 'Swiss', hint: 'Siatka, gruba linia, wielki okrąg — styl międzynarodowy',
+  { id: 'swiss', tone: 'paper', name: 'Swiss', hint: 'Siatka, gruba linia, wielki okrąg — styl międzynarodowy',
     st: (P) => ({ font: SANS, titleWeight: 700, salaryWeight: 700, ink: '#0f0f12', sub: '#52525b', acc: ensure(P.a, '#f7f6f2'), cta: 'text', titleTrack: -0.045, align: 'left', upperSmall: true }),
     bg(x, W, H, P) { x.fillStyle = '#f7f6f2'; x.fillRect(0, 0, W, H); x.fillStyle = P.a; x.beginPath(); x.arc(W * 1.0, H * 0.5, Math.min(W, H) * 0.3, 0, 7); x.fill(); x.fillStyle = '#0f0f12'; x.fillRect(0, 0, W, 14); } },
-  { id: 'aurora', name: 'Aurora', hint: 'Ciemne niebo z rozmytymi wstęgami światła',
+  { id: 'aurora', tone: 'dark', name: 'Aurora', hint: 'Ciemne niebo z rozmytymi wstęgami światła',
     st: (P) => ({ mark: '#ffffff', font: SANS, titleWeight: 700, salaryWeight: 700, ink: '#ffffff', sub: '#b4b4c7', acc: '#ffffff', cta: 'pill', ctaBg: '#ffffff', titleTrack: -0.035, align: 'left' }),
-    bg(x, W, H, P, r) { x.fillStyle = '#05060f'; x.fillRect(0, 0, W, H); x.save(); x.filter = `blur(${Math.round(Math.min(W, H) * 0.07)}px)`; [[P.a, 0.35], [P.b, 0.6], [P.c, 0.85]].forEach(([c, t]) => { x.save(); x.translate(W * (0.2 + r() * 0.6), H * t); x.rotate(-0.5 + r() * 0.4); x.fillStyle = rgba(c, 0.6); x.beginPath(); x.ellipse(0, 0, W * 0.65, Math.min(W, H) * 0.12, 0, 0, 7); x.fill(); x.restore(); }); x.restore(); grain(x, W, H, r, 0.035); } },
-  { id: 'glass', name: 'Glass', hint: 'Matowe szkło na kolorowych plamach',
+    bg(x, W, H, P, r) { x.fillStyle = '#05060f'; x.fillRect(0, 0, W, H); x.save(); x.filter = `blur(${Math.round(Math.min(W, H) * 0.07 * (x._sc || 1))}px)`; [[P.a, 0.35], [P.b, 0.6], [P.c, 0.85]].forEach(([c, t]) => { x.save(); x.translate(W * (0.2 + r() * 0.6), H * t); x.rotate(-0.5 + r() * 0.4); x.fillStyle = rgba(c, 0.6); x.beginPath(); x.ellipse(0, 0, W * 0.65, Math.min(W, H) * 0.12, 0, 0, 7); x.fill(); x.restore(); }); x.restore(); grain(x, W, H, r, 0.035); } },
+  { id: 'glass', tone: 'vivid', name: 'Glass', hint: 'Matowe szkło na kolorowych plamach',
     st: (P) => ({ mark: '#ffffff', font: SANS, titleWeight: 700, salaryWeight: 700, ink: '#ffffff', sub: 'rgba(255,255,255,.78)', acc: '#ffffff', cta: 'pill', ctaBg: '#ffffff', titleTrack: -0.03, align: 'left', padExtra: 26 }),
     bg(x, W, H, P, r) { const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, deepen(mix(P.a, '#0b0b1a', 0.35))); g.addColorStop(0.55, deepen(mix(P.b, '#0b0b1a', 0.35))); g.addColorStop(1, deepen(mix(P.c, '#0b0b1a', 0.35))); x.fillStyle = g; x.fillRect(0, 0, W, H); const m = Math.max(W, H); blob(x, W * 0.15, H * 0.2, m * 0.4, P.c, 0.8); blob(x, W * 0.85, H * 0.8, m * 0.45, P.a, 0.8); blob(x, W * 0.7, H * 0.1, m * 0.3, P.b, 0.7); const m2 = Math.min(W, H) * 0.045; x.fillStyle = 'rgba(255,255,255,.14)'; rr(x, 0, m2, m2, W - m2 * 2, H - m2 * 2, 34); x.fill(); x.strokeStyle = 'rgba(255,255,255,.4)'; x.lineWidth = 2; x.stroke(); } },
-  { id: 'pastel', name: 'Pastel', hint: 'Ciepłe, obłe kształty i duży, przyjazny krój',
+  { id: 'pastel', tone: 'light', name: 'Pastel', hint: 'Ciepłe, obłe kształty i duży, przyjazny krój',
     st: (P) => ({ font: SANS, titleWeight: 800, salaryWeight: 800, ink: '#1c1b3a', sub: '#55557a', acc: mix(P.a, '#1c1b3a', 0.25), cta: 'pill', ctaBg: '#1c1b3a', titleTrack: -0.03, align: 'left' }),
     bg(x, W, H, P, r) { x.fillStyle = mix(P.a, '#ffffff', 0.88); x.fillRect(0, 0, W, H); const m = Math.min(W, H); x.fillStyle = mix(P.b, '#ffffff', 0.55); x.beginPath(); x.arc(W * 0.9, H * 0.12, m * 0.3, 0, 7); x.fill(); x.fillStyle = mix(P.c, '#ffffff', 0.55); x.beginPath(); x.ellipse(W * 0.08, H * 0.98, m * 0.4, m * 0.28, 0.3, 0, 7); x.fill(); x.fillStyle = mix(P.a, '#ffffff', 0.6); x.beginPath(); x.arc(W * 0.78, H * 0.72, m * 0.1, 0, 7); x.fill(); } },
-  { id: 'terminal', name: 'Terminal', hint: 'Dla zespołów technicznych: konsola i kod',
+  { id: 'terminal', tone: 'dark', name: 'Terminal', hint: 'Dla zespołów technicznych: konsola i kod',
     st: (P) => ({ mark: '#4ade80', font: MONO, titleWeight: 700, salaryWeight: 700, ink: '#e6ffe9', sub: '#6fbf84', acc: '#4ade80', cta: 'box', titleTrack: -0.02, align: 'left', labelPrefix: '// ', topGap: 30, titleScale: 0.82, salaryScale: 0.85 }),
     bg(x, W, H, P, r) { x.fillStyle = '#07100a'; x.fillRect(0, 0, W, H); const s = Math.min(W, H) / 1080; x.fillStyle = '#0d1b11'; x.fillRect(0, 0, W, 70 * s); ['#ff5f57', '#febc2e', '#28c840'].forEach((c, i) => { x.fillStyle = c; x.beginPath(); x.arc((46 + i * 38) * s, 35 * s, 11 * s, 0, 7); x.fill(); }); x.fillStyle = '#6fbf84'; x.font = `500 ${24 * s}px ${MONO}`; x.fillText('~/jobs/apply.sh', 190 * s, 44 * s); x.fillStyle = 'rgba(74,222,128,.05)'; for (let i = 0; i < H; i += 6) x.fillRect(0, i, W, 1); } },
-  { id: 'editorial', name: 'Editorial', hint: 'Magazynowy układ z szeryfem i cienkimi liniami',
+  { id: 'editorial', tone: 'paper', name: 'Editorial', hint: 'Magazynowy układ z szeryfem i cienkimi liniami',
     st: (P) => ({ mark: '#1a1814', font: SERIF, small: SANS, titleWeight: 700, salaryWeight: 700, ink: '#1a1814', sub: '#6b6558', acc: ensure(P.a, '#f3efe6'), cta: 'text', titleTrack: -0.02, titleLH: 1.02, align: 'left', upperSmall: true, topGap: 14 }),
     bg(x, W, H, P) { x.fillStyle = '#f3efe6'; x.fillRect(0, 0, W, H); const s = Math.min(W, H) / 1080, p = W * 0.05; x.fillStyle = '#1a1814'; x.fillRect(p, p * 0.8, W - p * 2, 3); x.fillRect(p, p * 0.8 + 9, W - p * 2, 1); x.fillRect(p, H - p * 0.8, W - p * 2, 1); x.font = `600 ${20 * s}px ${SANS}`; x.textAlign = 'right'; x.fillStyle = '#6b6558'; x.fillText('LISTOPAD 2026 · REKRUTACJA', W - p, p * 0.8 - 12 * s); x.textAlign = 'left'; } },
-  { id: 'gradient', name: 'Gradient Bold', hint: 'Pełne, żywe tło i gigantyczne widełki',
+  { id: 'gradient', tone: 'vivid', name: 'Gradient Bold', hint: 'Pełne, żywe tło i gigantyczne widełki',
     st: (P) => ({ mark: '#ffffff', font: SANS, titleWeight: 800, salaryWeight: 800, ink: '#ffffff', sub: 'rgba(255,255,255,.85)', acc: '#ffffff', cta: 'pill', ctaBg: '#ffffff', salary: 'box', salaryBg: '#ffffff', titleTrack: -0.04, align: 'left' }),
     bg(x, W, H, P, r) { const g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, deepen(P.a)); g.addColorStop(0.6, deepen(P.b)); g.addColorStop(1, deepen(P.c)); x.fillStyle = g; x.fillRect(0, 0, W, H); x.fillStyle = 'rgba(255,255,255,.1)'; x.beginPath(); x.moveTo(W * 0.55, 0); x.lineTo(W, 0); x.lineTo(W, H * 0.6); x.closePath(); x.fill(); x.fillStyle = 'rgba(0,0,0,.08)'; x.beginPath(); x.moveTo(0, H); x.lineTo(W * 0.5, H); x.lineTo(0, H * 0.55); x.closePath(); x.fill(); } },
-  { id: 'blueprint', name: 'Blueprint', hint: 'Techniczny rysunek: siatka, znaczniki, linie pomocnicze',
+  { id: 'blueprint', tone: 'dark', name: 'Blueprint', hint: 'Techniczny rysunek: siatka, znaczniki, linie pomocnicze',
     st: (P) => ({ mark: '#ffffff', font: SANS, titleWeight: 700, salaryWeight: 700, ink: '#ffffff', sub: 'rgba(255,255,255,.7)', acc: '#ffffff', cta: 'box', salary: 'pill', titleTrack: -0.03, align: 'left', upperSmall: true, ctaBg: '#fff' }),
     bg(x, W, H, P) { x.fillStyle = mix(P.a, '#000', 0.62); x.fillRect(0, 0, W, H); const s = Math.min(W, H) / 1080, g = 40 * s; x.lineWidth = 1; for (let i = 0; i < W; i += g) { x.strokeStyle = `rgba(255,255,255,${Math.round(i / g) % 5 ? 0.07 : 0.16})`; x.beginPath(); x.moveTo(i, 0); x.lineTo(i, H); x.stroke(); } for (let j = 0; j < H; j += g) { x.strokeStyle = `rgba(255,255,255,${Math.round(j / g) % 5 ? 0.07 : 0.16})`; x.beginPath(); x.moveTo(0, j); x.lineTo(W, j); x.stroke(); } x.strokeStyle = 'rgba(255,255,255,.55)'; x.lineWidth = 2; const m = 26 * s, l = 30 * s; [[m, m, 1, 1], [W - m, m, -1, 1], [m, H - m, 1, -1], [W - m, H - m, -1, -1]].forEach(([cx, cy, dx, dy]) => { x.beginPath(); x.moveTo(cx, cy + dy * l); x.lineTo(cx, cy); x.lineTo(cx + dx * l, cy); x.stroke(); }); } },
-  { id: 'outline', name: 'Outline', hint: 'Kontur zamiast wypełnienia, mocny akcent koloru',
+  { id: 'outline', tone: 'dark', name: 'Outline', hint: 'Kontur zamiast wypełnienia, mocny akcent koloru',
     st: (P) => ({ font: SANS, titleWeight: 800, salaryWeight: 800, ink: '#ffffff', sub: '#9ca3af', acc: ensure(P.a, '#0b0b0b', 4), cta: 'box', salary: 'outline', titleStroke: true, upperTitle: true, titleTrack: -0.03, align: 'left', upperSmall: true, titleScale: 0.95 }),
     bg(x, W, H, P) { x.fillStyle = '#0b0b0b'; x.fillRect(0, 0, W, H); const oa = ensure(P.a, '#0b0b0b', 4); x.fillStyle = oa; x.fillRect(0, 0, Math.max(14, W * 0.014), H); x.save(); x.beginPath(); x.rect(W * 0.78, H * 0.78, W * 0.22, H * 0.22); x.clip(); x.strokeStyle = rgba(oa, 0.55); x.lineWidth = 3; for (let i = -H; i < W; i += 22) { x.beginPath(); x.moveTo(W * 0.78 + i, H); x.lineTo(W * 0.78 + i + H, H * 0.78 - 0); x.stroke(); } x.restore(); } },
 ];
 
+export const TEMPLATES = [...HAND, ...buildStyles({ mix, rgba, ensure, deepen, blob, SANS, SERIF, MONO })];
 const FLIPPABLE = new Set(['mesh', 'noir', 'aurora', 'glass', 'pastel', 'gradient']);
 
-export async function renderGraphic(canvas, { template, format, palette, data, opts, seed = 7 }) {
+export async function renderGraphic(canvas, { template, format, palette, data, opts, seed = 7, scale = 1 }) {
   const t = TEMPLATES.find((q) => q.id === template) || TEMPLATES[0];
   const f = FORMATS.find((q) => q.id === format) || FORMATS[0];
   const P = PALETTES.find((q) => q.id === palette) || PALETTES[0];
   try { await Promise.all(['500', '600', '700', '800'].map((w) => document.fonts.load(`${w} 40px Inter`))); } catch { /* czcionka systemowa */ }
-  canvas.width = f.w; canvas.height = f.h;
+  canvas.width = Math.round(f.w * scale); canvas.height = Math.round(f.h * scale);
   const x = canvas.getContext('2d'); const r = rng(seed);
+  x.setTransform(scale, 0, 0, scale, 0, 0); x._sc = scale;
   x.clearRect(0, 0, f.w, f.h);
   // losowanie układu: każdy szablon dostaje inną kolejność kolorów palety, a „miękkie” tła także lustro i inne położenie plam
   const PERM = [[0, 1, 2], [1, 2, 0], [2, 0, 1], [0, 2, 1], [2, 1, 0], [1, 0, 2]];
   const base = [P.a, P.b, P.c]; const pm = seed === 7 ? PERM[0] : PERM[(seed >>> 0) % 6];
   const PP = { ...P, a: base[pm[0]], b: base[pm[1]], c: base[pm[2]] };
-  const flip = seed !== 7 && FLIPPABLE.has(t.id) && ((seed >>> 3) & 1) === 1;
+  const flip = seed !== 7 && (FLIPPABLE.has(t.id) || t.flip) && ((seed >>> 3) & 1) === 1;
   x.save(); if (flip) { x.translate(f.w, 0); x.scale(-1, 1); }
   t.bg(x, f.w, f.h, PP, r);
   if (t.deco) t.deco(x, f.w, f.h, PP);
@@ -231,7 +235,7 @@ export function auditContrast() {
   const bad = [];
   const BASE = { mesh: '#fafafa', noir: '#09090b', swiss: '#f7f6f2', editorial: '#f3efe6', outline: '#0b0b0b', pastel: null, brutal: '#fff6dc', terminal: '#07100a' };
   for (const t of TEMPLATES) for (const P of PALETTES) {
-    const st = t.st(P); const bg = BASE[t.id]; if (!bg) continue;
+    const st = t.st(P); const bg = t.gen ? t.base(P) : BASE[t.id]; if (!bg) continue;
     for (const k of ['acc', 'ink']) if (st[k].startsWith('#') && contrast(st[k], bg) < 3) bad.push(`${t.id}/${P.id}: ${k} ${st[k]} na ${bg} = ${contrast(st[k], bg).toFixed(2)}`);
     if (st.cta === 'pill' && st.ctaBg && contrast(st.ctaBg, bg) < 3) bad.push(`${t.id}/${P.id}: ctaBg ${st.ctaBg} na ${bg}`);
   }
