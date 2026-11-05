@@ -464,6 +464,7 @@ export function mapRestError(status, data) {
   if (code === 'PGRST202' || (status === 404 && m.includes('function'))) {
     return 'Brak funkcji create_org w bazie. Uruchom db/schema.sql w Supabase SQL Editor.';
   }
+  if (code === 'PGRST205' || code === '42P01') return 'Brak tabeli w bazie (relation does not exist). Uruchom brakującą migrację z katalogu db/migrations.';
   if (code === 'PGRST116') return 'Nie znaleziono rekordu. Może został usunięty.';
   if (code === 'PGRST301' || status === 401 || m.includes('jwt expired') || m.includes('jwt')) {
     return 'Sesja wygasła. Zaloguj się ponownie.';

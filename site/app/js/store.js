@@ -249,7 +249,7 @@ export function createStore(adapter) {
   async function guard(fn) {
     try { return await fn(); } catch (e) {
       const msg = String((e && e.message) || '');
-      if (/relation .* does not exist|PGRST205|PGRST204|schema cache|Could not find the table|404/i.test(msg) || (e && (e.status === 404))) {
+      if (/relation .* does not exist|PGRST205|PGRST204|schema cache|Could not find the table|Brak tabeli|Nie znaleziono zasobu|404/i.test(msg) || (e && (e.status === 404))) {
         const err = new Error(NEEDS_MIGRATION); err.code = 'no_table'; throw err;
       }
       throw e;
