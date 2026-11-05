@@ -3,7 +3,7 @@
 Uruchom: python3 tools/build-pages.py   (z katalogu site/)."""
 import os, re, json
 
-V = "light10"
+V = "light11"
 SITE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 ICONS = {

@@ -56,20 +56,20 @@ document.querySelectorAll('[data-car]').forEach(t => {
   const strip = t.querySelector('.car-strip'); if (!strip) return;
   strip.innerHTML += strip.innerHTML;                       // dublujemy, żeby pętla była ciągła
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let paused = false, down = false, sx = 0, sl = 0, last = 0, half = 0;
+  let slow = false, down = false, sx = 0, sl = 0, last = 0, half = 0;
   const measure = () => { half = strip.scrollWidth / 2; };
   measure(); addEventListener('resize', measure);
   const SPEED = 40; // px/s
   const tick = now => {
     if (!last) last = now; const dt = Math.min(50, now - last); last = now;
-    if (!paused && !down && !reduce && half) { t.scrollLeft += SPEED * dt / 1000; if (t.scrollLeft >= half) t.scrollLeft -= half; }
+    if (!down && !reduce && half) { t.scrollLeft += (slow ? SPEED / 3 : SPEED) * dt / 1000; if (t.scrollLeft >= half) t.scrollLeft -= half; }
     requestAnimationFrame(tick);
   };
   requestAnimationFrame(tick);
-  t.addEventListener('pointerenter', () => paused = true);
-  t.addEventListener('pointerleave', () => { paused = false; down = false; t.classList.remove('dragging'); });
-  t.addEventListener('touchstart', () => paused = true, { passive: true });
-  t.addEventListener('touchend', () => setTimeout(() => paused = false, 2500), { passive: true });
+  t.addEventListener('pointerenter', () => slow = true);
+  t.addEventListener('pointerleave', () => { slow = false; down = false; t.classList.remove('dragging'); });
+  t.addEventListener('touchstart', () => down = true, { passive: true });
+  t.addEventListener('touchend', () => setTimeout(() => down = false, 1500), { passive: true });
   t.addEventListener('pointerdown', e => { if (e.pointerType !== 'mouse') return; down = true; sx = e.clientX; sl = t.scrollLeft; t.classList.add('dragging'); });
   addEventListener('pointermove', e => { if (!down) return; t.scrollLeft = sl - (e.clientX - sx); });
   addEventListener('pointerup', () => { if (!down) return; down = false; t.classList.remove('dragging'); });
