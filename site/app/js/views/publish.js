@@ -115,7 +115,7 @@ export default async function render(ctx) {
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Treść'),
         h('label', { class: 'gx-l' }, 'Nagłówek', head), h('label', { class: 'gx-l' }, 'Przycisk', cta),
         tog('showOrg', 'Firma i dział'), tog('showSalary', 'Widełki'), tog('showMeta', 'Tryb pracy i forma umowy'), tog('showCta', 'Przycisk'), tog('showMark', 'Znak Tekma'),
-        noSal ? h('div', { class: 'pb-note', style: 'margin-top:8px' }, h('p', { style: 'margin:0 0 8px' }, tag('Brak widełek', 'warn'), ' Grafika bez widełek nie spełnia zasad jawności wynagrodzeń.'), button({ label: 'Dodaj widełki', variant: 'secondary', size: 'sm', icon: 'edit', onClick: editAd })) : null));
+        noSal ? h('div', { class: 'pb-note', style: 'margin-top:8px' }, h('p', { style: 'margin:0 0 8px' }, tag('Brak widełek', 'warn'), ' Design bez widełek nie spełnia zasad jawności wynagrodzeń.'), button({ label: 'Dodaj widełki', variant: 'secondary', size: 'sm', icon: 'edit', onClick: editAd })) : null));
     const dlOne = button({ label: 'Pobierz PNG', variant: 'primary', icon: 'arrow', onClick: () => save(big, fileName(gfx.format)) });
     const dlAll = button({ label: 'Pobierz wszystkie formaty', variant: 'secondary', onClick: async () => {
       const keep = gfx.format; const c = document.createElement('canvas');
@@ -132,7 +132,7 @@ export default async function render(ctx) {
     paintSide();
     const edit = button({ label: 'Edytuj ogłoszenie', variant: 'secondary', icon: 'edit', onClick: editAd });
     const seg = h('div', { class: 'segment pb-tabs', role: 'group', 'aria-label': 'Widok' },
-      [['page', 'Strona ogłoszenia'], ['gfx', 'Grafiki'], ['post', 'Post na LinkedIn']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(tab === k), on: { click: () => { tab = k; paint(); } } }, l)));
+      [['page', 'Strona ogłoszenia'], ['gfx', 'Design'], ['post', 'Post na LinkedIn']].map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(tab === k), on: { click: () => { tab = k; paint(); } } }, l)));
     main.replaceChildren(h('div', { class: 'pb-row', style: 'justify-content:space-between;margin:0' }, seg, edit), tab === 'page' ? pageTab() : (tab === 'gfx' ? gfxTab() : postTab()));
   }
   paint();
