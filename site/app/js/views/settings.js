@@ -200,7 +200,7 @@ async function zespol(ctx) {
 function brandTile(h, icon, it) {
   const tile = h('span', { class: 'st-int-i', 'aria-hidden': 'true' }, icon(it.icon, 18));
   if (it.logo) {
-    const img = h('img', { src: new URL(`../../../assets/brands/${it.logo}.svg`, import.meta.url).href, alt: '', width: '22', height: '22', loading: 'lazy' });
+    const img = h('img', { src: new URL(`../../../assets/brands/${it.logo}.svg`, import.meta.url).href, alt: '', width: '22', height: '22' });
     img.addEventListener('load', () => { tile.classList.add('has-logo'); tile.replaceChildren(img); });
   }
   return tile;
