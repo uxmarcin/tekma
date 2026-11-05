@@ -83,9 +83,22 @@ h2{font-family:var(--display);font-weight:600;font-size:40px;line-height:1.1;let
 
 /* ---------- hero ---------- */
 .hero{position:relative;padding:88px 0 96px;overflow:hidden}
-.hero-glow{position:absolute;inset:auto 0 0 0;height:900px;pointer-events:none;z-index:0;
-  background:radial-gradient(60% 50% at 50% 60%,rgba(45,104,255,.14),transparent 70%),radial-gradient(30% 30% at 20% 70%,rgba(52,211,153,.12),transparent 70%),radial-gradient(30% 30% at 80% 70%,rgba(192,132,252,.12),transparent 70%);
-  filter:blur(40px);transform:translateY(120px);opacity:.9}
+/* mesh gradient — żywe, powoli dryfujące plamy; kontener reaguje na kursor (--px/--py) */
+.mesh{position:absolute;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+  -webkit-mask-image:linear-gradient(#000 62%,transparent);mask-image:linear-gradient(#000 62%,transparent)}
+.mesh i{translate:calc(var(--px,0)*44px) calc(var(--py,0)*30px);transition:translate .9s var(--ease);position:absolute;border-radius:50%;filter:blur(72px);will-change:transform;mix-blend-mode:normal}
+.mesh i:nth-child(1){width:46vw;max-width:640px;aspect-ratio:1;left:-6%;top:-14%;background:radial-gradient(circle,rgba(45,104,255,.42),transparent 68%);animation:mesh-a 22s ease-in-out infinite alternate}
+.mesh i:nth-child(2){width:40vw;max-width:560px;aspect-ratio:1;right:-4%;top:-8%;background:radial-gradient(circle,rgba(192,132,252,.42),transparent 68%);animation:mesh-b 26s ease-in-out infinite alternate}
+.mesh i:nth-child(3){width:42vw;max-width:600px;aspect-ratio:1;left:22%;bottom:-24%;background:radial-gradient(circle,rgba(52,211,153,.36),transparent 68%);animation:mesh-c 24s ease-in-out infinite alternate}
+.mesh i:nth-child(4){width:30vw;max-width:420px;aspect-ratio:1;right:14%;bottom:-6%;background:radial-gradient(circle,rgba(251,146,180,.34),transparent 68%);animation:mesh-d 19s ease-in-out infinite alternate}
+@keyframes mesh-a{to{transform:translate3d(14vw,10%,0) scale(1.18)}}
+@keyframes mesh-b{to{transform:translate3d(-12vw,18%,0) scale(.88)}}
+@keyframes mesh-c{to{transform:translate3d(-16vw,-12%,0) scale(1.15)}}
+@keyframes mesh-d{to{transform:translate3d(-10vw,-22%,0) scale(1.25)}}
+.mesh.soft i{filter:blur(80px);opacity:.7}
+.mesh.full{-webkit-mask-image:none;mask-image:none}
+@media (max-width:700px){.mesh i{filter:blur(56px)}.mesh i:nth-child(1),.mesh i:nth-child(2){width:80vw}.mesh i:nth-child(3),.mesh i:nth-child(4){width:70vw}}
+@media (prefers-reduced-motion:reduce){.mesh i{animation:none}.mesh i{transition:none}}
 .hero .wrap{position:relative;z-index:1}
 .hero-copy{display:flex;flex-direction:column;align-items:center;text-align:center;gap:28px}
 .pill{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:var(--blue-soft);color:var(--blue-ink);font-size:13px;font-weight:500}
@@ -186,7 +199,8 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
 .plan .btn{width:100%}
 
 /* ---------- final cta ---------- */
-.final{text-align:center}
+.final{text-align:center;position:relative;overflow:hidden}
+.final>.wrap{position:relative;z-index:1}
 .final h2{font-size:44px;max-width:20ch;margin-inline:auto}
 .final .lede{font-size:18px;margin:24px 0}
 .final .hero-actions{justify-content:center}

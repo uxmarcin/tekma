@@ -75,3 +75,13 @@ document.querySelectorAll('[data-car]').forEach(t => {
   addEventListener('pointerup', () => { if (!down) return; down = false; t.classList.remove('dragging'); });
   t.addEventListener('click', e => { if (Math.abs(t.scrollLeft - sl) > 5) e.preventDefault(); }, true);
 });
+
+/* mesh: delikatny paralaksa za kursorem (tylko myszka, bez reduced-motion) */
+(() => {
+  const m = document.querySelector('.hero > .mesh');
+  if (!m || matchMedia('(prefers-reduced-motion: reduce)').matches || !matchMedia('(pointer: fine)').matches) return;
+  addEventListener('pointermove', e => {
+    m.style.setProperty('--px', (e.clientX / innerWidth - .5).toFixed(3));
+    m.style.setProperty('--py', (e.clientY / innerHeight - .5).toFixed(3));
+  }, { passive: true });
+})();
