@@ -224,10 +224,14 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       if (!session) return null;
       if (orgCache) return orgCache;
       const uid = requireUserId();
-      const rows = await rest('/members', { query: { select: 'role,org:organizations(id,name)', user_id: `eq.${uid}`, limit: 1 } });
+      let rows;
+      try { rows = await rest('/members', { query: { select: 'role,org:organizations(id,name,logo)', user_id: `eq.${uid}`, limit: 1 } }); }
+      catch (e) { // kolumna `logo` jeszcze nie istnieje (migracja 1.4) — działamy bez logo
+        rows = await rest('/members', { query: { select: 'role,org:organizations(id,name)', user_id: `eq.${uid}`, limit: 1 } });
+      }
       const m = Array.isArray(rows) ? rows[0] : null;
       if (!m || !m.org) return null;
-      orgCache = { id: m.org.id, name: m.org.name, role: m.role };
+      orgCache = { id: m.org.id, name: m.org.name, role: m.role, logo: m.org.logo || null };
       return orgCache;
     },
     async create({ name }) {
@@ -249,6 +253,17 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       const row = Array.isArray(rows) ? rows[0] : rows;
       if (!row) throw new Error('Nazwę firmy może zmienić tylko właściciel.');
       orgCache = { ...orgCache, name: row.name };
+      return orgCache;
+    },
+    /** Logo firmy (data-URL albo null). Wymaga migracji db/migrations/1.4-org-logo.sql. */
+    async setLogo(dataUrl) {
+      const oid = await orgId();
+      let rows;
+      try { rows = await rest('/organizations', { method: 'PATCH', headers: { Prefer: 'return=representation' }, query: { id: `eq.${oid}` }, body: { logo: dataUrl || null } }); }
+      catch (e) { throw new Error('Nie udało się zapisać logo. Upewnij się, że w bazie uruchomiono migrację 1.4 (kolumna logo).'); }
+      const row = Array.isArray(rows) ? rows[0] : rows;
+      if (!row) throw new Error('Logo firmy może zmienić tylko właściciel.');
+      orgCache = { ...orgCache, logo: row.logo || null };
       return orgCache;
     },
   };

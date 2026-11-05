@@ -9,6 +9,7 @@
  * export default async function render(ctx) -> HTMLElement
  */
 import { getTheme, applyTheme } from '../router.js';
+import { cropLogo, LOGO_ACCEPT } from './logo-crop.js';
 
 const TABS = [
   { key: 'firma', label: 'Firma', href: '#/settings' },
@@ -77,12 +78,47 @@ function firma(ctx) {
 
   const company = h('section', { class: 'card st-card', 'aria-labelledby': 'st-company-h' },
     h('h2', { id: 'st-company-h', class: 'st-h' }, 'Dane firmy'),
-    h('div', { class: 'st-logo-row' },
-      h('span', { class: 'st-logo', 'aria-hidden': 'true' }, ctx.ui.initials(org.name).slice(0, 1)),
-      h('div', null, h('b', null, org.name), h('small', { class: 'muted' }, `Twoja rola: ${(ROLES[org.role] || {}).label || org.role}`))),
+    logoBlock(ctx, org, owner),
     form);
 
   return h('div', { class: 'st-grid' }, company, appearance(ctx));
+}
+
+/** Logo firmy: podgląd, wybór pliku (też przeciągnięciem), kadrowanie, usunięcie. */
+function logoBlock(ctx, org, owner) {
+  const { h, button, toast } = ctx.ui;
+  const mark = h('span', { class: 'st-logo-mark' }, ctx.ui.orgAvatar(org, 'xl'));
+  const input = h('input', { type: 'file', accept: LOGO_ACCEPT, class: 'st-file', tabindex: '-1', 'aria-hidden': 'true' });
+  const apply = async (file) => {
+    if (!file) return;
+    const data = await cropLogo(ctx, file);
+    if (!data) return;
+    try { await ctx.store.org.setLogo(data); await ctx.refreshShell(); toast('Logo firmy zapisane.', 'good'); ctx.navigate('#/settings'); }
+    catch (err) { toast(err.message || 'Nie udało się zapisać logo.', 'bad'); }
+  };
+  input.addEventListener('change', () => { const f = input.files && input.files[0]; input.value = ''; apply(f); });
+  const change = button({ label: org.logo ? 'Zmień logo' : 'Dodaj logo', size: 'sm', variant: 'secondary', disabled: !owner, onClick: () => input.click() });
+  const remove = org.logo ? button({ label: 'Usuń', size: 'sm', variant: 'ghost', disabled: !owner, onClick: async () => {
+    if (!(await ctx.ui.confirm({ title: 'Usunąć logo?', text: 'W miejscu logo znów pokażemy pierwszą literę nazwy firmy.', confirmLabel: 'Usuń logo', danger: true }))) return;
+    try { await ctx.store.org.setLogo(null); await ctx.refreshShell(); toast('Logo usunięte.', 'good'); ctx.navigate('#/settings'); }
+    catch (err) { toast(err.message || 'Nie udało się usunąć logo.', 'bad'); }
+  } }) : null;
+  const row = h('div', { class: 'st-logo-row' },
+    mark,
+    h('div', { class: 'st-logo-t' },
+      h('b', null, org.name),
+      h('small', { class: 'muted' }, `Twoja rola: ${(ROLES[org.role] || {}).label || org.role}`),
+      owner ? h('div', { class: 'st-logo-act' }, change, remove, input) : null));
+  if (!owner) return row;
+  const help = h('p', { class: 'st-logo-help muted' },
+    h('b', null, 'Logo: '), 'najlepiej kwadrat ', h('b', null, '512 × 512 px'), ' (min. 256 × 256). Formaty: PNG, JPG, WebP, GIF, AVIF i SVG (do 8 MB). ',
+    'Pokażemy je w małych rozmiarach (24–48 px), więc proste logo z przezroczystym tłem sprawdza się najlepiej. Możesz je przyciąć po wybraniu pliku.');
+  // przeciągnij i upuść
+  const wrap = h('div', { class: 'st-logo-wrap' }, row, help);
+  for (const ev of ['dragenter', 'dragover']) wrap.addEventListener(ev, (e) => { e.preventDefault(); wrap.classList.add('is-over'); });
+  for (const ev of ['dragleave', 'drop']) wrap.addEventListener(ev, (e) => { e.preventDefault(); if (ev === 'dragleave' && wrap.contains(e.relatedTarget)) return; wrap.classList.remove('is-over'); });
+  wrap.addEventListener('drop', (e) => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) apply(f); });
+  return wrap;
 }
 
 function appearance(ctx) {

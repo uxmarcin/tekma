@@ -111,7 +111,7 @@ export function createLocalAdapter() {
     const m = db.members.find((x) => x.user_id === u.id);
     if (!m) return null;
     const o = db.orgs.find((x) => x.id === m.org_id);
-    return o ? { id: o.id, name: o.name, role: m.role } : null;
+    return o ? { id: o.id, name: o.name, role: m.role, logo: o.logo || null } : null;
   }
   function requireOrg() {
     const o = currentOrg();
@@ -211,6 +211,14 @@ export function createLocalAdapter() {
       db.orgs.find((x) => x.id === cur.id).name = name;
       save();
       return { ...cur, name };
+    },
+    async setLogo(dataUrl) {
+      const cur = requireOrg();
+      if (cur.role !== 'owner') throw new Error('Logo firmy może zmienić tylko właściciel.');
+      if (dataUrl && (!/^data:image\//.test(dataUrl) || dataUrl.length > 300000)) throw new Error('Logo jest zbyt duże. Wybierz mniejszy plik.');
+      db.orgs.find((x) => x.id === cur.id).logo = dataUrl || null;
+      save();
+      return { ...cur, logo: dataUrl || null };
     },
   };
 

@@ -25,6 +25,7 @@
  *   aiBadge(text='AI sugeruje')     -> etykieta sugestii AI (iskra, czerń/szarość — nigdy kolor)
  *   heroState({title, text, action}) -> centralny ekran startowy (nagłówek + jedno główne działanie)
  *   initials(name)                   -> "ML"
+ *   orgAvatar(org, size?)            -> awatar firmy (logo albo litera)
  */
 
 const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -203,6 +204,14 @@ export function field({ label, name, type = 'text', value = '', error = '', hint
 }
 
 /* ---------------------------------------------------------------- avatar / tag */
+/** Awatar firmy: logo (data-URL) albo pierwsza litera nazwy. size: '', 'sm', 'lg'. */
+export function orgAvatar(org, size = '') {
+  const el = h('span', { class: `av dark${size ? ' ' + size : ''}${org && org.logo ? ' has-logo' : ''}`, 'aria-hidden': 'true' });
+  if (org && org.logo) el.append(h('img', { src: org.logo, alt: '', draggable: 'false' }));
+  else el.textContent = org ? initials(org.name).slice(0, 1) : '?';
+  return el;
+}
+
 export function initials(name = '') {
   const parts = String(name).trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return '?';
@@ -375,4 +384,4 @@ export function plural(n, one, few, many) {
   return `${n} ${many}`;
 }
 
-export default { h, icon, iconNames, button, field, avatar, initials, tag, toast, modal, confirm, emptyState, heroState, aiBadge, formError, formSuccess, skeleton, loadCss, formatDate, fmtScore, plural };
+export default { h, icon, iconNames, button, field, avatar, orgAvatar, initials, tag, toast, modal, confirm, emptyState, heroState, aiBadge, formError, formSuccess, skeleton, loadCss, formatDate, fmtScore, plural };

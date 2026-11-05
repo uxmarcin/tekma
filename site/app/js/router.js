@@ -366,7 +366,7 @@ function openUserMenu(trigger, host) {
     h('div', { class: 'pop-head' }, avatar(user ? user.name : ''), h('div', { class: 't' },
       h('strong', null, user ? (user.name || user.email) : ''), h('small', null, user ? user.email : ''))),
     h('hr'),
-    h('div', { class: 'pop-head' }, h('span', { class: 'av dark sm', 'aria-hidden': 'true' }, org ? deps.ui.initials(org.name).slice(0, 1) : '?'),
+    h('div', { class: 'pop-head' }, deps.ui.orgAvatar(org, 'sm'),
       h('div', { class: 't' }, h('strong', null, org ? org.name : '—'), h('small', null, org ? (ROLE_LABEL[org.role] || org.role) : ''))),
     h('hr'),
     themeRow(),

@@ -449,6 +449,8 @@ main:focus-visible,.main:focus-visible,h1:focus-visible{outline:none}
 .av{width:32px;height:32px;flex:none;border-radius:var(--r-round);background:var(--s3);color:var(--ink);display:grid;place-items:center;font-size:11.5px;font-weight:600;letter-spacing:.01em;user-select:none}
 .av.sm{width:24px;height:24px;font-size:9.5px}
 .av.lg{width:40px;height:40px;font-size:13px}
+.av img{width:100%;height:100%;object-fit:cover;border-radius:inherit;display:block}
+.av.has-logo{background:var(--bg);box-shadow:inset 0 0 0 1px var(--border);overflow:hidden}
 .av.dark{background:var(--accent);color:var(--accent-ink)}
 
 /* sugestia AI — zawsze oznaczona iskrą i etykietą, w niebieskim */

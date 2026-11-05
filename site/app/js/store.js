@@ -15,6 +15,7 @@
  *   store.org.current()               -> {id,name,role} | null
  *   store.org.create({name})          -> org (twórca = owner)
  *   store.org.rename(name)            -> org (tylko owner; inaczej Error)
+ *   store.org.setLogo(dataUrl|null)   -> org (tylko owner; data-URL PNG/WebP ≤300 KB)
  *   store.members.list()              -> [{user_id,name,role,created_at,is_me}]
  *   store.members.setRole(user_id, role) -> member (tylko owner; role: owner|recruiter|interviewer)
  *   store.org.loadDemoData()          -> wstawia seed.js do bieżącej firmy (pomija, gdy firma ma już dane)
@@ -176,6 +177,7 @@ export function createStore(adapter) {
     current: () => adapter.org.current(),
     create: (data) => adapter.org.create(data),
     rename: (name) => adapter.org.rename(name),
+    setLogo: (dataUrl) => adapter.org.setLogo(dataUrl),
     async loadDemoData() {
       const o = await adapter.org.current();
       if (!o) throw new Error('Najpierw utwórz firmę.');
