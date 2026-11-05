@@ -310,7 +310,7 @@ function fillNotifs(pop) {
   const body = pop.querySelector('.notif-body');
   const items = notifState.items;
   body.replaceChildren(...(items.length ? items.map((i) => {
-    const a = h('a', { class: `notif-i ${i.tone}${notifState.seen.has(i.key) ? '' : ' is-new'}`, href: i.href }, h('i', { class: 'dot', 'aria-hidden': 'true' }), h('span', null, h('b', null, i.title), i.text ? h('small', null, i.text) : null));
+    const a = notif.notifRow(deps.ui, i, { unread: !notifState.seen.has(i.key) });
     a.addEventListener('click', () => closeNotifs());
     return a;
   }) : [h('div', { class: 'notif-none' }, icon('check', 18), h('b', null, 'Nic pilnego'), h('small', null, 'Gdy coś będzie wymagało uwagi, zobaczysz to tutaj.'))]));

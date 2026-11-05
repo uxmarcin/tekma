@@ -519,7 +519,7 @@ export function createStore(adapter) {
           if (!c) continue;
           attention.push({
             type: 'discrepancy', tone: 'warn', title: 'Rozbieżne oceny',
-            candidate_id: c.id, question_id: worst.qid,
+            candidate_id: c.id, question_id: worst.qid, who: c.full_name, what: `Rozbieżne oceny: różnica ${worst.gap} pkt · ${card.stage}`, at: card.updated_at || null,
             text: `${c.full_name}: oceny różnią się o ${worst.gap} pkt (${card.stage}). Porozmawiajcie, zanim zapadnie decyzja.`,
             href: `#/candidates/${c.id}?stage=${encodeURIComponent(card.stage)}`,
           });
@@ -535,6 +535,7 @@ export function createStore(adapter) {
           const days = Math.round((Date.now() - new Date(c.applied_at).getTime()) / 864e5);
           attention.push({
             type: 'stale', tone: 'info', title: 'Czeka na screening', candidate_id: c.id,
+            who: c.full_name, what: `Czeka na etapie „${first}” od ${days} dni`, at: c.applied_at,
             text: `${c.full_name} czeka na etapie „${first}” od ${days} dni.`,
             href: `#/positions/${c.position_id}`,
           });
@@ -545,6 +546,7 @@ export function createStore(adapter) {
         if (p.status === 'open' && !p.rubric_id) {
           attention.push({
             type: 'no-rubric', tone: 'neutral', title: 'Brak rubryki', position_id: p.id,
+            who: p.title, what: 'Brak rubryki: rozmowy nie będą porównywalne', at: p.created_at || null, icon: 'briefcase',
             text: `${p.title} nie ma przypisanej rubryki — rozmowy nie będą porównywalne.`,
             href: `#/positions/${p.id}`,
           });

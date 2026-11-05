@@ -23,10 +23,8 @@ export default async function render(ctx) {
     const groups = new Map();
     for (const i of shown) { const c = notif.categoryOf(i); (groups.get(c) || groups.set(c, []).get(c)).push(i); }
     const row = (i) => h('li', { class: `ib-i${seen.has(i.key) ? ' done' : ''}` },
-      h('span', { class: `ib-dot ${TONE[i.tone] || 'warn'}`, 'aria-hidden': 'true' }),
-      h('div', { class: 'ib-t' }, h('b', null, i.title), h('p', { class: 'muted' }, i.text || '')),
+      notif.notifRow(ctx.ui, i, { unread: !seen.has(i.key) }),
       h('div', { class: 'ib-a' },
-        h('a', { class: 'btn btn-secondary btn-sm', href: i.href }, 'Otwórz'),
         button({ label: seen.has(i.key) ? 'Przywróć' : 'Załatwione', variant: 'ghost', size: 'sm', onClick: () => { if (seen.has(i.key)) seen.delete(i.key); else seen.add(i.key); persist(); paint(); } })));
     const sections = [...groups].map(([cat, list]) => h('section', { class: 'card ib-g' },
       h('h2', { class: 'ib-h' }, cat, h('span', { class: 'muted' }, String(list.length))),

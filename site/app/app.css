@@ -681,14 +681,22 @@ body.has-modal{overflow:hidden}
 .notif-pop{position:fixed;z-index:60;max-height:min(70vh,520px);display:flex;flex-direction:column;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-pop);overflow:hidden;animation:rise var(--t) var(--ease)}
 .notif-h{padding:14px 16px 10px;border-bottom:1px solid var(--line);font-size:14px}
 .notif-body{overflow-y:auto;padding:6px}
-.notif-i{display:flex;gap:10px;padding:10px;border-radius:var(--r-md);color:inherit;text-decoration:none;transition:background var(--t) var(--ease)}
-.notif-i:hover{background:var(--nav-hover)}
-.notif-i .dot{width:8px;height:8px;margin-top:6px;flex:none;border-radius:50%;background:var(--faint)}
-.notif-i.is-new .dot{background:var(--accent)}
-.notif-i.bad .dot{background:var(--bad)}
-.notif-i.warn.is-new .dot{background:var(--warn)}
-.notif-i b{display:block;font-size:13.5px;font-weight:500;color:var(--ink)}
-.notif-i small{display:block;font-size:var(--fs-xs);color:var(--muted);margin-top:2px}
+/* wiersz powiadomienia (dzwonek i Inbox): awatar → kto + kiedy → co i dlaczego */
+.nt{display:flex;gap:12px;align-items:flex-start;padding:10px;border-radius:var(--r-md);color:inherit;text-decoration:none;min-width:0;flex:1;transition:background var(--t) var(--ease)}
+a.nt:hover{background:var(--nav-hover)}
+.nt-lead{position:relative;flex:none}
+.nt-lead .av,.nt-ic{width:36px;height:36px;font-size:12.5px}
+.nt-ic{display:grid;place-items:center;border-radius:var(--r-round);background:var(--s3);color:var(--ink)}
+.nt-dot{position:absolute;right:-1px;bottom:-1px;width:10px;height:10px;border-radius:50%;background:transparent;box-shadow:0 0 0 2px var(--bg)}
+.nt.is-new .nt-dot{background:var(--accent)}
+.nt.is-new.warn .nt-dot{background:var(--warn)}
+.nt.is-new.bad .nt-dot{background:var(--bad)}
+.nt-t{display:flex;flex-direction:column;gap:2px;min-width:0;flex:1}
+.nt-top{display:flex;align-items:baseline;gap:8px;justify-content:space-between}
+.nt-top b{font-size:14px;font-weight:600;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nt:not(.is-new) .nt-top b{font-weight:500}
+.nt-top time{flex:none;font-size:var(--fs-xs);color:var(--muted)}
+.nt-t small{font-size:var(--fs-sm);line-height:1.4;color:var(--muted)}
 .notif-none{display:flex;flex-direction:column;align-items:center;gap:4px;padding:28px 16px;text-align:center;color:var(--muted)}
 .notif-none b{color:var(--ink);font-size:14px}
 .notif-none small{font-size:var(--fs-xs)}
