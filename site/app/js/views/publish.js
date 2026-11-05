@@ -78,7 +78,7 @@ export default async function render(ctx) {
     const sal = salaryLabel(cur);
     return { title: cur.title, org: ctx.org && ctx.org.name, dept: cur.department, salary: sal ? sal.replace(/\s?[A-Z]{3}$/, '') : '', currency: cur.salary_currency || 'PLN', meta: [workLabel(cur), contractLabel(cur)].filter(Boolean) };
   }
-  const gfxOpts = () => ({ headline: gfx.headline, cta: gfx.cta, showSalary: gfx.showSalary, showMeta: gfx.showMeta, showCta: gfx.showCta, showOrg: gfx.showOrg, showMark: gfx.showMark });
+  const gfxOpts = () => ({ headline: gfx.headline, cta: gfx.cta, showSalary: gfx.showSalary, showMeta: gfx.showMeta, showCta: gfx.showCta, showOrg: gfx.showOrg, showMark: isPro ? gfx.showMark : true });
   const fileName = (fmt) => `${cur.title.replace(/\W+/g, '-').toLowerCase()}-${gfx.template}-${fmt}.png`;
   function save(canvas, name) { canvas.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: name }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); }); }
 
@@ -117,7 +117,7 @@ export default async function render(ctx) {
     const cta = h('input', { class: 'input', type: 'text', maxlength: '40', 'aria-label': 'Tekst przycisku', value: gfx.cta });
     let tm; const later = () => { clearTimeout(tm); tm = setTimeout(draw, 250); };
     head.addEventListener('input', () => { gfx.headline = head.value; later(); }); cta.addEventListener('input', () => { gfx.cta = cta.value; later(); });
-    const tog = (key, label) => { const i = h('input', { type: 'checkbox', checked: gfx[key] }); i.addEventListener('change', () => { gfx[key] = i.checked; draw(); }); return h('label', { class: 'gx-tg' }, i, h('span', null, label)); };
+    const tog = (key, label) => { const lockedMark = key === 'showMark' && !isPro; const i = h('input', { type: 'checkbox', checked: gfx[key], disabled: lockedMark }); i.addEventListener('change', () => { gfx[key] = i.checked; draw(); }); return h('label', { class: 'gx-tg', title: lockedMark ? 'Wyłączenie znaku Tekma jest w planie Pro' : null }, i, h('span', null, label), lockedMark ? h('a', { class: 'gx-pro', href: '#/settings/plan' }, icon('lock'), 'Pro') : null); };
     const noSal = !salaryLabel(cur);
     const side = h('div', { class: 'gx-side' },
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Format'), fmts),

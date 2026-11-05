@@ -104,3 +104,4 @@
 .gx-more{grid-column:1/-1;display:flex;flex-direction:column;align-items:flex-start;gap:8px;padding:18px;border-radius:var(--r-md);border:1px dashed var(--border-strong);background:var(--s2)}
 .gx-more p{margin:0}
 .gx-up ul{margin:12px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:var(--fs-sm)}
+.gx-pro{display:inline-flex;align-items:center;gap:4px;margin-left:auto;font-size:var(--fs-xs);font-weight:600;color:var(--accent);text-decoration:none}.gx-pro svg{width:12px;height:12px}
