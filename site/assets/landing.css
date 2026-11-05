@@ -328,7 +328,7 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
 .car-lede{margin-top:32px;font-family:var(--display);font-weight:500;font-size:32px;line-height:1.25;letter-spacing:-.015em;color:#6b6b75}
 .car-label{margin-top:56px;display:flex;align-items:center;gap:14px;font-family:var(--display);font-weight:600;font-size:34px;letter-spacing:-.02em}
 .car-label svg{width:30px;height:30px;stroke:var(--ink);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
-.car-track{margin-top:40px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
+.car-track{margin-top:40px;overflow-x:auto;scrollbar-width:none;cursor:grab;-webkit-overflow-scrolling:touch}
 .car-track::-webkit-scrollbar{display:none}
 .car-track.dragging{cursor:grabbing;scroll-snap-type:none}
 .car-strip{display:flex;gap:16px;padding-left:max(var(--gutter),calc((100vw - var(--wrap))/2));padding-right:var(--gutter);width:max-content}
