@@ -11,6 +11,7 @@
  */
 
 import { DEFAULT_STAGES } from '../seed.js';
+import { chipsField } from '../chips.js';
 
 const FILTERS = [
   { key: 'open', label: 'Otwarte' },
@@ -166,8 +167,7 @@ export function openNewPosition(ctx, { onCreated } = {}) {
   const department = field({ label: 'Dział', name: 'department', placeholder: 'np. Inżynieria', autocomplete: 'organization-title' });
   const location = field({ label: 'Lokalizacja', name: 'location', placeholder: 'np. Warszawa / zdalnie', autocomplete: 'off' });
   const rubric = field({ label: 'Rubryka ocen', name: 'rubric_id', type: 'select', options: [{ value: '', label: 'Ładowanie rubryk…' }], disabled: true, hint: 'Rubryka sprawia, że oceny rozmówców są porównywalne. Możesz ją przypisać później.' });
-  const stages = field({ label: 'Etapy kanbanu', name: 'stages', type: 'textarea', rows: 5, value: DEFAULT_STAGES.join('\n'), hint: 'Jeden etap w wierszu, w kolejności. Co najmniej 2 etapy. Pierwszy etap to ten, na który trafia nowy kandydat.' });
-  stages.input.setAttribute('spellcheck', 'false');
+  const stages = chipsField({ label: 'Etapy kanbanu', name: 'stages', items: DEFAULT_STAGES, defaults: DEFAULT_STAGES, max: 12, hint: 'Kolejność ma znaczenie: pierwszy etap to ten, na który trafia nowy kandydat. Kliknij etap, aby zmienić nazwę, przeciągnij, aby zmienić kolejność. Co najmniej 2 etapy.' });
 
   const errorSlot = h('div');
   const submit = button({ label: 'Dodaj stanowisko', variant: 'primary', type: 'submit' });
@@ -208,7 +208,7 @@ export function openNewPosition(ctx, { onCreated } = {}) {
     let firstBad = null;
     if (t.length < 2) { title.setError('Podaj nazwę stanowiska (co najmniej 2 znaki).'); firstBad = firstBad || title; }
     if (t.length > 120) { title.setError('Nazwa jest za długa (maksymalnie 120 znaków).'); firstBad = firstBad || title; }
-    if (stageList.list.length < 2) { stages.setError('Kanban potrzebuje co najmniej 2 etapów — po jednym w wierszu.'); firstBad = firstBad || stages; }
+    if (stageList.list.length < 2) { stages.setError('Kanban potrzebuje co najmniej 2 etapów. Dodaj kolejny i naciśnij Enter.'); firstBad = firstBad || stages; }
     else if (stageList.duplicate) { stages.setError(`Etap „${stageList.duplicate}” powtarza się. Każdy etap musi mieć inną nazwę.`); firstBad = firstBad || stages; }
     else if (stageList.list.length > 12) { stages.setError('Za dużo etapów (maksymalnie 12). Krótszy kanban jest czytelniejszy.'); firstBad = firstBad || stages; }
     if (firstBad) { firstBad.input.focus(); return; }
