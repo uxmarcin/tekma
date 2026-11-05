@@ -240,6 +240,17 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       orgCache = { id, name, role: 'owner' };
       return orgCache;
     },
+    /** Zmiana nazwy firmy — RLS pozwala tylko właścicielowi (grant kolumnowy: tylko `name`). */
+    async rename(name) {
+      name = String(name || '').trim();
+      if (name.length < 2) throw new Error('Podaj nazwę firmy (co najmniej 2 znaki).');
+      const oid = await orgId();
+      const rows = await rest('/organizations', { method: 'PATCH', headers: { Prefer: 'return=representation' }, query: { id: `eq.${oid}` }, body: { name } });
+      const row = Array.isArray(rows) ? rows[0] : rows;
+      if (!row) throw new Error('Nazwę firmy może zmienić tylko właściciel.');
+      orgCache = { ...orgCache, name: row.name };
+      return orgCache;
+    },
   };
   async function orgId() {
     const o = await org.current();
@@ -249,6 +260,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
 
   /* ------------------------------------------------ CRUD */
   const REPR = { Prefer: 'return=representation' };
+  const ROLES = ['owner', 'recruiter', 'interviewer'];
   function table(name, { order = 'created_at.desc' } = {}) {
     return {
       async list(filter = {}) {
@@ -289,7 +301,33 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
     },
   };
 
-  return { mode: 'supabase', auth, org, positions, candidates, rubrics, scorecards };
+  /* ------------------------------------------------ członkowie firmy */
+  const members = {
+    async list() {
+      const oid = await orgId();
+      const me = requireUserId();
+      const [ms, ps] = await Promise.all([
+        rest('/members', { query: { select: 'user_id,role,created_at', org_id: `eq.${oid}`, order: 'created_at.asc' } }),
+        rest('/profiles', { query: { select: 'user_id,full_name' } }), // RLS: tylko profile członków tej samej firmy
+      ]);
+      const names = new Map((Array.isArray(ps) ? ps : []).map((p) => [p.user_id, p.full_name]));
+      return (Array.isArray(ms) ? ms : []).map((m) => ({
+        user_id: m.user_id, role: m.role, created_at: m.created_at,
+        name: names.get(m.user_id) || '', is_me: m.user_id === me,
+      }));
+    },
+    async setRole(user_id, role) {
+      if (!ROLES.includes(role)) throw new Error('Nieznana rola.');
+      const oid = await orgId();
+      const rows = await rest('/members', { method: 'PATCH', headers: { Prefer: 'return=representation' }, query: { org_id: `eq.${oid}`, user_id: `eq.${user_id}` }, body: { role } });
+      const row = Array.isArray(rows) ? rows[0] : rows;
+      if (!row) throw new Error('Rolę może zmienić tylko właściciel.');
+      if (orgCache && user_id === requireUserId()) orgCache = { ...orgCache, role };
+      return row;
+    },
+  };
+
+  return { mode: 'supabase', auth, org, members, positions, candidates, rubrics, scorecards };
 }
 
 /* ================================================== mapowanie błędów */

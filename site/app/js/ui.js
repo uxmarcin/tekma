@@ -93,6 +93,7 @@ const ICONS = {
   edit: '<path d="M4 20h4.5L19 9.5a2.1 2.1 0 0 0-3-3L5.5 17 4 20zM13.5 8l3 3"/>',
   user: '<circle cx="12" cy="8.5" r="4"/><path d="M4.5 20.5c.6-4.2 3.6-6.5 7.5-6.5s6.9 2.3 7.5 6.5"/>',
   building: '<rect x="4" y="3.5" width="16" height="17" rx="2"/><path d="M9 20.5v-4h6v4M8 8h2M14 8h2M8 12h2M14 12h2"/>',
+  shield: '<path d="M12 3l7.5 3v5.5c0 4.5-3.1 8-7.5 9.5-4.4-1.5-7.5-5-7.5-9.5V6L12 3z"/><path d="M9 12l2.2 2.2L15.5 10"/>',
   chevron: '<path d="M6 9l6 6 6-6"/>',
   'chevron-right': '<path d="M9 6l6 6-6 6"/>',
   alert: '<path d="M12 3.5l9.5 16.5h-19z"/><path d="M12 10v4.5M12 17.5v.3"/>',

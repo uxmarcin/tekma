@@ -203,6 +203,41 @@ export function createLocalAdapter() {
       save();
       return { id: o.id, name: o.name, role: 'owner' };
     },
+    async rename(name) {
+      const cur = requireOrg();
+      name = String(name || '').trim();
+      if (name.length < 2) throw new Error('Podaj nazwę firmy (co najmniej 2 znaki).');
+      if (cur.role !== 'owner') throw new Error('Nazwę firmy może zmienić tylko właściciel.');
+      db.orgs.find((x) => x.id === cur.id).name = name;
+      save();
+      return { ...cur, name };
+    },
+  };
+
+  /* ------------------------------------------------ członkowie firmy */
+  const ROLES = ['owner', 'recruiter', 'interviewer'];
+  const members = {
+    async list() {
+      const o = requireOrg(); const me = requireUser();
+      await sleep(0);
+      const org = db.orgs.find((x) => x.id === o.id);
+      return db.members.filter((m) => m.org_id === o.id).map((m) => {
+        const u = db.users.find((x) => x.id === m.user_id) || {};
+        return { user_id: m.user_id, role: m.role, created_at: m.created_at || (org && org.created_at) || now(), name: u.name || '', is_me: m.user_id === me.id };
+      });
+    },
+    async setRole(user_id, role) {
+      const o = requireOrg();
+      if (!ROLES.includes(role)) throw new Error('Nieznana rola.');
+      if (o.role !== 'owner') throw new Error('Rolę może zmienić tylko właściciel.');
+      const m = db.members.find((x) => x.org_id === o.id && x.user_id === user_id);
+      if (!m) throw new Error('Nie znaleziono członka zespołu.');
+      if (m.role === 'owner' && role !== 'owner' && db.members.filter((x) => x.org_id === o.id && x.role === 'owner').length < 2) {
+        throw new Error('W firmie musi zostać co najmniej jeden właściciel.');
+      }
+      m.role = role; save();
+      return { ...m };
+    },
   };
 
   /* ------------------------------------------------ generyczne CRUD po org_id */
@@ -261,7 +296,7 @@ export function createLocalAdapter() {
     save();
   }
 
-  return { mode: 'demo', auth, org, positions, candidates, rubrics, scorecards, resetData, _db: () => db };
+  return { mode: 'demo', auth, org, members, positions, candidates, rubrics, scorecards, resetData, _db: () => db };
 }
 
 export default createLocalAdapter;

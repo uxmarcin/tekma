@@ -14,6 +14,9 @@
  *   Tryb demo: signUp loguje od razu (needsConfirmation=false); verifyEmailCode przyjmuje tylko kod demo '123456'.
  *   store.org.current()               -> {id,name,role} | null
  *   store.org.create({name})          -> org (twórca = owner)
+ *   store.org.rename(name)            -> org (tylko owner; inaczej Error)
+ *   store.members.list()              -> [{user_id,name,role,created_at,is_me}]
+ *   store.members.setRole(user_id, role) -> member (tylko owner; role: owner|recruiter|interviewer)
  *   store.org.loadDemoData()          -> wstawia seed.js do bieżącej firmy (pomija, gdy firma ma już dane)
  *   store.positions.list() / get(id) / create({title,department,location,stages?,rubric_id?,description?}) / update(id,patch)
  *   store.candidates.list({position_id?}) / get(id) / create({position_id,full_name,email,source,cv_score?}) / move(id,stage) / reject(id,reason) / update(id,patch)
@@ -172,6 +175,7 @@ export function createStore(adapter) {
   const org = {
     current: () => adapter.org.current(),
     create: (data) => adapter.org.create(data),
+    rename: (name) => adapter.org.rename(name),
     async loadDemoData() {
       const o = await adapter.org.current();
       if (!o) throw new Error('Najpierw utwórz firmę.');
@@ -285,7 +289,12 @@ export function createStore(adapter) {
     resendEmailCode: (args) => (adapter.auth.resendEmailCode ? adapter.auth.resendEmailCode(args) : Promise.reject(new Error('Ten tryb nie obsługuje ponownej wysyłki kodu.'))),
   };
 
-  return { mode: adapter.mode, auth, org, positions, candidates, rubrics, scorecards, stats, adapter };
+  const members = {
+    list: () => adapter.members.list(),
+    setRole: (user_id, role) => adapter.members.setRole(user_id, role),
+  };
+
+  return { mode: adapter.mode, auth, org, members, positions, candidates, rubrics, scorecards, stats, adapter };
 }
 
 const adapter = SUPABASE_URL

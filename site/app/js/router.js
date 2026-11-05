@@ -26,6 +26,9 @@ export const ROUTES = [
   { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
   { pattern: '#/rubrics', view: 'rubrics', layout: 'shell', title: 'Rubryki', nav: 'rubrics' },
   { pattern: '#/rubrics/:id', view: 'rubrics', layout: 'shell', title: 'Rubryka', nav: 'rubrics' },
+  { pattern: '#/settings', view: 'settings', layout: 'shell', title: 'Ustawienia', nav: 'settings' },
+  { pattern: '#/settings/zgodnosc', view: 'settings', layout: 'shell', title: 'RODO i AI Act', nav: 'compliance' },
+  { pattern: '#/settings/:tab', view: 'settings', layout: 'shell', title: 'Ustawienia', nav: 'settings' },
 ];
 
 const NAV = {
@@ -40,7 +43,8 @@ const NAV = {
     { label: 'Cele', icon: 'target' },
   ],
   admin: [
-    { label: 'Ustawienia', icon: 'settings' },
+    { key: 'settings', label: 'Ustawienia', href: '#/settings', icon: 'settings' },
+    { key: 'compliance', label: 'RODO i AI Act', href: '#/settings/zgodnosc', icon: 'shield' },
   ],
 };
 const ROLE_LABEL = { owner: 'Właściciel', recruiter: 'Rekruter', interviewer: 'Rozmówca' };
@@ -247,7 +251,7 @@ function ensureShell() {
       h('div', { class: 'grp' }, 'Po zatrudnieniu'),
       NAV.later.map((n) => h('span', { class: 'nav-soon', 'aria-disabled': 'true', title: 'Ten moduł pojawi się wkrótce' }, icon(n.icon), n.label, h('em', null, 'Wkrótce'))),
       h('div', { class: 'grp' }, 'Administracja'),
-      NAV.admin.map((n) => h('span', { class: 'nav-soon', 'aria-disabled': 'true', title: 'Ten moduł pojawi się wkrótce' }, icon(n.icon), n.label, h('em', null, 'Wkrótce'))),
+      NAV.admin.map((n) => h('a', { href: n.href, 'data-nav': n.key }, icon(n.icon), n.label)),
     ),
     h('div', { class: 'side-foot', 'data-slot': 'user' }),
   );
@@ -367,7 +371,7 @@ function openUserMenu(trigger, host) {
     h('hr'),
     themeRow(),
     h('hr'),
-    item('Ustawienia', 'settings', { disabled: true, soon: true }),
+    item('Ustawienia', 'settings', { onClick: () => { closeUserMenu(host, trigger); navigate('#/settings'); } }),
     item('Wyloguj się', 'logout', { onClick: () => { closeUserMenu(host, trigger); signOut(); } }),
   );
   host.appendChild(pop);

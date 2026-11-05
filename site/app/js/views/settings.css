@@ -1,0 +1,103 @@
+/* views/settings.css — Ustawienia (#/settings…). Tylko tokeny z app.css. Prefiks klas: st-. */
+
+.st{display:flex;flex-direction:column;gap:20px}
+.st-stack{display:flex;flex-direction:column;gap:16px}
+.st-lead{max-width:70ch;font-size:var(--fs-sm)}
+.st-h{font-size:var(--fs-h3);font-weight:600}
+.st-card p{font-size:var(--fs-sm)}
+.st-card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.st-card-h .st-h{margin:0}
+.st-card > .st-h{margin-bottom:14px}
+
+/* zakładki */
+.st-tabs{display:flex;gap:24px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.st-tabs::-webkit-scrollbar{display:none}
+.st-tab{flex:none;padding:10px 0 11px;margin-bottom:-1px;font-size:14px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:color var(--t) var(--ease),border-color var(--t) var(--ease)}
+.st-tab:hover{color:var(--ink)}
+.st-tab[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+
+/* Firma */
+.st-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+.st-logo-row{display:flex;align-items:center;gap:14px;margin-bottom:18px}
+.st-logo-row b{display:block;font-size:15px;font-weight:600}
+.st-logo-row small{display:block;font-size:var(--fs-xs)}
+.st-logo{width:48px;height:48px;flex:none;border-radius:12px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font:600 20px/1 var(--display)}
+.st-form .field:last-of-type{margin-bottom:16px}
+.st-actions{display:flex;justify-content:flex-end}
+
+/* wybór motywu */
+.st-themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.st-theme{display:flex;flex-direction:column;gap:8px;padding:8px;border:1px solid var(--border-strong);border-radius:12px;background:var(--bg);text-align:left;transition:border-color var(--t) var(--ease),box-shadow var(--t) var(--ease)}
+.st-theme:hover{border-color:var(--deco)}
+.st-theme[aria-checked="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+.st-prev{display:grid;grid-template-columns:30% minmax(0,1fr);grid-template-rows:1fr 1fr;gap:4px;height:64px;padding:6px;border-radius:8px}
+.st-prev i{display:block;border-radius:4px}
+.st-prev i:nth-child(1){grid-row:1 / span 2}
+.st-theme.light .st-prev{background:#f1f1f3}
+.st-theme.light .st-prev i{background:#fff;box-shadow:0 0 0 1px #e7e7eb}
+.st-theme.dark .st-prev{background:#0a0a0b}
+.st-theme.dark .st-prev i{background:#1c1c1f;box-shadow:0 0 0 1px #2c2c30}
+.st-theme.system .st-prev{background:linear-gradient(90deg,#f1f1f3 50%,#0a0a0b 50%)}
+.st-theme.system .st-prev i{background:rgba(255,255,255,.55);box-shadow:0 0 0 1px rgba(128,128,140,.3)}
+.st-theme-l{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--ink);padding:0 2px 2px}
+.st-dot{width:14px;height:14px;flex:none;border-radius:var(--r-round);border:1.5px solid var(--border-strong);background:var(--bg)}
+.st-theme[aria-checked="true"] .st-dot{border-color:var(--accent);background:var(--accent);box-shadow:inset 0 0 0 2.5px var(--bg)}
+
+/* Zespół */
+.st-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.st-bar > p{font-size:var(--fs-sm)}
+.st-bar-r{display:flex;align-items:center;gap:12px}
+.st-table{padding:0;overflow:hidden}
+.st-table .table th,.st-table .table td{padding:12px 20px}
+.st-table .table th:first-child,.st-table .table td:first-child{padding-left:20px}
+.st-table .table th:last-child,.st-table .table td:last-child{padding-right:20px}
+.st-table .table th{background:var(--s1)}
+.st-person{display:flex;align-items:center;gap:12px;min-width:0}
+.st-person b{display:block;font-weight:500;font-size:14px}
+.st-person small{display:block;font-size:var(--fs-xs)}
+.st-access{color:var(--body);font-size:var(--fs-sm)}
+.st-when{white-space:nowrap;font-size:var(--fs-sm)}
+.st-role{width:auto;min-width:150px;height:36px;padding:0 36px 0 12px;font-size:14px;cursor:pointer;background-image:var(--select-arrow);background-repeat:no-repeat;background-position:right 12px center}
+.st-role:disabled{opacity:.6;cursor:wait}
+.st-roles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.st-role-c{padding-top:2px}
+.st-role-c b{display:block;font-size:14px;font-weight:600;margin-bottom:4px}
+.st-role-c p{font-size:var(--fs-sm)}
+
+/* Integracje */
+.st-int{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.st-int-c{display:flex;align-items:center;gap:14px;padding:16px 18px}
+.st-int-c .t{flex:1;min-width:0}
+.st-int-c b{display:block;font-size:14px;font-weight:600}
+.st-int-c p{font-size:var(--fs-xs);margin-top:2px}
+.st-int-i{width:36px;height:36px;flex:none;border-radius:8px;background:var(--s2);color:var(--ink);display:grid;place-items:center}
+
+/* Plan */
+.st-plan{max-width:560px}
+.st-price{display:flex;align-items:baseline;gap:12px;margin:2px 0 6px}
+.st-price b{font:600 30px/1.1 var(--display);letter-spacing:-.02em}
+.st-price span{color:var(--muted);font-size:var(--fs-sm)}
+.st-checks{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.st-checks li{display:flex;align-items:center;gap:10px;font-size:var(--fs-sm);color:var(--body)}
+.st-checks svg{color:var(--accent);flex:none}
+
+/* RODO i AI Act */
+.st-pr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.st-pr .st-card{display:flex;flex-direction:column;gap:8px}
+.st-pr .st-h{margin:0}
+.st-status{display:flex;flex-direction:column}
+.st-status li{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0;border-top:1px solid var(--line)}
+.st-status li:first-child{border-top:0;padding-top:2px}
+.st-status b{display:block;font-size:14px;font-weight:500}
+.st-status p{font-size:var(--fs-xs);margin-top:2px}
+
+@media (max-width:899px){
+  .st-grid,.st-pr,.st-roles{grid-template-columns:minmax(0,1fr)}
+  .st-roles{gap:14px}
+  .st-bar-r small{display:none}
+  .st-table .table th:nth-child(3),.st-table .table td:nth-child(3){display:none}
+}
+@media (max-width:480px){
+  .st-themes{gap:8px}
+  .st-theme{padding:6px}
+}
