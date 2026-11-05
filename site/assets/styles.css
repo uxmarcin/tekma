@@ -609,7 +609,7 @@ section{position:relative}
 .sc .good,.sc .yes,.sc [class*=rec] b{color:#34d399}
 
 /* ===== hero: widok edytora jak we Framerze (pasek narzędzi, panel boczny, płótno, asystent), przycięty u dołu ===== */
-.stage-tilt{transform:none!important}
+.stage-tilt{transform-origin:50% 0}
 .stage{margin-top:64px}
 .win.ed{border-radius:22px 22px 0 0;background:#0f0f0f;font-size:13px;height:640px;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(255,255,255,.14),0 0 0 9px rgba(255,255,255,.035),0 0 0 10px rgba(255,255,255,.09),0 -30px 140px -30px rgba(255,255,255,.1)}
 .ed-top{height:68px;flex:none;display:flex;align-items:center;gap:14px;padding:0 14px;border-bottom:1px solid rgba(255,255,255,.08);position:relative}
@@ -774,3 +774,9 @@ svg:has(>use[href^="#si-"]),svg:has(>use[href^="#i-"]),svg:has(>use[href="#tick"
 .plan-card.pro:hover{background:#0a0a0a}
 .plan-card.pro::after{opacity:0}
 .plan-card.pro:hover::after{opacity:1}
+
+/* hero: delikatna sieć węzłów w tle + perspektywa okna zmienna przy scrollu */
+.hero-net{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:.9;-webkit-mask-image:radial-gradient(ellipse 80% 70% at 50% 35%,#000 25%,transparent 80%);mask-image:radial-gradient(ellipse 80% 70% at 50% 35%,#000 25%,transparent 80%)}
+.stage-tilt{--rx:16deg}
+@media (prefers-reduced-motion:reduce){.stage-tilt{transform:none!important}}
+@media (max-width:760px){.stage-tilt{transform:rotateX(calc(var(--rx,10deg)*.6)) scale(var(--sc,.96))}}

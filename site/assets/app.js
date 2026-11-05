@@ -25,6 +25,32 @@
     (function loop() { gx += (tx - gx) * .06; gy += (ty - gy) * .06; paintGlow(); requestAnimationFrame(loop); })();
   }
 
+
+  /* delikatna sieć węzłów w tle hero */
+  const net = $('#net');
+  if (net) {
+    const ctx = net.getContext('2d'); let W = 0, H = 0, dpr = 1, pts = [], mx = -999, my = -999, vis = true, raf = 0;
+    const size = () => { dpr = Math.min(devicePixelRatio || 1, 2); W = net.clientWidth; H = net.clientHeight; net.width = W * dpr; net.height = H * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = Math.round(Math.min(70, W * H / 16000)); pts = Array.from({ length: n }, () => ({ x: Math.random() * W, y: Math.random() * H, vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22, r: Math.random() * 1.2 + .6 })); };
+    const draw = () => {
+      ctx.clearRect(0, 0, W, H);
+      for (const p of pts) { if (!reduce) { p.x += p.vx; p.y += p.vy; if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1; } }
+      for (let i = 0; i < pts.length; i++) { const a = pts[i];
+        for (let j = i + 1; j < pts.length; j++) { const b = pts[j], d = Math.hypot(a.x - b.x, a.y - b.y); if (d < 150) { ctx.strokeStyle = `rgba(255,255,255,${(1 - d / 150) * .13})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); } }
+        const dm = Math.hypot(a.x - mx, a.y - my), g = dm < 160 ? 1 - dm / 160 : 0;
+        if (g > 0) { ctx.strokeStyle = `rgba(255,255,255,${g * .22})`; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(mx, my); ctx.stroke(); }
+        ctx.fillStyle = `rgba(255,255,255,${.28 + g * .5})`; ctx.beginPath(); ctx.arc(a.x, a.y, a.r, 0, 6.283); ctx.fill(); }
+      if (vis && !reduce) raf = requestAnimationFrame(draw);
+    };
+    size(); draw();
+    addEventListener('resize', () => { size(); if (reduce) draw(); });
+    if (!reduce) {
+      hero.addEventListener('pointermove', e => { const r = net.getBoundingClientRect(); mx = e.clientX - r.left; my = e.clientY - r.top; });
+      hero.addEventListener('pointerleave', () => { mx = my = -999; });
+      new IntersectionObserver(([e]) => { vis = e.isIntersecting; if (vis) { cancelAnimationFrame(raf); draw(); } }).observe(hero);
+    }
+  }
+
   /* okno produktu prostuje się podczas przewijania */
   const tilt = $('#tilt'), stage = $('#stage');
   const paintTilt = () => {
