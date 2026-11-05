@@ -92,7 +92,9 @@ export default async function render(ctx) {
       b._c = c; gallery.append(b); return b;
     });
 
+    const seedLbl = h('span', { class: 'gx-seed muted' }, '');
     async function draw() {
+      seedLbl.textContent = gfx.seed === 7 ? 'Układ domyślny' : `Układ nr ${gfx.seed}`;
       const my = ++token; const data = gfxData(); const o = gfxOpts();
       thumbs.forEach((b) => b.setAttribute('aria-selected', String(b.dataset.id === gfx.template)));
       await renderGraphic(big, { template: gfx.template, format: gfx.format, palette: gfx.palette, data, opts: o, seed: gfx.seed });
@@ -111,7 +113,7 @@ export default async function render(ctx) {
     const side = h('div', { class: 'gx-side' },
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Format'), fmts),
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Kolory'), sw,
-        button({ label: 'Losuj układ tła', variant: 'secondary', size: 'sm', icon: 'spark', onClick: () => { gfx.seed = Math.floor(Math.random() * 1e6) + 1; draw(); } })),
+        button({ label: 'Losuj układ tła', variant: 'secondary', size: 'sm', icon: 'spark', onClick: () => { let n; do { n = Math.floor(Math.random() * 1e6) + 1; } while (n === 7 || n === gfx.seed); gfx.seed = n; draw(); } })),
       h('section', { class: 'card st-card' }, h('h2', { class: 'st-h' }, 'Treść'),
         h('label', { class: 'gx-l' }, 'Nagłówek', head), h('label', { class: 'gx-l' }, 'Przycisk', cta),
         tog('showOrg', 'Firma i dział'), tog('showSalary', 'Widełki'), tog('showMeta', 'Tryb pracy i forma umowy'), tog('showCta', 'Przycisk'), tog('showMark', 'Znak Tekma'),
@@ -122,7 +124,7 @@ export default async function render(ctx) {
       for (const f of FORMATS) { await renderGraphic(c, { template: gfx.template, format: f.id, palette: gfx.palette, data: gfxData(), opts: gfxOpts(), seed: gfx.seed }); await new Promise((res) => c.toBlob((b) => { const u = URL.createObjectURL(b); const a = h('a', { href: u, download: fileName(f.id) }); document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1500); res(); })); await new Promise((r) => setTimeout(r, 250)); }
       gfx.format = keep; toast('Pobrano wszystkie formaty.', 'good');
     } });
-    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, h('b', null, TEMPLATES.find((t) => t.id === gfx.template).name), h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('h2', { class: 'st-h', style: 'margin:18px 0 10px' }, '12 szablonów'), gallery);
+    const main2 = h('div', { class: 'gx-main' }, h('div', { class: 'gx-bar' }, h('b', null, TEMPLATES.find((t) => t.id === gfx.template).name), seedLbl, h('span', { class: 'gx-act' }, dlOne, dlAll)), bigWrap, h('h2', { class: 'st-h', style: 'margin:18px 0 10px' }, '12 szablonów'), gallery);
     const wrap = h('div', { class: 'gx' }, side, main2);
     draw();
     return wrap;

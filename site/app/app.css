@@ -733,3 +733,6 @@ a.nt:hover{background:var(--nav-hover)}
 .main-head .crumb.back svg{display:block;width:24px;height:24px}
 @media (max-width:899px){.main-head .crumb.back{display:grid}}
 @media (display-mode:standalone){.main-head .crumb.back{display:grid}}
+
+/* odstęp tytuł karty → treść (działa też poza ustawieniami) */
+.st-card > .st-h{font-size:var(--fs-h3);font-weight:600;margin:0 0 14px}

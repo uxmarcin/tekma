@@ -92,3 +92,5 @@
 .gx-card b{font-size:13.5px;margin-top:4px}.gx-card small{font-size:var(--fs-xs);line-height:1.35}
 .gx-th{width:100%;height:150px;object-fit:contain;border-radius:8px;background:var(--s2)}
 @media (max-width:980px){.gx{grid-template-columns:1fr}.gx-side{position:static}}
+.gx-seed{font-size:var(--fs-xs);margin-right:auto}.gx-bar > b{margin-right:10px}
+.gx-sw{margin-bottom:14px}

@@ -202,6 +202,8 @@ export const TEMPLATES = [
     bg(x, W, H, P) { x.fillStyle = '#0b0b0b'; x.fillRect(0, 0, W, H); const oa = ensure(P.a, '#0b0b0b', 4); x.fillStyle = oa; x.fillRect(0, 0, Math.max(14, W * 0.014), H); x.save(); x.beginPath(); x.rect(W * 0.78, H * 0.78, W * 0.22, H * 0.22); x.clip(); x.strokeStyle = rgba(oa, 0.55); x.lineWidth = 3; for (let i = -H; i < W; i += 22) { x.beginPath(); x.moveTo(W * 0.78 + i, H); x.lineTo(W * 0.78 + i + H, H * 0.78 - 0); x.stroke(); } x.restore(); } },
 ];
 
+const FLIPPABLE = new Set(['mesh', 'noir', 'aurora', 'glass', 'pastel', 'gradient']);
+
 export async function renderGraphic(canvas, { template, format, palette, data, opts, seed = 7 }) {
   const t = TEMPLATES.find((q) => q.id === template) || TEMPLATES[0];
   const f = FORMATS.find((q) => q.id === format) || FORMATS[0];
@@ -210,9 +212,16 @@ export async function renderGraphic(canvas, { template, format, palette, data, o
   canvas.width = f.w; canvas.height = f.h;
   const x = canvas.getContext('2d'); const r = rng(seed);
   x.clearRect(0, 0, f.w, f.h);
-  t.bg(x, f.w, f.h, P, r);
-  if (t.deco) t.deco(x, f.w, f.h, P);
-  const st = t.st(P);
+  // losowanie układu: każdy szablon dostaje inną kolejność kolorów palety, a „miękkie” tła także lustro i inne położenie plam
+  const PERM = [[0, 1, 2], [1, 2, 0], [2, 0, 1], [0, 2, 1], [2, 1, 0], [1, 0, 2]];
+  const base = [P.a, P.b, P.c]; const pm = seed === 7 ? PERM[0] : PERM[(seed >>> 0) % 6];
+  const PP = { ...P, a: base[pm[0]], b: base[pm[1]], c: base[pm[2]] };
+  const flip = seed !== 7 && FLIPPABLE.has(t.id) && ((seed >>> 3) & 1) === 1;
+  x.save(); if (flip) { x.translate(f.w, 0); x.scale(-1, 1); }
+  t.bg(x, f.w, f.h, PP, r);
+  if (t.deco) t.deco(x, f.w, f.h, PP);
+  x.restore();
+  const st = t.st(PP);
   const info = compose(x, f.w, f.h, P, data, opts, st);
   return info;
 }
