@@ -204,10 +204,10 @@
   <div class="wrap">
     <div class="tpl-head reveal">
       <span class="eyebrow">Ogłoszenia, które wyglądają jak marka</span>
-      <h2>100 stylów grafik do ogłoszeń. Z widełkami, w 4 formatach, w minutę.</h2>
-      <p class="lead">LinkedIn, Instagram, Story, Facebook. Tekma układa grafikę z danych stanowiska, więc nie otwierasz Canvy. W Free dostajesz 3 style, a Pro odblokowuje wszystkie 100.</p>
+      <h2><span class="tpl-big">100+</span> stylów grafik do ogłoszeń. Z widełkami, w 4 formatach, w minutę.</h2>
+      <p class="lead">LinkedIn, Instagram, Story, Facebook. Wybierasz styl, kolory lub własne zdjęcie, a Tekma układa grafikę z danych stanowiska. Nie otwierasz Canvy. W Free dostajesz 3 style na stałe, a Pro odblokowuje wszystkie.</p>
     </div>
-    <div class="tpl-grid" id="tplGrid" aria-label="Szablony ogłoszeń"></div>
+    <div class="tpl-wall" id="tplGrid" aria-label="Przykłady grafik do ogłoszeń"></div>
     <div class="tpl-cta reveal"><a class="btn btn-ink btn-lg" href="app/index.html#/signup">Zrób pierwszą grafikę za darmo</a><span class="tpl-note">Bez karty. 3 szablony zostają z Tobą na zawsze.</span></div>
   </div>
 </section>
@@ -293,22 +293,42 @@
   </div>
 </dialog>
 <script type="module">
-import { TEMPLATES, renderGraphic } from './app/js/ad-gfx.js';
-const FREE = ['mesh', 'swiss', 'pastel'];
-const grid = document.getElementById('tplGrid');
-if (grid) {
-  const data = { title: 'Product Designer', org: 'Nord', dept: 'Produkt', salary: '16 000–22 000', currency: 'PLN', meta: ['Praca hybrydowa', 'Umowa o pracę / B2B'] };
+import { TEMPLATES, FORMATS, renderGraphic } from './app/js/ad-gfx.js';
+const wall = document.getElementById('tplGrid');
+if (wall) {
+  /* tła „fotograficzne” rysowane na canvasie (przykłady funkcji Tło ze zdjęcia) */
+  const mk = (draw) => { const c = document.createElement('canvas'); c.width = 1600; c.height = 1000; draw(c.getContext('2d'), 1600, 1000); return c; };
+  const rnd = (s) => () => (s = (s * 1664525 + 1013904223) % 4294967296) / 4294967296;
+  const bokeh = (x, W, H, r, cols, n, rmin, rmax) => { for (let i = 0; i < n; i++) { const cx = r() * W, cy = r() * H, rad = rmin + r() * (rmax - rmin); const g = x.createRadialGradient(cx, cy, 0, cx, cy, rad); const col = cols[i % cols.length]; g.addColorStop(0, col + 'cc'); g.addColorStop(0.7, col + '44'); g.addColorStop(1, col + '00'); x.fillStyle = g; x.beginPath(); x.arc(cx, cy, rad, 0, 6.2832); x.fill(); } };
+  const PHOTOS = [
+    mk((x, W, H) => { const r = rnd(3); let g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1b2a5a'); g.addColorStop(0.55, '#c26a86'); g.addColorStop(1, '#f6b27a'); x.fillStyle = g; x.fillRect(0, 0, W, H); for (let i = 0; i < 46; i++) { const bw = 40 + r() * 120, bh = 160 + r() * 520, bx = r() * W; x.fillStyle = `rgb(${18 + i % 9},${22 + i % 11},${42 + i % 14})`; x.fillRect(bx, H - bh, bw, bh); for (let k = 0; k < bh / 26; k++) if (r() > 0.55) { x.fillStyle = 'rgba(255,214,140,.8)'; x.fillRect(bx + 8 + (k % 3) * 28, H - bh + 14 + k * 26, 10, 12); } } }),
+    mk((x, W, H) => { const r = rnd(8); x.fillStyle = '#0b1230'; x.fillRect(0, 0, W, H); bokeh(x, W, H, r, ['#5b8cff', '#a78bfa', '#38bdf8', '#f472b6'], 60, 30, 150); }),
+    mk((x, W, H) => { const r = rnd(5); let g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#9bc4e8'); g.addColorStop(1, '#f4e3cf'); x.fillStyle = g; x.fillRect(0, 0, W, H); for (let k = 0; k < 5; k++) { x.beginPath(); x.moveTo(0, H); for (let i = 0; i <= 40; i++) x.lineTo((i / 40) * W, H * (0.45 + k * 0.1) - Math.abs(Math.sin(i * 0.55 + k * 2 + r())) * H * (0.28 - k * 0.04)); x.lineTo(W, H); const t = 90 + k * 30; x.fillStyle = `rgba(${40 + k * 18},${70 + k * 20},${110 + k * 18},${0.95 - k * 0.1})`; x.fill(); } }),
+    mk((x, W, H) => { const r = rnd(11); let g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#2b1b47'); g.addColorStop(0.5, '#ff7a59'); g.addColorStop(0.62, '#ffd08a'); g.addColorStop(0.62, '#173b5c'); g.addColorStop(1, '#0a2238'); x.fillStyle = g; x.fillRect(0, 0, W, H); for (let i = 0; i < 90; i++) { x.fillStyle = `rgba(255,208,138,${0.1 + r() * 0.25})`; x.fillRect(W * 0.25 + r() * W * 0.5, H * 0.63 + r() * H * 0.3, 20 + r() * 160, 3); } }),
+    mk((x, W, H) => { const r = rnd(21); x.fillStyle = '#efe6d8'; x.fillRect(0, 0, W, H); let g = x.createLinearGradient(W, 0, 0, H); g.addColorStop(0, 'rgba(255,214,150,.9)'); g.addColorStop(1, 'rgba(255,214,150,0)'); x.fillStyle = g; x.fillRect(0, 0, W, H); x.fillStyle = 'rgba(80,60,40,.16)'; for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) x.fillRect(W * 0.52 + i * 250, 80 + j * 280, 220, 250); bokeh(x, W, H, r, ['#ffffff', '#ffe2b0'], 16, 40, 130); }),
+    mk((x, W, H) => { const r = rnd(33); let g = x.createLinearGradient(0, 0, W, H); g.addColorStop(0, '#04252d'); g.addColorStop(1, '#0f766e'); x.fillStyle = g; x.fillRect(0, 0, W, H); for (let k = 0; k < 9; k++) { x.beginPath(); x.moveTo(0, H); for (let i = 0; i <= 50; i++) x.lineTo((i / 50) * W, H * (0.3 + k * 0.08) + Math.sin(i * 0.4 + k) * 36); x.lineTo(W, H); x.fillStyle = `rgba(94,234,212,${0.05 + k * 0.03})`; x.fill(); } }),
+  ];
+  const JOBS = [
+    ['Product Designer', 'Nord', 'Produkt', '16 000–22 000', ['Praca hybrydowa', 'Umowa o pracę / B2B']], ['Senior Backend Engineer', 'Kuźnia', 'Technologia', '22 000–30 000', ['Praca zdalna', 'B2B']],
+    ['Account Executive', 'Lumen', 'Sprzedaż', '9 000–14 000', ['Warszawa', 'Umowa o pracę']], ['Data Analyst', 'Orbit', 'Dane', '12 000–17 000', ['Praca zdalna', 'Umowa o pracę / B2B']],
+    ['Customer Success Manager', 'Tekma', 'Obsługa klienta', '10 000–15 000', ['Praca hybrydowa', 'Umowa o pracę']], ['DevOps Engineer', 'Kuźnia', 'Technologia', '20 000–27 000', ['Praca zdalna', 'B2B']],
+    ['Marketing Lead', 'Lumen', 'Marketing', '14 000–19 000', ['Kraków', 'Umowa o pracę']], ['HR Business Partner', 'Nord', 'Ludzie', '11 000–15 000', ['Praca hybrydowa', 'Umowa o pracę']],
+    ['Frontend Developer', 'Orbit', 'Technologia', '15 000–21 000', ['Praca zdalna', 'B2B']], ['Office Manager', 'Nord', 'Operacje', '7 000–9 500', ['Gdańsk', 'Umowa o pracę']],
+    ['Content Designer', 'Tekma', 'Produkt', '12 000–16 000', ['Praca zdalna', 'Umowa o pracę / B2B']], ['QA Engineer', 'Kuźnia', 'Technologia', '13 000–18 000', ['Praca hybrydowa', 'Umowa o pracę']],
+  ];
+  const PALS = ['tekma', 'sunset', 'violet', 'ocean', 'rose', 'forest', 'lime', 'mono'];
+  const FMT = ['li', 'sq', 'ig', 'li', 'fb', 'sq', 'li', 'ig'];
+  const N = 32; const items = [];
+  for (let k = 0; k < N; k++) {
+    const photo = k % 4 === 2 ? PHOTOS[(k >> 2) % PHOTOS.length] : null;
+    const t = TEMPLATES[(k * 7 + 3) % TEMPLATES.length]; const j = JOBS[k % JOBS.length]; const f = FMT[k % FMT.length];
+    items.push({ t, photo, f, pal: PALS[(k * 3) % PALS.length], d: { title: j[0], org: j[1], dept: j[2], salary: j[3], currency: 'PLN', meta: j[4] } });
+  }
   const opts = { headline: '', cta: 'Aplikuj w 60 sekund', showSalary: true, showMeta: true, showCta: true, showOrg: true, showMark: true };
-  const nLocked = TEMPLATES.length - FREE.length;
-  const SHOW = [...FREE, 'noir', 'brutal', 'aurora', 'glass', 'terminal', 'editorial', 'gradient', 'blueprint', 'outline'];
-  SHOW.map((id) => TEMPLATES.find((q) => q.id === id)).forEach((t) => {
-    const free = FREE.includes(t.id);
-    const el = document.createElement('a'); el.href = 'app/index.html#/signup'; el.className = 'tpl-card' + (free ? '' : ' is-locked');
-    el.innerHTML = '<span class="tpl-th"><canvas></canvas>' + (free ? '<i class="tpl-free">Free</i>' : '<i class="tpl-lk"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Pro</i>') + '</span><b>' + t.name + '</b><small>' + t.hint + '</small>';
-    grid.append(el);
-    renderGraphic(el.querySelector('canvas'), { template: t.id, format: 'li', palette: 'tekma', data, opts, seed: 7, scale: 0.4 });
-  });
-  const more = document.createElement('div'); more.className = 'tpl-more'; more.innerHTML = '<b>+' + (TEMPLATES.length - SHOW.length) + ' kolejnych stylów w Pro</b><span>Razem ' + TEMPLATES.length + ' stylów, nowe co miesiąc</span>'; grid.append(more);
+  const queue = []; let busy = false;
+  const pump = async () => { if (busy) return; busy = true; while (queue.length) { const c = queue.shift(); const it = c._it; await renderGraphic(c, { template: it.t.id, format: it.f, palette: it.pal, data: it.d, opts, seed: 7, scale: it.f === 'ig' ? 0.34 : 0.4, photo: it.photo ? { img: it.photo, dim: 0.42, blur: 0, tint: 0.22 } : null }); c.classList.add('is-in'); } busy = false; };
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); queue.push(e.target); pump(); } }), { rootMargin: '400px' });
+  items.forEach((it) => { const a = document.createElement('a'); a.href = 'app/index.html#/signup'; a.className = 'tpl-tile'; a.setAttribute('aria-label', it.t.name + ' — przykład grafiki'); const c = document.createElement('canvas'); c._it = it; const ff = FORMATS.find((q) => q.id === it.f); c.width = Math.round(ff.w * 0.4); c.height = Math.round(ff.h * 0.4); a.append(c); wall.append(a); io.observe(c); });
 }
 </script>
 <script src="assets/access.js" defer></script>

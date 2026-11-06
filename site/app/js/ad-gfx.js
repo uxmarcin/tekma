@@ -126,7 +126,7 @@ function compose(x, W, H, P, d, o, st) {
       } else { x.strokeStyle = acc; x.lineWidth = 3 * s; rr(x, 0, bx, by, bw, bh, bh / 2); x.stroke(); x.fillStyle = ink; }
       x.font = F(st.salaryWeight, sfs); LS((st.titleTrack || 0) * sfs); x.textAlign = 'center'; x.fillText(d.salary, bx + bw / 2, by + bh * 0.74); x.textAlign = center ? 'center' : 'left';
       lab(by - 16 * s);
-    } else if (st.salary === 'outline') { x.strokeStyle = acc; x.lineWidth = 3 * s; x.strokeText(d.salary, ax, base); lab(base - sfs - 8 * s); }
+    } else if (st.salary === 'outline') { x.fillStyle = rgba(acc, 0.2); x.fillText(d.salary, ax, base); x.strokeStyle = acc; x.lineWidth = 3.6 * s; x.lineJoin = 'round'; x.strokeText(d.salary, ax, base); lab(base - sfs - 8 * s); }
     else { x.fillStyle = acc; x.fillText(d.salary, ax, base); lab(base - sfs - 8 * s); }
     LS(0);
   }
