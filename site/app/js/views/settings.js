@@ -228,9 +228,9 @@ function plan(ctx) {
   const owner = ctx.org.role === 'owner';
   // Zakres planów jak w formularzu zamówienia (assets/checkout.js) i na stronie głównej.
   const PLANS = [
-    { key: 'free', name: 'Free', price: '0 €', per: 'na zawsze', sub: 'Na pierwsze rekrutacje, bez karty.', feats: ['1 otwarte stanowisko', '5 rozmów z analizą AI / mies.', 'Rubryki, notetaker, karty ocen', 'Strona kariery i portal kandydata'] },
+    { key: 'free', name: 'Free', price: '0 €', per: 'na zawsze', sub: 'Na pierwsze rekrutacje, bez karty.', feats: ['1 otwarte stanowisko', '5 rozmów z analizą AI / mies.', 'Rubryki, notetaker, karty ocen', 'Strona kariery i portal kandydata', '3 szablony grafik do ogłoszeń'] },
     { key: 'starter', name: 'Starter', price: '49 €', per: '/ mies.', sub: 'Dla zespołu, który zaczyna rosnąć.', feats: ['5 aktywnych stanowisk', '25 rozmów z analizą AI / mies.', 'Notetaker dołącza sam', 'Raporty lejka', 'Strona kariery i portal kandydata'] },
-    { key: 'pro', name: 'Pro', price: '129 €', per: '/ mies.', sub: 'Dla zespołów, które rekrutują ciągle.', badge: 'Najczęściej wybierany', feats: ['Bez limitu stanowisk', '60 rozmów z analizą AI / mies., kolejne po 2\u00a0€', 'Coach AI na żywo i kalibracja rozmówców', 'Gmail, Outlook, Slack i kalendarze', 'Eksport rejestru decyzji AI'] },
+    { key: 'pro', name: 'Pro', price: '129 €', per: '/ mies.', sub: 'Dla zespołów, które rekrutują ciągle.', badge: 'Najczęściej wybierany', feats: ['Bez limitu stanowisk', '100+ szablonów grafik do ogłoszeń, własne tła', '60 rozmów z analizą AI / mies., kolejne po 2\u00a0€', 'Coach AI na żywo i kalibracja rozmówców', 'Gmail, Outlook, Slack i kalendarze', 'Eksport rejestru decyzji AI'] },
   ];
   const current = 'free'; // rozliczenia online jeszcze nie działają — każde konto zaczyna na Free
   const cards = PLANS.map((p) => {
