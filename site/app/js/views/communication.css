@@ -1,9 +1,7 @@
 /* views/communication.css — Komunikacja. Prefiks cm-. */
 .cm{display:flex;flex-direction:column;gap:16px}
+.cm-seg{align-self:flex-start}
 .cm-note{font-size:var(--fs-sm);padding:0 2px}
-.cm-tabs{display:flex;gap:20px;border-bottom:1px solid var(--border)}
-.cm-tabs button{padding:8px 0;font-size:14px;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
-.cm-tabs button[aria-selected="true"]{color:var(--ink);font-weight:500;border-bottom-color:var(--ink)}
 .cm-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,540px);gap:24px;align-items:start}
 .cm-rules{display:flex;flex-direction:column;gap:10px}
 .cm-rule{display:flex;align-items:center;gap:14px;padding:14px 16px;background:var(--bg);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:border-color var(--t) var(--ease)}

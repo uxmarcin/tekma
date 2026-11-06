@@ -61,7 +61,7 @@ export default async function render(ctx) {
 
   let active = 'auto', selected = 'reject';
   const tabs = [['auto', 'Automaty'], ['tpl', 'Szablony'], ['survey', 'Ankieta po procesie'], ['status', 'Strona statusu']];
-  const seg = h('div', { class: 'cm-tabs', role: 'tablist', 'aria-label': 'Komunikacja' });
+  const seg = h('div', { class: 'segment cm-seg', role: 'group', 'aria-label': 'Komunikacja' });
   const body = h('div', { class: 'cm-body' });
 
   function chip(r) {
@@ -152,7 +152,7 @@ export default async function render(ctx) {
       phone));
   }
   function draw() {
-    seg.replaceChildren(...tabs.map(([k, l]) => h('button', { type: 'button', role: 'tab', 'aria-selected': String(k === active), on: { click: () => { active = k; draw(); } } }, l)));
+    seg.replaceChildren(...tabs.map(([k, l]) => h('button', { type: 'button', 'aria-pressed': String(k === active), on: { click: () => { active = k; draw(); } } }, l)));
     if (active === 'auto') drawAuto();
     else if (active === 'tpl') drawTpl();
     else if (active === 'survey') drawSoon('Ankieta po procesie', 'Krótka ankieta dla kandydatów po zakończeniu rekrutacji pojawi się tu wkrótce.', 'rubric');
