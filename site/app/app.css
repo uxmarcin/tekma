@@ -516,7 +516,7 @@ a.row:hover::before,.row.clickable:hover::before,a.row:hover + a.row::before,.ro
 .empty .actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
 /* trzy kafelki — wymiary i pozycje 1:1 z Figmy (Avatars 173,46 × 60,73; boczne obrócone o ∓8°, środkowy wyżej) */
 .empty-tiles{position:relative;width:173.46px;height:60.73px;flex:none}
-.empty-tile{position:absolute;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;border:1px solid var(--border);background:linear-gradient(180deg,var(--bg),var(--s2));box-shadow:0 2px 4px rgba(0,0,0,.1);color:var(--ink);overflow:hidden}
+.empty-tile{position:absolute;display:grid;place-items:center;width:52px;height:52px;border-radius:16px;border:1px solid var(--border);background:var(--bg);box-shadow:none;color:var(--ink);overflow:hidden}
 .empty-tile.t0{left:13.37px;top:4.37px;transform:rotate(-8deg)}
 .empty-tile.t1{left:60.73px;top:1px;z-index:1}
 .empty-tile.t2{left:108.1px;top:4.37px;transform:rotate(8deg)}
