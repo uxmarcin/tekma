@@ -410,3 +410,13 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
 
 /* nav: sześć pozycji (z Blogiem) mieści się też w węższych oknach */
 @media (max-width:1180px){.nav-in{gap:28px}.nav-links{gap:20px}}
+
+/* nowe moduły: zakładki */
+.mod-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.mod-tabs button{font:500 14px var(--font);padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--sub);cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.mod-tabs button:hover{color:var(--ink)}
+.mod-tabs button[aria-selected=true]{background:var(--ink);border-color:var(--ink);color:#fff}
+.mod-tabs button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.mod-cap{margin:18px 0 0;color:var(--sub);font-size:15px;line-height:1.5}
+.mod-cap b{color:var(--ink);font-weight:600}
+@media (max-width:860px){.mod-tabs{flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(-1*var(--gutter));padding-inline:var(--gutter);scrollbar-width:none}.mod-tabs::-webkit-scrollbar{display:none}.mod-tabs button{flex:0 0 auto}}
