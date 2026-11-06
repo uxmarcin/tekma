@@ -27,6 +27,7 @@ export const ROUTES = [
   { pattern: '#/decisions', view: 'decisions', layout: 'shell', title: 'Dziennik decyzji', nav: 'decisions' },
   { pattern: '#/publishing', view: 'publish', layout: 'shell', title: 'Publikacje', nav: 'publishing' },
   { pattern: '#/inbox', view: 'inbox', layout: 'shell', title: 'Inbox', nav: 'inbox' },
+  { pattern: '#/communication', view: 'communication', layout: 'shell', title: 'Komunikacja', nav: 'communication' },
   { pattern: '#/talent', view: 'talent', layout: 'shell', title: 'Baza talentów', nav: 'talent' },
   { pattern: '#/people', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
   { pattern: '#/people/:id', view: 'people', layout: 'shell', title: 'Ludzie', nav: 'people' },
@@ -48,6 +49,7 @@ const NAV = {
     { key: 'candidates', label: 'Kandydaci', href: '#/candidates', icon: 'users' },
     { key: 'talent', label: 'Baza talentów', href: '#/talent', icon: 'user-plus' },
     { key: 'publishing', label: 'Publikacje', href: '#/publishing', icon: 'megaphone' },
+    { key: 'communication', label: 'Komunikacja', href: '#/communication', icon: 'mail' },
     { key: 'decisions', label: 'Dziennik decyzji', href: '#/decisions', icon: 'scale' },
   ],
   later: [
