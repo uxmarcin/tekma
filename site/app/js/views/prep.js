@@ -40,7 +40,7 @@ export default async function render(ctx) {
 
   const open = () => ctx.navigate(`#/candidates/${cand.id}${cand.stage ? `?stage=${encodeURIComponent(cand.stage)}` : ''}`);
   setHeader(ctx, { title: 'Przygotowanie do rozmowy', width: 'wide', actions: [
-    button({ label: 'Karta oceny', icon: 'rubric', onClick: open }), button({ label: 'Zacznij rozmowę', variant: 'primary', icon: 'arrow', onClick: open })] });
+    button({ label: 'Karta oceny', icon: 'rubric', onClick: open }), button({ label: 'Notatki z rozmowy', icon: 'edit', onClick: () => ctx.navigate(`#/candidates/${cand.id}/notes`) }), button({ label: 'Zacznij rozmowę', variant: 'primary', icon: 'arrow', onClick: open })] });
 
   const panel = (members.length ? members : []).slice(0, 4).map((m, i) => ({ name: m.name || 'Członek zespołu', area: (qs[i % Math.max(qs.length, 1)] || {}).competency || 'Ogólna ocena' }));
 

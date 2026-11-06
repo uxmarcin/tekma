@@ -24,6 +24,7 @@ export const ROUTES = [
   { pattern: '#/positions/:id/intake', view: 'intake', layout: 'shell', title: 'Intake', nav: 'positions' },
   { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Kanban', nav: 'positions' },
   { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
+  { pattern: '#/candidates/:id/notes', view: 'notes', layout: 'shell', title: 'Notatki z rozmowy', nav: 'candidates' },
   { pattern: '#/candidates/:id/prep', view: 'prep', layout: 'shell', title: 'Przygotowanie do rozmowy', nav: 'candidates' },
   { pattern: '#/candidates/:id', view: 'scorecard', layout: 'shell', title: 'Karta oceny', nav: 'candidates' },
   { pattern: '#/decisions', view: 'decisions', layout: 'shell', title: 'Dziennik decyzji', nav: 'decisions' },
