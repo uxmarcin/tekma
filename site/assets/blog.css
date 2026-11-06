@@ -146,6 +146,7 @@ table.cmp{width:100%;min-width:860px;border-collapse:separate;border-spacing:0;f
 .cmp tbody tr:last-child>*{border-bottom:0}
 .cmp .tk{background:var(--blue-soft);color:#23233a}
 .cmp thead .tk{background:var(--blue-soft);color:var(--blue-ink)}
+@media (min-width:861px){.cmp-wrap{overflow:clip}.cmp thead th{top:64px;z-index:3;box-shadow:0 1px 0 var(--line)}.cmp tbody th{z-index:1}}
 .cmp .grp th{background:var(--bg-2);font-size:12px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding:10px 16px;position:static;width:auto}
 .cmp .yes,.cmp .no,.cmp .mid{display:inline-flex;gap:8px;align-items:flex-start}
 .cmp .yes svg{flex:none;width:14px;height:14px;margin-top:4px;stroke:var(--green);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
