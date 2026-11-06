@@ -348,7 +348,7 @@ function ensureShell() {
   if (shellEl && shellEl.isConnected) return mainEl.querySelector('.main-inner');
   const { h, icon } = deps.ui;
   const side = h('aside', { class: 'side', 'aria-label': 'Nawigacja' },
-    h('div', { class: 'side-brand' }, logo(), bellButton()),
+    h('div', { class: 'side-brand' }, h('div', { class: 'ws-slot', 'data-slot': 'ws' }), bellButton()),
     searchButton(),
     h('nav', { class: 'side-nav', 'aria-label': 'Główna' },
       h('div', { class: 'grp' }, 'Rekrutacja'),
@@ -438,6 +438,13 @@ function updateShell() {
   refreshNotifs();
   const { h, avatar, icon } = deps.ui;
   const org = state.org, user = state.user;
+  const wsSlot = shellEl.querySelector('[data-slot="ws"]');
+  if (wsSlot) {
+    const wb = h('button', { type: 'button', class: 'ws-btn', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-label': 'Przełącz workspace' },
+      deps.ui.orgAvatar(org, 'sm'), h('strong', null, org ? org.name : 'Workspace'), icon('chevrons-up-down'));
+    wb.addEventListener('click', () => openWorkspaceMenu(wb, wsSlot));
+    wsSlot.replaceChildren(wb);
+  }
   const userSlot = shellEl.querySelector('[data-slot="user"]');
   if (userSlot) {
     const btn = h('button', { type: 'button', class: 'user-btn', 'aria-haspopup': 'menu', 'aria-expanded': 'false', 'aria-label': 'Menu konta' },
@@ -461,6 +468,52 @@ function updateShell() {
     a.classList.toggle('on', on);
     if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
   }
+}
+
+/** Przełącznik workspace'ów: lista firm użytkownika + „Dodaj workspace”. */
+async function openWorkspaceMenu(trigger, host) {
+  const { h, icon, orgAvatar, modal, button, field } = deps.ui;
+  if (host.querySelector('.popover')) { closeUserMenu(host, trigger); return; }
+  const pop = h('div', { class: 'popover down', role: 'menu', 'aria-label': 'Workspace' });
+  host.appendChild(pop); trigger.setAttribute('aria-expanded', 'true');
+  let list = [];
+  try { list = await deps.store.org.list(); } catch (e) { console.error(e); }
+  if (!list.length && state.org) list = [state.org];
+  const cur = state.org && state.org.id;
+  pop.append(h('div', { class: 'pop-grp' }, 'Workspace'));
+  for (const o of list) {
+    const el = h('button', { type: 'button', role: 'menuitemradio', 'aria-checked': String(o.id === cur), class: 'ws-item' },
+      orgAvatar(o, 'sm'), h('span', { class: 't' }, h('strong', null, o.name), h('small', null, ROLE_LABEL[o.role] || o.role)), o.id === cur ? icon('check') : null);
+    el.addEventListener('click', async () => {
+      closeUserMenu(host, trigger);
+      if (o.id === cur) return;
+      try { await deps.store.org.switch(o.id); location.hash = '#/'; location.reload(); }
+      catch (e) { deps.ui.toast(e.message || 'Nie udało się przełączyć workspace\u2019u.', 'bad'); }
+    });
+    pop.append(el);
+  }
+  pop.append(h('hr'));
+  const add = h('button', { type: 'button', role: 'menuitem' }, icon('plus'), 'Dodaj workspace');
+  add.addEventListener('click', () => {
+    closeUserMenu(host, trigger);
+    const name = field({ label: 'Nazwa workspace\u2019u', name: 'org', type: 'text', required: true, placeholder: 'np. Nordlight Labs', hint: 'Osobna firma z własnymi stanowiskami i zespołem.' });
+    const create = button({ label: 'Utwórz', variant: 'primary' });
+    const m = modal({ title: 'Nowy workspace', body: name.el || name, actions: [button({ label: 'Anuluj', onClick: () => m.close() }), create] });
+    create.addEventListener('click', async () => {
+      if (name.value.trim().length < 2) { name.setError('Podaj nazwę (co najmniej 2 znaki).'); return; }
+      create.setBusy(true);
+      try { await deps.store.org.create({ name: name.value }); location.hash = '#/'; location.reload(); }
+      catch (e) { create.setBusy(false); name.setError(e.message || 'Nie udało się utworzyć workspace\u2019u.'); }
+    });
+  });
+  pop.append(add);
+  const items = () => Array.from(pop.querySelectorAll('button'));
+  const onKey = (e) => { if (e.key === 'Escape') { e.preventDefault(); closeUserMenu(host, trigger); trigger.focus(); } };
+  const onDoc = (e) => { if (!host.contains(e.target)) closeUserMenu(host, trigger); };
+  pop._cleanup = () => { document.removeEventListener('keydown', onKey, true); document.removeEventListener('mousedown', onDoc, true); };
+  document.addEventListener('keydown', onKey, true);
+  setTimeout(() => document.addEventListener('mousedown', onDoc, true), 0);
+  const first = items()[0]; if (first) first.focus();
 }
 
 /** Wyskakujące menu konta (jak w ChatGPT): firma i rola, Ustawienia „Wkrótce”, Wyloguj się. */

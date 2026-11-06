@@ -22,6 +22,10 @@
 export const SESSION_KEY = 'tekma.sb.session';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
+const wsKey = (uid) => `tekma.ws.${uid}`;
+function readWs(uid) { try { return localStorage.getItem(wsKey(uid)); } catch { return null; } }
+function writeWs(uid, id) { try { localStorage.setItem(wsKey(uid), id); } catch { /* bez zapisu wybór działa do końca sesji */ } }
+
 export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage } = {}) {
   const base = String(url || '').replace(/\/+$/, '');
   const doFetch = fetchImpl || ((...a) => globalThis.fetch(...a));
@@ -223,16 +227,28 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
     async current() {
       if (!session) return null;
       if (orgCache) return orgCache;
+      const list = await org.list();
+      if (!list.length) return null;
+      const want = readWs(session.user.id);
+      orgCache = list.find((o) => o.id === want) || list[0];
+      return orgCache;
+    },
+    /** Wszystkie workspace'y użytkownika (członkostwa). */
+    async list() {
+      if (!session) return [];
       const uid = requireUserId();
       let rows;
-      try { rows = await rest('/members', { query: { select: 'role,org:organizations(id,name,logo)', user_id: `eq.${uid}`, limit: 1 } }); }
+      try { rows = await rest('/members', { query: { select: 'role,org:organizations(id,name,logo)', user_id: `eq.${uid}`, order: 'created_at.asc' } }); }
       catch (e) { // kolumna `logo` jeszcze nie istnieje (migracja 1.4) — działamy bez logo
-        rows = await rest('/members', { query: { select: 'role,org:organizations(id,name)', user_id: `eq.${uid}`, limit: 1 } });
+        rows = await rest('/members', { query: { select: 'role,org:organizations(id,name)', user_id: `eq.${uid}`, order: 'created_at.asc' } });
       }
-      const m = Array.isArray(rows) ? rows[0] : null;
-      if (!m || !m.org) return null;
-      orgCache = { id: m.org.id, name: m.org.name, role: m.role, logo: m.org.logo || null };
-      return orgCache;
+      return (Array.isArray(rows) ? rows : []).filter((m) => m && m.org).map((m) => ({ id: m.org.id, name: m.org.name, role: m.role, logo: m.org.logo || null }));
+    },
+    async switch(id) {
+      const list = await org.list();
+      const o = list.find((x) => x.id === id);
+      if (!o) throw new Error('Nie masz dostępu do tego workspace\u2019u.');
+      writeWs(requireUserId(), id); orgCache = o; return o;
     },
     async create({ name }) {
       name = String(name || '').trim();
@@ -241,7 +257,7 @@ export function createSupabaseAdapter({ url, anonKey, fetch: fetchImpl, storage 
       const data = await rest('/rpc/create_org', { method: 'POST', body: { name } });
       const id = typeof data === 'string' ? data : (data && (data.id || data.create_org));
       if (!id) throw new Error('Nie udało się utworzyć firmy. Sprawdź, czy funkcja create_org istnieje (db/schema.sql).');
-      orgCache = { id, name, role: 'owner' };
+      orgCache = { id, name, role: 'owner' }; writeWs(requireUserId(), id);
       return orgCache;
     },
     /** Zmiana nazwy firmy — RLS pozwala tylko właścicielowi (grant kolumnowy: tylko `name`). */

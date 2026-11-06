@@ -219,6 +219,8 @@ export function createStore(adapter) {
   const org = {
     current: () => adapter.org.current(),
     create: (data) => adapter.org.create(data),
+    list: () => adapter.org.list(),
+    switch: (id) => adapter.org.switch(id),
     rename: (name) => adapter.org.rename(name),
     setLogo: (dataUrl) => adapter.org.setLogo(dataUrl),
     async loadDemoData() {

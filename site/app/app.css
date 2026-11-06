@@ -736,3 +736,19 @@ a.nt:hover{background:var(--nav-hover)}
 
 /* odstęp tytuł karty → treść (działa też poza ustawieniami) */
 .st-card > .st-h{font-size:var(--fs-h3);font-weight:600;margin:0 0 14px}
+
+/* przełącznik workspace'ów w lewym górnym rogu */
+.side-brand{position:relative}
+.ws-slot{min-width:0;flex:1;margin-right:4px}
+.ws-btn{display:flex;align-items:center;gap:8px;width:100%;min-width:0;height:36px;padding:0 8px;border-radius:var(--r-sm);color:var(--ink);text-align:left;transition:background var(--t) var(--ease)}
+.ws-btn:hover,.ws-btn[aria-expanded="true"]{background:var(--s2)}
+.ws-btn strong{flex:1;min-width:0;font-size:15px;font-weight:600;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-btn > svg{width:15px;height:15px;color:var(--faint);flex:none}
+.popover.down{top:calc(100% - 8px);left:0;right:0;min-width:0}
+.pop-grp{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);padding:8px 10px 4px;font-weight:500}
+.ws-item{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border-radius:var(--r-sm);text-align:left}
+.ws-item:hover,.ws-item:focus-visible{background:var(--s2);outline:none}
+.ws-item .t{flex:1;min-width:0}
+.ws-item strong{display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ws-item small{display:block;font-size:var(--fs-xs);color:var(--muted)}
+.ws-item > svg{width:16px;height:16px;color:var(--ink);flex:none}

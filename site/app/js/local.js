@@ -114,10 +114,16 @@ export function createLocalAdapter() {
   function currentOrg() {
     const u = currentUser();
     if (!u) return null;
-    const m = db.members.find((x) => x.user_id === u.id);
-    if (!m) return null;
+    const ms = db.members.filter((x) => x.user_id === u.id);
+    if (!ms.length) return null;
+    let want = null; try { want = localStorage.getItem('tekma.ws.' + u.id); } catch {}
+    const m = ms.find((x) => x.org_id === want) || ms[0];
     const o = db.orgs.find((x) => x.id === m.org_id);
     return o ? { id: o.id, name: o.name, role: m.role, logo: o.logo || null } : null;
+  }
+  function listOrgs() {
+    const u = currentUser(); if (!u) return [];
+    return db.members.filter((x) => x.user_id === u.id).map((m) => { const o = db.orgs.find((x) => x.id === m.org_id); return o ? { id: o.id, name: o.name, role: m.role, logo: o.logo || null } : null; }).filter(Boolean);
   }
   function requireOrg() {
     const o = currentOrg();
@@ -198,15 +204,22 @@ export function createLocalAdapter() {
   /* ------------------------------------------------ org */
   const org = {
     async current() { await sleep(0); return currentOrg(); },
+    async list() { await sleep(0); return listOrgs(); },
+    async switch(id) {
+      const u = requireUser(); const o = listOrgs().find((x) => x.id === id);
+      if (!o) throw new Error('Nie masz dostępu do tego workspace\u2019u.');
+      try { localStorage.setItem('tekma.ws.' + u.id, id); } catch {}
+      return o;
+    },
     async create({ name }) {
       const u = requireUser();
       name = String(name || '').trim();
       if (name.length < 2) throw new Error('Podaj nazwę firmy (co najmniej 2 znaki).');
-      if (currentOrg()) throw new Error('Masz już firmę. W tej wersji konto może należeć do jednej firmy.');
       const o = { id: uuid(), name, created_at: now(), created_by: u.id };
       db.orgs.push(o);
       db.members.push({ org_id: o.id, user_id: u.id, role: 'owner' });
       save();
+      try { localStorage.setItem('tekma.ws.' + u.id, o.id); } catch {}
       return { id: o.id, name: o.name, role: 'owner' };
     },
     async rename(name) {
