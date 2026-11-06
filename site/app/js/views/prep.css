@@ -1,0 +1,22 @@
+/* views/prep.css — Przygotowanie do rozmowy. Prefiks pp-. */
+.pp{display:flex;flex-direction:column;gap:16px}
+.pp-sub{font-size:var(--fs-sm);margin:0 2px}
+.pp-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:24px;align-items:start}
+.pp-main,.pp-side{display:flex;flex-direction:column;gap:16px}
+.pp-card{padding:20px;display:flex;flex-direction:column;gap:12px}
+.pp-card h2{font-size:16px;font-weight:600;margin:0}
+.pp-q{background:var(--s1,var(--bg));border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.pp-q p{margin:0;font-size:14px;line-height:1.45}
+.pp-qh{display:flex;align-items:center;gap:8px}
+.pp-qh strong{font-size:14px;font-weight:500}
+.pp-ai{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:8px;background:var(--accent-soft);font-size:13px}
+.pp-ai svg{width:14px;height:14px;flex:none}
+.pp-gap{display:flex;align-items:flex-start;gap:10px;font-size:14px;line-height:1.45;cursor:pointer}
+.pp-gap input{margin-top:3px}
+.pp-dont{display:flex;gap:10px;align-items:flex-start}
+.pp-dont > svg{width:16px;height:16px;color:var(--bad-ink,#be123c);flex:none;margin-top:3px}
+.pp-dont div,.pp-who div{display:flex;flex-direction:column;gap:1px}
+.pp-dont strong,.pp-who strong{font-size:14px;font-weight:500}
+.pp-dont small,.pp-who small{font-size:12px}
+.pp-who{display:flex;gap:10px;align-items:center}
+@media (max-width:980px){.pp-grid{grid-template-columns:1fr}}

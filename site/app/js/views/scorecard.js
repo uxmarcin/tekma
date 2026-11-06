@@ -49,7 +49,7 @@ export default async function render(ctx) {
     title: candidate.full_name,
     crumbs: [{ label: 'Kandydaci', href: '#/candidates' }],
     width: 'wide',
-    actions: position ? [ui.button({ label: 'Kanban stanowiska', variant: 'secondary', size: 'sm', icon: 'briefcase', onClick: () => ctx.navigate(`#/positions/${position.id}`) })] : [],
+    actions: position ? [ui.button({ label: 'Przygotuj rozmowę', variant: 'secondary', size: 'sm', icon: 'spark', onClick: () => ctx.navigate(`#/candidates/${candidate.id}/prep`) }), ui.button({ label: 'Kanban stanowiska', variant: 'secondary', size: 'sm', icon: 'briefcase', onClick: () => ctx.navigate(`#/positions/${position.id}`) })] : [],
   });
 
   if (!stage) {
