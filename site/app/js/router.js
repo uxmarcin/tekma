@@ -21,6 +21,7 @@ export const ROUTES = [
   { pattern: '#/onboarding', view: 'onboarding', layout: 'bare', title: 'Twoja firma' },
   { pattern: '#/', view: 'dashboard', layout: 'shell', title: 'Pulpit', nav: 'dashboard' },
   { pattern: '#/positions', view: 'positions', layout: 'shell', title: 'Stanowiska', nav: 'positions' },
+  { pattern: '#/positions/:id/intake', view: 'intake', layout: 'shell', title: 'Intake', nav: 'positions' },
   { pattern: '#/positions/:id', view: 'pipeline', layout: 'shell', title: 'Kanban', nav: 'positions' },
   { pattern: '#/candidates', view: 'candidates', layout: 'shell', title: 'Kandydaci', nav: 'candidates' },
   { pattern: '#/candidates/:id/prep', view: 'prep', layout: 'shell', title: 'Przygotowanie do rozmowy', nav: 'candidates' },

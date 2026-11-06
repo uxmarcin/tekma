@@ -34,7 +34,8 @@ export default async function render(ctx) {
 
   const addBtn = button({ label: 'Dodaj kandydata', variant: 'primary', icon: 'plus', onClick: () => openAddCandidateModal(ctx, { positionId: position.id, onCreated: async () => { await load(); draw(); } }) });
   const adBtn = button({ label: 'Ogłoszenie', variant: 'secondary', icon: 'edit', onClick: () => openAdEditor(ctx, position, { onSaved: (p) => { Object.assign(position, p); drawSub(); } }) });
-  ctx.setHeader({ title: position.title, crumbs: [{ label: 'Stanowiska', href: '#/positions' }], actions: [adBtn, addBtn], width: 'wide' });
+  const intakeBtn = button({ label: 'Intake z HM', variant: 'secondary', icon: 'handshake', onClick: () => ctx.navigate(`#/positions/${position.id}/intake`) });
+  ctx.setHeader({ title: position.title, crumbs: [{ label: 'Stanowiska', href: '#/positions' }], actions: [intakeBtn, adBtn, addBtn], width: 'wide' });
 
   /* --- szkielet --- */
   const root = h('div', { class: 'pl' });

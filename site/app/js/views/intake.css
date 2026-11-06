@@ -1,0 +1,32 @@
+/* views/intake.css — Intake z hiring managerem. Prefiks in-. */
+.in{display:flex;flex-direction:column;gap:16px}
+.in-sub{font-size:var(--fs-sm);margin:0 2px}
+.in-prog{display:flex;align-items:center;gap:12px;font-size:13px}
+.in-bar{width:280px;max-width:50%;height:6px;border-radius:99px;background:var(--s3)}
+.in-bar span{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width var(--t) var(--ease)}
+.in-grid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;align-items:start}
+.in-nav{display:flex;flex-direction:column;gap:2px}
+.in-step{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;font-size:14px;text-align:left;color:var(--muted)}
+.in-step:hover{background:var(--s2)}
+.in-step[aria-current="true"]{background:var(--s2);color:var(--ink);font-weight:500}
+.in-dot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border-strong,var(--s4));display:grid;place-items:center;flex:none}
+.in-dot.ok{border-color:var(--good-ink,#15803d);color:var(--good-ink,#15803d)}
+.in-dot svg{width:11px;height:11px}
+.in-step[aria-current="true"] .in-dot:not(.ok){border-color:var(--accent)}
+.in-main{display:flex;flex-direction:column;gap:20px}
+.in-card{padding:20px;display:flex;flex-direction:column;gap:14px}
+.in-card h2{font-size:16px;font-weight:600;margin:0}
+.in-card p{margin:0;font-size:13px}
+.in-card textarea,.in-post input{font:inherit;font-size:14px;padding:10px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink);width:100%;resize:vertical}
+.in-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.in-comments{display:flex;flex-direction:column;gap:12px}
+.in-c{display:flex;gap:10px}
+.in-c strong{font-size:14px;font-weight:500}
+.in-c p{font-size:14px;color:var(--ink);margin-top:2px}
+.in-post{display:flex;gap:8px}
+.in-wait{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--warn-ink);font-size:14px}
+.in-wait.ok{background:var(--good-soft);color:var(--good-ink)}
+.in-wait span{flex:1}
+.in-wait svg{width:16px;height:16px;flex:none}
+.in-pick{display:flex;align-items:center;gap:10px;font-size:14px;cursor:pointer;padding:4px 0}
+@media (max-width:860px){.in-grid{grid-template-columns:1fr}.in-nav{flex-direction:row;overflow-x:auto}.in-row{grid-template-columns:1fr}}
