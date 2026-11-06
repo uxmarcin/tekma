@@ -44,10 +44,10 @@
   <div class="wrap nav-in">
     <a class="logo" href="/" aria-label="Tekma — home"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a>
     <nav class="nav-links" aria-label="Main"><a href="../produkt.html">Product</a><a href="../ai.html">AI in Tekma</a><a href="../blog/">Playbooks (PL)</a><a href="/#cennik">Pricing</a></nav>
-    <div class="nav-r"><span class="lang" role="group" aria-label="Language / Język"><a href="/blog/scorecard-rekrutacyjny.html" hreflang="pl" lang="pl" aria-label="Polski" data-lang="pl">PL</a><a aria-current="true" lang="en">EN</a></span><a class="login" href="../app/">Log in</a><a class="btn btn-ink btn-sm" href="../app/index.html#/signup">Start free</a></div>
+    <div class="nav-r"><span class="lang" role="group" aria-label="Language / Język"><a href="/blog/scorecard-rekrutacyjny.html" hreflang="pl" lang="pl" aria-label="Polski" data-lang="pl">PL</a><a aria-current="true" lang="en">EN</a></span><a class="login" href="../app/">Log in</a><a data-access class="btn btn-ink btn-sm" href="mailto:hello@tekma.app?subject=Demo%20of%20Tekma">Request a demo</a></div>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mmenu"><span></span></button>
   </div>
-  <div class="mmenu" id="mmenu"><span class="lang" role="group" aria-label="Language / Język"><a href="/blog/scorecard-rekrutacyjny.html" hreflang="pl" lang="pl" aria-label="Polski" data-lang="pl">PL</a><a aria-current="true" lang="en">EN</a></span><a href="../produkt.html">Product</a><a href="../ai.html">AI in Tekma</a><a href="../blog/">Playbooks (PL)</a><a href="/#cennik">Pricing</a><a href="../app/">Log in</a><a class="btn btn-ink" href="../app/index.html#/signup">Start free</a></div>
+  <div class="mmenu" id="mmenu"><span class="lang" role="group" aria-label="Language / Język"><a href="/blog/scorecard-rekrutacyjny.html" hreflang="pl" lang="pl" aria-label="Polski" data-lang="pl">PL</a><a aria-current="true" lang="en">EN</a></span><a href="../produkt.html">Product</a><a href="../ai.html">AI in Tekma</a><a href="../blog/">Playbooks (PL)</a><a href="/#cennik">Pricing</a><a href="../app/">Log in</a><a data-access class="btn btn-ink" href="mailto:hello@tekma.app?subject=Demo%20of%20Tekma">Request a demo</a></div>
 </header>
 <main id="top">
 <section class="hero sub post-hero">
@@ -149,7 +149,7 @@
       <aside class="cta-band" aria-labelledby="cta-t">
 <h2 id="cta-t">Try the scorecard with your next hire</h2>
 <p>Tekma is a hiring workspace with rubrics, independent scorecards and an AI notetaker. Start on the free plan: one open role and five AI-analysed interviews a month. The interface is currently in Polish.</p>
-<div class="row"><a class="btn btn-blue btn-lg" href="../app/index.html#/signup">Create a free account</a><a class="btn btn-ghost btn-lg" href="../produkt.html">See how rubrics work (PL)</a></div>
+<div class="row"><a data-access class="btn btn-blue btn-lg" href="mailto:hello@tekma.app?subject=Demo%20of%20Tekma">Request a demo</a><a class="btn btn-ghost btn-lg" href="../produkt.html">See how rubrics work (PL)</a></div>
 <p class="fine">No card required.</p>
 </aside>
     </article>
@@ -167,5 +167,30 @@
   </div>
 </footer>
 <script src="../assets/landing.js?v=mesh1" defer></script>
+<dialog class="access" id="access" aria-labelledby="access-t">
+  <form method="dialog" class="access-x"><button aria-label="Close">&times;</button></form>
+  <div class="access-body" id="access-form-wrap">
+    <h2 id="access-t">Request early access</h2>
+    <p class="access-lede">We are opening Tekma in stages. Leave your email and we will get in touch when it is your turn.</p>
+    <form id="access-form" novalidate>
+      <label for="access-email">Email address</label>
+      <input id="access-email" name="email" type="email" inputmode="email" autocomplete="email" placeholder="name@company.com" maxlength="254" required>
+      <input class="hp" name="website" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <label class="check" for="access-consent">
+        <input id="access-consent" name="consent" type="checkbox" required>
+        <span id="access-consent-text">I consent to Creative Vision processing my email address to contact me about early access to Tekma. I can withdraw my consent at any time by writing to hello@tekma.app.</span>
+      </label>
+      <p class="access-err" id="access-err" role="alert" hidden></p>
+      <button class="btn btn-blue btn-lg" id="access-submit" type="submit">Request early access</button>
+    </form>
+  </div>
+  <div class="access-body access-ok" id="access-ok" hidden>
+    <span class="access-tick" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7"/></svg></span>
+    <h2>Thank you!</h2>
+    <p class="access-lede">We have saved your address. We will be in touch when we open access to Tekma.</p>
+    <form method="dialog"><button class="btn btn-ghost btn-lg">Close</button></form>
+  </div>
+</dialog>
+<script src="/assets/access.js" defer></script>
 </body>
 </html>

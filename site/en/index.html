@@ -243,7 +243,7 @@
       <p class="lead">LinkedIn, Instagram, Story, Facebook. You pick a style, colors or your own photo, and Tekma lays out the graphic from the role's data. No need to open Canva. Free includes 3 styles for good; Pro includes all of them.</p>
     </div>
     <div class="tpl-clip"><div class="tpl-wall" id="tplGrid" aria-label="Examples of job post graphics"></div></div>
-    <div class="tpl-cta reveal"><a class="btn btn-ink btn-lg" href="/app/index.html#/signup">Make your first graphic for free</a><span class="tpl-note">No card. 3 styles stay with you for good.</span></div>
+    <div class="tpl-cta reveal"><a data-access class="btn btn-ink btn-lg" href="mailto:hello@tekma.app?subject=Demo%20of%20Tekma">Request a demo</a><span class="tpl-note">No card. 3 styles stay with you for good.</span></div>
   </div>
 </section>
 
@@ -375,7 +375,7 @@ if (wall) {
   const queue = []; let busy = false;
   const pump = async () => { if (busy) return; busy = true; while (queue.length) { const c = queue.shift(); const it = c._it; await renderGraphic(c, { template: it.t.id, format: it.f, palette: it.pal, data: it.d, opts, seed: 7, scale: 0.26, photo: it.photo ? { img: it.photo, dim: 0.42, blur: 0, tint: 0.22 } : null }); c.classList.add('is-in'); } busy = false; };
   const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); queue.push(e.target); pump(); } }), { rootMargin: '400px' });
-  items.forEach((it) => { const a = document.createElement('a'); a.href = '/app/index.html#/signup'; a.className = 'tpl-tile'; a.setAttribute('aria-label', it.t.name + ' — example graphic'); const c = document.createElement('canvas'); c._it = it; const ff = FORMATS.find((q) => q.id === it.f); c.width = Math.round(ff.w * 0.26); c.height = Math.round(ff.h * 0.26); a.append(c); wall.append(a); io.observe(c); });
+  items.forEach((it) => { const a = document.createElement('a'); a.href = 'mailto:hello@tekma.app?subject=Demo%20of%20Tekma'; a.setAttribute('data-access', ''); a.className = 'tpl-tile'; a.setAttribute('aria-label', it.t.name + ' — example graphic'); const c = document.createElement('canvas'); c._it = it; const ff = FORMATS.find((q) => q.id === it.f); c.width = Math.round(ff.w * 0.26); c.height = Math.round(ff.h * 0.26); a.append(c); wall.append(a); io.observe(c); });
 }
 </script>
 <script src="/assets/access.js" defer></script>
