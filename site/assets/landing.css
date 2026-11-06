@@ -392,10 +392,11 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
 /* szablony ogłoszeń */
 .tpl-head{max-width:760px;margin-bottom:40px}.tpl-head .lead{margin-top:16px;color:var(--sub);font-size:18px;line-height:1.5}
 .tpl-big{color:var(--blue)}
-.tpl-wall{columns:4 240px;column-gap:16px}
-.tpl-tile{display:block;break-inside:avoid;margin:0 0 16px;border-radius:14px;overflow:hidden;background:var(--bg-3);box-shadow:0 0 0 1px var(--line),var(--shadow-card);transition:transform .25s var(--ease),box-shadow .25s}
-.tpl-tile:hover{transform:translateY(-3px)}
+.tpl-wall{column-count:7;column-gap:8px}
+.tpl-tile{display:block;break-inside:avoid;margin:0 0 8px;border-radius:6px;overflow:hidden;background:var(--bg-3);box-shadow:0 0 0 1px var(--line);transition:transform .2s var(--ease),box-shadow .2s}
+.tpl-tile:hover{transform:scale(1.06);position:relative;z-index:2;box-shadow:0 0 0 1px var(--line),var(--shadow-float)}
 .tpl-tile canvas{display:block;width:100%;height:auto;opacity:0;transition:opacity .4s}
 .tpl-tile canvas.is-in{opacity:1}
 .tpl-cta{display:flex;align-items:center;gap:16px;margin-top:32px;flex-wrap:wrap}.tpl-note{color:var(--sub);font-size:14px}
-@media (max-width:560px){.tpl-head h2{font-size:30px}.tpl-wall{columns:2 140px;column-gap:10px}.tpl-tile{margin-bottom:10px}}
+@media (max-width:1100px){.tpl-wall{column-count:5}}
+@media (max-width:700px){.tpl-head h2{font-size:30px}.tpl-wall{column-count:3;column-gap:6px}.tpl-tile{margin-bottom:6px;border-radius:4px}}
