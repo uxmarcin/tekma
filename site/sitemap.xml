@@ -2,26 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://tekma.app/</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/"/>
     <lastmod>2026-11-06</lastmod>
   </url>
   <url>
     <loc>https://tekma.app/produkt.html</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/produkt.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/product.html"/>
     <lastmod>2026-11-06</lastmod>
   </url>
   <url>
     <loc>https://tekma.app/ai.html</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/ai.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/ai.html"/>
     <lastmod>2026-11-06</lastmod>
   </url>
   <url>
     <loc>https://tekma.app/integracje.html</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/integracje.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/integrations.html"/>
     <lastmod>2026-11-06</lastmod>
   </url>
   <url>
     <loc>https://tekma.app/po-zatrudnieniu.html</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/po-zatrudnieniu.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/first-90-days.html"/>
     <lastmod>2026-11-06</lastmod>
   </url>
   <url>
     <loc>https://tekma.app/dla-kandydatow.html</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/dla-kandydatow.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/for-candidates.html"/>
     <lastmod>2026-11-06</lastmod>
   </url>
   <url>
@@ -30,6 +42,8 @@
   </url>
   <url>
     <loc>https://tekma.app/tekma-vs-arkusz-vs-ats.html</loc>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/tekma-vs-arkusz-vs-ats.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/tekma-vs-spreadsheet-vs-ats.html"/>
     <lastmod>2026-11-06</lastmod>
   </url>
   <url>

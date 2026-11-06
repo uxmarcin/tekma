@@ -2,6 +2,9 @@
 (() => {
   const dlg = document.getElementById('access');
   if (!dlg || typeof dlg.showModal !== 'function') return;          // bez <dialog>: zostaje link mailto
+  const EN = document.documentElement.lang === 'en';
+  const T = EN ? { email: 'Enter a valid email address.', consent: 'Please tick the consent to process your email address.', fail: 'We could not save your address. Try again in a moment or write to hello@tekma.app.' }
+               : { email: 'Wpisz poprawny adres e-mail.', consent: 'Zaznacz zgodę na przetwarzanie adresu e-mail.', fail: 'Nie udało się zapisać adresu. Spróbuj ponownie za chwilę lub napisz na hello@tekma.app.' };
   const form = document.getElementById('access-form');
   const wrap = document.getElementById('access-form-wrap');
   const ok = document.getElementById('access-ok');
@@ -30,8 +33,8 @@
   form.addEventListener('submit', async e => {
     e.preventDefault();
     const val = email.value.trim().toLowerCase();
-    if (!RE.test(val) || val.length > 254) { show('Wpisz poprawny adres e-mail.'); email.focus(); return; }
-    if (!consent.checked) { show('Zaznacz zgodę na przetwarzanie adresu e-mail.'); consent.focus(); return; }
+    if (!RE.test(val) || val.length > 254) { show(T.email); email.focus(); return; }
+    if (!consent.checked) { show(T.consent); consent.focus(); return; }
     if (form.elements.website.value) { wrap.hidden = true; ok.hidden = false; return; }   // honeypot
     show(''); btn.disabled = true;
     try {
@@ -54,7 +57,7 @@
       ok.querySelector('button').focus();
     } catch (x) {
       btn.disabled = false;
-      show('Nie udało się zapisać adresu. Spróbuj ponownie za chwilę lub napisz na hello@tekma.app.');
+      show(T.fail);
     }
   });
 })();

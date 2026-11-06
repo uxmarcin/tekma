@@ -331,3 +331,7 @@ s = re.sub(r'landing\.(css|js)\?v=[a-z0-9]+', lambda m: f'landing.{m.group(1)}?v
 # footer swap
 s = re.sub(r'<footer class="foot">.*?</footer>', FOOTER.split('</main>\n',1)[1].split('<dialog',1)[0].rstrip(), s, count=1, flags=re.S)
 open(idx,'w').write(s); print('patched index.html')
+
+# przełącznik języka (PL/EN) wstrzykiwany do wszystkich stron
+import subprocess,sys
+subprocess.run([sys.executable,os.path.join(os.path.dirname(os.path.abspath(__file__)),"inject-lang.py")],check=True)

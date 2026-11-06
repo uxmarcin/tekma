@@ -420,3 +420,11 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
 .mod-cap{margin:18px 0 0;color:var(--sub);font-size:15px;line-height:1.5}
 .mod-cap b{color:var(--ink);font-weight:600}
 @media (max-width:860px){.mod-tabs{flex-wrap:nowrap;overflow-x:auto;margin-inline:calc(-1*var(--gutter));padding-inline:var(--gutter);scrollbar-width:none}.mod-tabs::-webkit-scrollbar{display:none}.mod-tabs button{flex:0 0 auto}}
+
+/* wybór języka */
+.lang{display:inline-flex;align-items:center;padding:2px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:12px;font-weight:600;letter-spacing:.02em;line-height:1}
+.lang a,.lang span{padding:6px 9px;border-radius:999px;color:var(--sub);transition:color .2s,background .2s}
+.lang a:hover{color:var(--ink)}
+.lang [aria-current]{background:var(--ink);color:#fff}
+.lang a:focus-visible{outline:2px solid var(--blue);outline-offset:1px}
+.mmenu .lang{align-self:flex-start;margin:6px 0}

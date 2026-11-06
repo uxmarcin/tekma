@@ -12,6 +12,8 @@
 <link rel="manifest" href="site.webmanifest">
 <link rel="canonical" href="https://tekma.app/">
 <link rel="alternate" hreflang="pl" href="https://tekma.app/">
+<link rel="alternate" hreflang="en" href="https://tekma.app/en/">
+<link rel="alternate" hreflang="x-default" href="https://tekma.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Tekma">
 <meta property="og:locale" content="pl_PL">
@@ -29,6 +31,7 @@
 <link rel="preload" href="assets/fonts/Inter-Regular.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="assets/landing/dashboard.webp?v=4" as="image" type="image/webp" media="(min-width:861px)">
 <script>document.documentElement.classList.add('js')</script>
+<script src="/assets/lang.js"></script>
 <link rel="stylesheet" href="assets/landing.css?v=light14">
 <link rel="stylesheet" href="assets/blog.css?v=2">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://tekma.app/#org","name":"Tekma","url":"https://tekma.app/","logo":"https://tekma.app/assets/icon-512.png","email":"hello@tekma.app","description":"Tekma to narzędzie do strukturalnej rekrutacji z AI, które podpowiada, a człowiek decyduje: rubryki, karty ocen, notetaker i plan pierwszych 90 dni.","address":{"@type":"PostalAddress","addressLocality":"Rzeszów","addressCountry":"PL"}},{"@type":"WebSite","@id":"https://tekma.app/#website","url":"https://tekma.app/","name":"Tekma","inLanguage":"pl","publisher":{"@id":"https://tekma.app/#org"}},{"@type":"SoftwareApplication","@id":"https://tekma.app/#app","name":"Tekma","url":"https://tekma.app/","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"pl","description":"Rubryki, notetaker AI i karty ocen w jednym miejscu. Te same pytania dla każdego, decyzja po dwóch niezależnych ocenach, a po ofercie plan pierwszych 90 dni.","publisher":{"@id":"https://tekma.app/#org"},"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"EUR","url":"https://tekma.app/#cennik"},{"@type":"Offer","name":"Pro","price":"129","priceCurrency":"EUR","url":"https://tekma.app/#cennik","priceSpecification":{"@type":"UnitPriceSpecification","price":"129","priceCurrency":"EUR","billingDuration":"P1M"}}]}]}</script>
@@ -41,10 +44,10 @@
   <div class="wrap nav-in">
     <a class="logo" href="/" aria-label="Tekma — strona główna"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a>
     <nav class="nav-links" aria-label="Główna nawigacja"><a href="produkt.html">Produkt</a><a href="integracje.html">Integracje</a><a href="ai.html">AI w Tekmie</a><a href="dla-kandydatow.html">Dla kandydatów</a><a href="blog/">Blog</a><a href="/#cennik">Cennik</a></nav>
-    <div class="nav-r"><a class="login" href="app/">Zaloguj się</a><a data-access class="btn btn-ink btn-sm" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o dostęp</a></div>
+    <div class="nav-r"><span class="lang" role="group" aria-label="Język / Language"><a aria-current="true" lang="pl">PL</a><a href="/en/" hreflang="en" lang="en" aria-label="Switch to English" data-lang="en" data-exact>EN</a></span><a class="login" href="app/">Zaloguj się</a><a data-access class="btn btn-ink btn-sm" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o dostęp</a></div>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mmenu"><span></span></button>
   </div>
-  <div class="mmenu" id="mmenu"><a href="produkt.html">Produkt</a><a href="integracje.html">Integracje</a><a href="ai.html">AI w Tekmie</a><a href="dla-kandydatow.html">Dla kandydatów</a><a href="blog/">Blog</a><a href="/#cennik">Cennik</a><a href="app/">Zaloguj się</a><a data-access class="btn btn-ink" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o wcześniejszy dostęp</a></div>
+  <div class="mmenu" id="mmenu"><span class="lang" role="group" aria-label="Język / Language"><a aria-current="true" lang="pl">PL</a><a href="/en/" hreflang="en" lang="en" aria-label="Switch to English" data-lang="en" data-exact>EN</a></span><a href="produkt.html">Produkt</a><a href="integracje.html">Integracje</a><a href="ai.html">AI w Tekmie</a><a href="dla-kandydatow.html">Dla kandydatów</a><a href="blog/">Blog</a><a href="/#cennik">Cennik</a><a href="app/">Zaloguj się</a><a data-access class="btn btn-ink" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o wcześniejszy dostęp</a></div>
 </header>
 
 <main id="top">
