@@ -1,7 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>https://tekma.app/</loc></url>  <url><loc>https://tekma.app/integracje.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://tekma.app/ai.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://tekma.app/produkt.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://tekma.app/dla-kandydatow.html</loc><lastmod>2026-11-05</lastmod></url>
-  <url><loc>https://tekma.app/po-zatrudnieniu.html</loc><lastmod>2026-11-05</lastmod></url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://tekma.app/</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/produkt.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/ai.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/integracje.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/po-zatrudnieniu.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/dla-kandydatow.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/blog/</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/tekma-vs-arkusz-vs-ats.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/blog/jak-zatrudnic-pierwszego-programiste.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/blog/scorecard-rekrutacyjny.html</loc>
+    <lastmod>2026-11-06</lastmod>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/blog/scorecard-rekrutacyjny.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/interview-scorecard.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tekma.app/blog/scorecard-rekrutacyjny.html"/>
+  </url>
+  <url>
+    <loc>https://tekma.app/blog/ai-act-a-rekrutacja.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/blog/rubryka-oceny-rozmowy-rekrutacyjnej.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/blog/widelki-plac-w-ogloszeniu.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/blog/onboarding-30-60-90-dni.html</loc>
+    <lastmod>2026-11-06</lastmod>
+  </url>
+  <url>
+    <loc>https://tekma.app/en/interview-scorecard.html</loc>
+    <lastmod>2026-11-06</lastmod>
+    <xhtml:link rel="alternate" hreflang="pl" href="https://tekma.app/blog/scorecard-rekrutacyjny.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tekma.app/en/interview-scorecard.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://tekma.app/blog/scorecard-rekrutacyjny.html"/>
+  </url>
 </urlset>

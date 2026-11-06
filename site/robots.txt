@@ -1,3 +1,6 @@
+# Strona marketingowa Tekmy
 User-agent: *
 Allow: /
+Disallow: /tools/
+
 Sitemap: https://tekma.app/sitemap.xml
