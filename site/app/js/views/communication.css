@@ -34,3 +34,30 @@
 .cm-edit label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:500}
 .cm-edit input,.cm-edit textarea{font:inherit;font-weight:400;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink)}
 @media (max-width:980px){.cm-grid{grid-template-columns:1fr}.cm-prev{position:static}}
+/* podgląd strony statusu (Figma N10) */
+.ps{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:32px;align-items:start}
+.ps-info{display:flex;flex-direction:column;gap:12px;max-width:420px}
+.ps-info select{font:inherit;font-weight:400;padding:8px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--ink)}
+.ps-info p{margin:0;font-size:13px}
+.ps-phone{border:1px solid var(--border);border-radius:28px;background:var(--bg);padding:28px 24px;display:flex;flex-direction:column;gap:14px;box-shadow:var(--shadow-pop)}
+.ps-org{display:flex;align-items:center;gap:10px}
+.ps-phone h3{margin:0;font-size:24px;font-weight:600;letter-spacing:-.02em}
+.ps-steps{list-style:none;margin:6px 0;padding:0;display:flex;flex-direction:column}
+.ps-s{display:flex;gap:14px;align-items:flex-start;position:relative;padding-bottom:18px;color:var(--muted);font-size:15px}
+.ps-s:last-child{padding-bottom:0}
+.ps-s::before{content:"";position:absolute;left:10px;top:24px;bottom:2px;width:2px;background:var(--s3)}
+.ps-s:last-child::before{display:none}
+.ps-s.done::before{background:var(--good-ink,#15803d)}
+.ps-s.done,.ps-s.now{color:var(--ink)}
+.ps-s.now{font-weight:600}
+.ps-d{width:22px;height:22px;border-radius:50%;border:2px solid var(--s4);display:grid;place-items:center;flex:none;background:var(--bg);z-index:1}
+.ps-s.done .ps-d{border-color:var(--good-ink,#15803d);color:var(--good-ink,#15803d)}
+.ps-s.now .ps-d{border-color:var(--accent)}
+.ps-d svg{width:12px;height:12px}
+.ps-next{border:1px solid var(--border);border-radius:14px;padding:14px 16px;background:var(--s1,var(--bg))}
+.ps-next p{margin:4px 0 0;font-size:15px}
+.ps-note{font-size:15px;line-height:1.5;margin:0}
+.ps-opt{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px}
+.ps-del{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)}
+.ps-del svg{width:16px;height:16px}
+@media (max-width:860px){.ps{grid-template-columns:1fr}.ps-phone{max-width:390px}}

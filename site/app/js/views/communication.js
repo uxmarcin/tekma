@@ -128,12 +128,35 @@ export default async function render(ctx) {
   function drawSoon(title, text, ic) {
     body.replaceChildren(emptyState({ title, text, icon: ic }));
   }
+  let statusId = null;
+  function drawStatus() {
+    const act = cands.filter((c) => c.status !== 'hired');
+    if (!act.length) { drawSoon('Brak kandydatów', 'Dodaj kandydata, a zobaczysz podgląd jego strony statusu.', 'users'); return; }
+    const c = act.find((x) => x.id === statusId) || act[0]; statusId = c.id;
+    const p = pBy[c.position_id] || {}; const stages = Array.isArray(p.stages) ? p.stages : [];
+    const cur = c.status === 'rejected' ? -1 : stages.indexOf(c.stage);
+    const sel = h('select', { 'aria-label': 'Kandydat' }, act.map((x) => h('option', { value: x.id, selected: x.id === c.id }, `${x.full_name} · ${(pBy[x.position_id] || {}).title || ''}`)));
+    sel.addEventListener('change', () => { statusId = sel.value; drawStatus(); });
+    const steps = stages.map((st, i) => h('li', { class: `ps-s${i < cur ? ' done' : i === cur ? ' now' : ''}` }, h('span', { class: 'ps-d' }, i < cur ? icon('check') : null), h('div', null, st)));
+    const next = cur >= 0 ? stages[cur] : null;
+    const phone = h('div', { class: 'ps-phone', 'aria-label': 'Podgląd strony statusu na telefonie' },
+      h('div', { class: 'ps-org' }, ctx.ui.orgAvatar(ctx.org, 'sm'), h('strong', null, ctx.org ? ctx.org.name : '')),
+      h('small', { class: 'muted' }, 'Twoja aplikacja'), h('h3', null, p.title || 'Stanowisko'),
+      c.status === 'rejected' ? h('p', { class: 'ps-note' }, 'Dziękujemy za udział w rekrutacji. Zdecydowaliśmy się iść dalej z innym kandydatem.') : h('ol', { class: 'ps-steps' }, steps),
+      next ? h('div', { class: 'ps-next' }, h('small', { class: 'muted' }, 'Następny krok'), h('p', null, next)) : null,
+      h('div', { class: 'ps-opt' }, h('span', null, 'Zostaw mnie w bazie talentów na 12 miesięcy'), h('span', { class: 'switch', role: 'img', 'aria-label': 'Podgląd przełącznika', 'aria-checked': 'false' })),
+      h('div', { class: 'ps-del' }, icon('trash'), 'Usuń moje dane'));
+    body.replaceChildren(h('div', { class: 'ps' },
+      h('div', { class: 'ps-info' }, h('label', { class: 'cm-edit' }, h('span', null, 'Podgląd dla kandydata'), sel),
+        h('p', { class: 'muted' }, 'Tak kandydat zobaczy etap swojej aplikacji na telefonie. To podgląd z Twoich danych: publiczny link do wysłania kandydatowi wymaga zapisu w bazie danych i jeszcze nie jest włączony.')),
+      phone));
+  }
   function draw() {
     seg.replaceChildren(...tabs.map(([k, l]) => h('button', { type: 'button', role: 'tab', 'aria-selected': String(k === active), on: { click: () => { active = k; draw(); } } }, l)));
     if (active === 'auto') drawAuto();
     else if (active === 'tpl') drawTpl();
     else if (active === 'survey') drawSoon('Ankieta po procesie', 'Krótka ankieta dla kandydatów po zakończeniu rekrutacji pojawi się tu wkrótce.', 'rubric');
-    else drawSoon('Strona statusu', 'Publiczna strona, na której kandydat widzi etap swojej aplikacji, pojawi się tu wkrótce.', 'users');
+    else drawStatus();
   }
 
   setHeader(ctx, { title: 'Komunikacja', width: 'wide' });
