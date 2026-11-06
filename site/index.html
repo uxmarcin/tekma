@@ -11,7 +11,10 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="site.webmanifest">
 <link rel="canonical" href="https://tekma.app/">
+<link rel="alternate" hreflang="pl" href="https://tekma.app/">
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Tekma">
+<meta property="og:locale" content="pl_PL">
 <meta property="og:title" content="Tekma — zatrudniaj na podstawie tego, co kandydat naprawdę powiedział">
 <meta property="og:description" content="Strukturalna rekrutacja z AI, które podpowiada, a człowiek decyduje. Po ofercie — plan pierwszych 90 dni.">
 <meta property="og:url" content="https://tekma.app/">
@@ -19,11 +22,16 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tekma — zatrudniaj na podstawie tego, co kandydat naprawdę powiedział">
+<meta name="twitter:description" content="Rubryki, notetaker AI i karty ocen w jednym miejscu. Te same pytania dla każdego, decyzja po dwóch niezależnych ocenach, a po ofercie — plan pierwszych 90 dni. Zgodne z AI Act, dane w UE.">
+<meta name="twitter:image" content="https://tekma.app/assets/og.png">
 <link rel="preload" href="assets/fonts/InterDisplay-SemiBold.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="assets/fonts/Inter-Regular.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="assets/landing/dashboard.webp?v=3" as="image" type="image/webp" media="(min-width:861px)">
 <script>document.documentElement.classList.add('js')</script>
-<link rel="stylesheet" href="assets/landing.css?v=light12">
+<link rel="stylesheet" href="assets/landing.css?v=light13">
+<link rel="stylesheet" href="assets/blog.css?v=1">
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"Organization","@id":"https://tekma.app/#org","name":"Tekma","url":"https://tekma.app/","logo":"https://tekma.app/assets/icon-512.png","email":"hello@tekma.app","description":"Tekma to narzędzie do strukturalnej rekrutacji z AI, które podpowiada, a człowiek decyduje: rubryki, karty ocen, notetaker i plan pierwszych 90 dni.","address":{"@type":"PostalAddress","addressLocality":"Rzeszów","addressCountry":"PL"}},{"@type":"WebSite","@id":"https://tekma.app/#website","url":"https://tekma.app/","name":"Tekma","inLanguage":"pl","publisher":{"@id":"https://tekma.app/#org"}},{"@type":"SoftwareApplication","@id":"https://tekma.app/#app","name":"Tekma","url":"https://tekma.app/","applicationCategory":"BusinessApplication","operatingSystem":"Web","inLanguage":"pl","description":"Rubryki, notetaker AI i karty ocen w jednym miejscu. Te same pytania dla każdego, decyzja po dwóch niezależnych ocenach, a po ofercie plan pierwszych 90 dni.","publisher":{"@id":"https://tekma.app/#org"},"offers":[{"@type":"Offer","name":"Free","price":"0","priceCurrency":"EUR","url":"https://tekma.app/#cennik"},{"@type":"Offer","name":"Pro","price":"129","priceCurrency":"EUR","url":"https://tekma.app/#cennik","priceSpecification":{"@type":"UnitPriceSpecification","price":"129","priceCurrency":"EUR","billingDuration":"P1M"}}]}]}</script>
 </head>
 <body>
 
@@ -32,11 +40,11 @@
 <header class="nav" id="nav">
   <div class="wrap nav-in">
     <a class="logo" href="/" aria-label="Tekma — strona główna"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a>
-    <nav class="nav-links" aria-label="Główna nawigacja"><a href="produkt.html">Produkt</a><a href="integracje.html">Integracje</a><a href="ai.html">AI w Tekmie</a><a href="dla-kandydatow.html">Dla kandydatów</a><a href="/#cennik">Cennik</a></nav>
+    <nav class="nav-links" aria-label="Główna nawigacja"><a href="produkt.html">Produkt</a><a href="integracje.html">Integracje</a><a href="ai.html">AI w Tekmie</a><a href="dla-kandydatow.html">Dla kandydatów</a><a href="blog/">Blog</a><a href="/#cennik">Cennik</a></nav>
     <div class="nav-r"><a class="login" href="app/">Zaloguj się</a><a data-access class="btn btn-ink btn-sm" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o dostęp</a></div>
     <button class="burger" id="burger" aria-label="Menu" aria-expanded="false" aria-controls="mmenu"><span></span></button>
   </div>
-  <div class="mmenu" id="mmenu"><a href="produkt.html">Produkt</a><a href="integracje.html">Integracje</a><a href="ai.html">AI w Tekmie</a><a href="dla-kandydatow.html">Dla kandydatów</a><a href="/#cennik">Cennik</a><a href="app/">Zaloguj się</a><a data-access class="btn btn-ink" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o wcześniejszy dostęp</a></div>
+  <div class="mmenu" id="mmenu"><a href="produkt.html">Produkt</a><a href="integracje.html">Integracje</a><a href="ai.html">AI w Tekmie</a><a href="dla-kandydatow.html">Dla kandydatów</a><a href="blog/">Blog</a><a href="/#cennik">Cennik</a><a href="app/">Zaloguj się</a><a data-access class="btn btn-ink" href="mailto:hello@tekma.app?subject=Wcze%C5%9Bniejszy%20dost%C4%99p%20do%20Tekmy">Poproś o wcześniejszy dostęp</a></div>
 </header>
 
 <main id="top">
@@ -242,6 +250,18 @@
   </div>
 </section>
 
+<!-- BLOG -->
+<section class="sec" id="blog">
+  <div class="wrap">
+    <div class="sec-head-row">
+      <div class="reveal"><span class="eyebrow">Hiring playbooks</span><h2>Jak rekrutować lepiej: poradniki z konkretami</h2><p class="lede">Karta oceny kandydata, AI Act, widełki płacowe, pierwszy programista i plan 30-60-90 dni. Po polsku, bez ogólników.</p></div>
+      <a class="link-arrow reveal" href="blog/">Wszystkie poradniki <i aria-hidden="true">→</i></a>
+    </div>
+    <div class="pgrid"><a class="pcard" href="blog/jak-zatrudnic-pierwszego-programiste.html"><span class="tag">Rekrutacja techniczna</span><h3>Jak zatrudnić pierwszego programistę</h3><p>Od rezultatów na 90 dni, przez ogłoszenie z widełkami, po proces i ocenę rubryką.</p><span class="meta">6 min czytania</span><span class="more">Czytaj <i aria-hidden="true">→</i></span></a><a class="pcard" href="blog/scorecard-rekrutacyjny.html"><span class="tag">Ocena kandydatów</span><h3>Scorecard rekrutacyjny (karta oceny kandydata)</h3><p>Kryteria, wagi, skala z opisami i przykład wyniku ważonego. Jak zbudować kartę w siedmiu krokach.</p><span class="meta">5 min czytania</span><span class="more">Czytaj <i aria-hidden="true">→</i></span></a><a class="pcard" href="blog/ai-act-a-rekrutacja.html"><span class="tag">Prawo i zgodność</span><h3>AI Act a rekrutacja</h3><p>Dlaczego AI w rekrutacji to system wysokiego ryzyka, od kiedy i co zrobić już teraz.</p><span class="meta">6 min czytania</span><span class="more">Czytaj <i aria-hidden="true">→</i></span></a></div>
+    <p class="lede" style="margin-top:28px;font-size:15px">Zobacz też: <a href="blog/widelki-plac-w-ogloszeniu.html" style="text-decoration:underline;text-underline-offset:3px">widełki płacowe i jawność wynagrodzeń</a>, <a href="blog/onboarding-30-60-90-dni.html" style="text-decoration:underline;text-underline-offset:3px">onboarding 30-60-90</a>, <a href="tekma-vs-arkusz-vs-ats.html" style="text-decoration:underline;text-underline-offset:3px">Tekma vs arkusz vs ATS</a>.</p>
+  </div>
+</section>
+
 <!-- FINAL CTA -->
 <section class="sec final" id="dolacz">
   <div class="mesh soft full" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -261,6 +281,7 @@
     <div class="brand"><a class="logo" href="/"><svg aria-hidden="true"><use href="#mark"/></svg>tekma</a><p>© 2026 Tekma · Rzeszów · dane w UE</p></div>
     <div class="foot-cols">
       <div><h5>Produkt</h5><ul><li><a href="produkt.html">Rubryki i karty ocen</a></li><li><a href="integracje.html">Integracje</a></li><li><a href="ai.html">AI w Tekmie</a></li><li><a href="po-zatrudnieniu.html">Pierwsze 90 dni</a></li></ul></div>
+      <div><h5>Poradniki</h5><ul><li><a href="blog/">Blog: hiring playbooks</a></li><li><a href="blog/jak-zatrudnic-pierwszego-programiste.html">Pierwszy programista</a></li><li><a href="blog/scorecard-rekrutacyjny.html">Scorecard rekrutacyjny</a></li><li><a href="blog/ai-act-a-rekrutacja.html">AI Act a rekrutacja</a></li><li><a href="tekma-vs-arkusz-vs-ats.html">Tekma vs arkusz vs ATS</a></li></ul></div>
       <div><h5>Firma</h5><ul><li><a href="/#jak">Jak to działa</a></li><li><a href="/#cennik">Cennik</a></li><li><a href="mailto:hello@tekma.app">Kontakt</a></li></ul></div>
       <div><h5>Zaufanie</h5><ul><li><a href="ai.html#nadzor">RODO i AI Act</a></li><li><a href="dla-kandydatow.html">Dla kandydatów</a></li></ul></div>
     </div>

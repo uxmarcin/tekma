@@ -407,3 +407,6 @@ h1 .w{display:inline-block;opacity:0;transform:translateY(18px);animation:up .7s
 .tpl-cta{position:relative;z-index:3;justify-content:center;margin-top:-84px;text-align:center}
 .tpl-cta .tpl-note{flex-basis:100%}
 @media (max-width:700px){.tpl-cta{margin-top:-70px}}
+
+/* nav: sześć pozycji (z Blogiem) mieści się też w węższych oknach */
+@media (max-width:1180px){.nav-in{gap:28px}.nav-links{gap:20px}}
